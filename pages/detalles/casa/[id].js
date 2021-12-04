@@ -46,34 +46,28 @@ const formatter = new Intl.NumberFormat("en-US", {
   maximumFractionDigits: 2,
 });
 
-// { property }
-
-const DetailsHouse = () => {
+const DetailsHouse = ({ property }) => {
   const router = useRouter();
-  const [property, setProperty] = useState({});
+  // const [property, setProperty] = useState({});
   const [related, setRelated] = useState([]);
   const [showMoreText, setShowMoreText] = useState(false);
   const [whatsAppNumber, setWhatsAppNumber] = useState({});
   //Url Actual
   const [navigatorShare, setNavigatorShare] = useState(false);
 
-  const getData = async () => {
-    const { data } = await Axios.get(`/api/one-house/${router.query.id}`);
+  // const getData = async () => {
+  //   const { data } = await Axios.get(`/api/one-house/${router.query.id}`);
 
-    if (data.status) {
-      setProperty(data.data[0]);
-    }
-  };
+  //   if (data.status) {
+  //     setProperty(data.data[0]);
+  //   }
+  // };
 
-  useEffect(() => {
-    if (router.query.id) {
-      getData();
-    }
-  }, [router]);
-
-  console.log("====================================");
-  console.log(property);
-  console.log("====================================");
+  // useEffect(() => {
+  //   if (router.query.id) {
+  //     getData();
+  //   }
+  // }, [router]);
 
   const share = () => {
     navigator
@@ -132,273 +126,263 @@ const DetailsHouse = () => {
     }
   }, [property]);
 
-  return (
-    <>
-      <Header title="Casa" />
-      <Main>
-        <h3>Casa...</h3>
-      </Main>
-      <Footer />
-    </>
-  );
-
-  // if (property) {
-  //   const {
-  //     address,
-  //     age,
-  //     bathrooms,
-  //     bottomMeasurement,
-  //     constructionSize,
-  //     currency,
-  //     description,
-  //     frontMeasurement,
-  //     levelsConstructed,
-  //     location,
-  //     mainPhotography,
-  //     morePictures,
-  //     parking,
-  //     preservation,
-  //     price,
-  //     pricem2,
-  //     registrationDate,
-  //     rooms,
-  //     services,
-  //     showOnweb,
-  //     sold,
-  //     subdivision,
-  //     terrainSize,
-  //     title,
-  //     typeOfProperty,
-  //     typeOfTransaction,
-  //     _id,
-  //   } = property;
-  //   return (
-  //     <>
-  //       <NextSeo
-  //         title={`${title} | Vasquez Inmobiliaria`}
-  //         description={description.slice(0, 156)}
-  //         canonical=""
-  //         openGraph={{
-  //           url: "",
-  //           title: `${title} | Vasquez Inmobiliaria`,
-  //           description: description.slice(0, 156),
-  //           images: [
-  //             {
-  //               url: mainPhotography.url,
-  //               width: 200,
-  //               height: 200,
-  //               alt: mainPhotography.alt,
-  //             },
-  //           ],
-  //           site_name: "Vasquez Inmobiliaria",
-  //         }}
-  //         twitter={{
-  //           cardType: "summary",
-  //         }}
-  //       />
-  //       <Header title={title} />
-  //       <Main>
-  //         {sold && (
-  //           <Sold>
-  //             <p>Vendida</p>
-  //           </Sold>
-  //         )}
-  //         {navigatorShare && (
-  //           <IconShareContainer onClick={share}>
-  //             <ShareIcon />
-  //           </IconShareContainer>
-  //         )}
-  //         {morePictures.length > 0 && (
-  //           <HouseGalery
-  //             mainPhotography={mainPhotography}
-  //             morePictures={morePictures}
-  //             title={title}
-  //           />
-  //         )}
-  //         <InfoContainer>
-  //           <h1>{title}</h1>
-  //           <p>{address}</p>
-  //           {location && (
-  //             <>
-  //               {location.hasOwnProperty("lat") && (
-  //                 <>
-  //                   {location.hasOwnProperty("lng") && (
-  //                     <LocationLink
-  //                       href={`https://www.google.com/maps/search/?api=1&query=${location.lat}%2C${location.lng}`}
-  //                       target="_blank"
-  //                       rel="noopener noreferrer"
-  //                     >
-  //                       Ver Ubicación en el Mapa
-  //                     </LocationLink>
-  //                   )}
-  //                 </>
-  //               )}
-  //             </>
-  //           )}
-  //           <DescriptionContainer show={showMoreText}>
-  //             <Description>{description}</Description>
-  //             <Gradient show={showMoreText}>
-  //               <ShowMoreButton
-  //                 type="button"
-  //                 onClick={() => setShowMoreText(!showMoreText)}
-  //                 show={showMoreText}
-  //               >
-  //                 {showMoreText ? `Mostrar menos` : `Mostrar más`}
-  //               </ShowMoreButton>
-  //             </Gradient>
-  //           </DescriptionContainer>
-  //           <Price>
-  //             <span sold={sold}>${formatter.format(price)}</span> {currency}|{" "}
-  //             {typeOfTransaction}
-  //           </Price>
-  //           <IconsContainer>
-  //             {rooms && (
-  //               <IconInfo>
-  //                 <Cama />
-  //                 <p>{rooms}</p>
-  //               </IconInfo>
-  //             )}
-  //             {bathrooms && (
-  //               <IconInfo>
-  //                 <Bathroom />
-  //                 <p>{bathrooms}</p>
-  //               </IconInfo>
-  //             )}
-  //             {parking && (
-  //               <IconInfo>
-  //                 <Garage />
-  //                 <p>{parking}</p>
-  //               </IconInfo>
-  //             )}
-  //             {terrainSize && (
-  //               <IconInfo>
-  //                 <Terreno />
-  //                 <p>{terrainSize}</p>
-  //               </IconInfo>
-  //             )}
-  //           </IconsContainer>
-  //         </InfoContainer>
-  //         <FeaturesContainer>
-  //           <h3>Características del inmueble</h3>
-  //           <Features>
-  //             {typeOfProperty && <p>Tipo de inmueble: {typeOfProperty}</p>}
-  //             {levelsConstructed && (
-  //               <p>Niveles construidos: {levelsConstructed}</p>
-  //             )}
-  //             {frontMeasurement && <p>Medida de frente: {frontMeasurement}</p>}
-  //             {bottomMeasurement && <p>Medida de fondo: {bottomMeasurement}</p>}
-  //             {constructionSize && (
-  //               <p>Metros construidos: {constructionSize}</p>
-  //             )}
-  //             {terrainSize && (
-  //               <p>
-  //                 Tamaño del terreno: {terrainSize}m<span>2</span>
-  //               </p>
-  //             )}
-  //             {age && <p>Edad: {age}</p>}
-  //             {preservation && <p>Estado: {preservation}</p>}
-  //           </Features>
-  //         </FeaturesContainer>
-  //         <FeaturesContainer>
-  //           <h3>La propiedad cuenta</h3>
-  //           <Features>
-  //             {rooms && <p>Habitaciones: {rooms}</p>}
-  //             {bathrooms && <p>Baños: {bathrooms}</p>}
-  //             {parking && <p>Estacionamientos: {parking}</p>}
-  //             {constructionSize && (
-  //               <p>Metros construidos: {constructionSize}</p>
-  //             )}
-  //           </Features>
-  //         </FeaturesContainer>
-  //         {services && (
-  //           <Services>
-  //             {services.map((service) => (
-  //               <p key={service}>{service}</p>
-  //             ))}
-  //           </Services>
-  //         )}
-  //         {location && (
-  //           <>
-  //             {location.hasOwnProperty("lat") && (
-  //               <>
-  //                 {location.hasOwnProperty("lng") && (
-  //                   <HoseMap location={location} />
-  //                 )}
-  //               </>
-  //             )}
-  //           </>
-  //         )}
-  //         <HouseFormContact title={title} />
-  //         {whatsAppNumber.hasOwnProperty("numerPhone") && (
-  //           <WhatsAppButton
-  //             href={`https://api.whatsapp.com/send?phone=+52${whatsAppNumber.numerPhone}&text=Hola!%20Me%20interesa%20esta%20propiedad%20${title}%20y%20Quisiera%20mas%20informaci%C3%B3n-%20${window.location.href}%20-`}
-  //             target="_blank"
-  //             rel="noopener noreferrer"
-  //             aria-label="Enlace a WhatsApp"
-  //           >
-  //             <WhatsApp />
-  //             {whatsAppNumber.numerPhone}
-  //           </WhatsAppButton>
-  //         )}
-  //         {related.length > 0 && (
-  //           <RelatedContainer>
-  //             <>
-  //               {related.map((item) => (
-  //                 <Related key={item._id} {...item} />
-  //               ))}
-  //             </>
-  //           </RelatedContainer>
-  //         )}
-  //       </Main>
-  //       <Footer />
-  //     </>
-  //   );
-  // } else {
-  //   return null;
-  // }
+  if (property) {
+    const {
+      address,
+      age,
+      bathrooms,
+      bottomMeasurement,
+      constructionSize,
+      currency,
+      description,
+      frontMeasurement,
+      levelsConstructed,
+      location,
+      mainPhotography,
+      morePictures,
+      parking,
+      preservation,
+      price,
+      pricem2,
+      registrationDate,
+      rooms,
+      services,
+      showOnweb,
+      sold,
+      subdivision,
+      terrainSize,
+      title,
+      typeOfProperty,
+      typeOfTransaction,
+      _id,
+    } = property;
+    return (
+      <>
+        <NextSeo
+          title={`${title} | Vasquez Inmobiliaria`}
+          description={description.slice(0, 156)}
+          canonical=""
+          openGraph={{
+            url: "",
+            title: `${title} | Vasquez Inmobiliaria`,
+            description: description.slice(0, 156),
+            images: [
+              {
+                url: mainPhotography.url,
+                width: 200,
+                height: 200,
+                alt: mainPhotography.alt,
+              },
+            ],
+            site_name: "Vasquez Inmobiliaria",
+          }}
+          twitter={{
+            cardType: "summary",
+          }}
+        />
+        <Header title={title} />
+        <Main>
+          {sold && (
+            <Sold>
+              <p>Vendida</p>
+            </Sold>
+          )}
+          {navigatorShare && (
+            <IconShareContainer onClick={share}>
+              <ShareIcon />
+            </IconShareContainer>
+          )}
+          {morePictures.length > 0 && (
+            <HouseGalery
+              mainPhotography={mainPhotography}
+              morePictures={morePictures}
+              title={title}
+            />
+          )}
+          <InfoContainer>
+            <h1>{title}</h1>
+            <p>{address}</p>
+            {location && (
+              <>
+                {location.hasOwnProperty("lat") && (
+                  <>
+                    {location.hasOwnProperty("lng") && (
+                      <LocationLink
+                        href={`https://www.google.com/maps/search/?api=1&query=${location.lat}%2C${location.lng}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        Ver Ubicación en el Mapa
+                      </LocationLink>
+                    )}
+                  </>
+                )}
+              </>
+            )}
+            <DescriptionContainer show={showMoreText}>
+              <Description>{description}</Description>
+              <Gradient show={showMoreText}>
+                <ShowMoreButton
+                  type="button"
+                  onClick={() => setShowMoreText(!showMoreText)}
+                  show={showMoreText}
+                >
+                  {showMoreText ? `Mostrar menos` : `Mostrar más`}
+                </ShowMoreButton>
+              </Gradient>
+            </DescriptionContainer>
+            <Price>
+              <span sold={sold}>${formatter.format(price)}</span> {currency}|{" "}
+              {typeOfTransaction}
+            </Price>
+            <IconsContainer>
+              {rooms && (
+                <IconInfo>
+                  <Cama />
+                  <p>{rooms}</p>
+                </IconInfo>
+              )}
+              {bathrooms && (
+                <IconInfo>
+                  <Bathroom />
+                  <p>{bathrooms}</p>
+                </IconInfo>
+              )}
+              {parking && (
+                <IconInfo>
+                  <Garage />
+                  <p>{parking}</p>
+                </IconInfo>
+              )}
+              {terrainSize && (
+                <IconInfo>
+                  <Terreno />
+                  <p>{terrainSize}</p>
+                </IconInfo>
+              )}
+            </IconsContainer>
+          </InfoContainer>
+          <FeaturesContainer>
+            <h3>Características del inmueble</h3>
+            <Features>
+              {typeOfProperty && <p>Tipo de inmueble: {typeOfProperty}</p>}
+              {levelsConstructed && (
+                <p>Niveles construidos: {levelsConstructed}</p>
+              )}
+              {frontMeasurement && <p>Medida de frente: {frontMeasurement}</p>}
+              {bottomMeasurement && <p>Medida de fondo: {bottomMeasurement}</p>}
+              {constructionSize && (
+                <p>Metros construidos: {constructionSize}</p>
+              )}
+              {terrainSize && (
+                <p>
+                  Tamaño del terreno: {terrainSize}m<span>2</span>
+                </p>
+              )}
+              {age && <p>Edad: {age}</p>}
+              {preservation && <p>Estado: {preservation}</p>}
+            </Features>
+          </FeaturesContainer>
+          <FeaturesContainer>
+            <h3>La propiedad cuenta</h3>
+            <Features>
+              {rooms && <p>Habitaciones: {rooms}</p>}
+              {bathrooms && <p>Baños: {bathrooms}</p>}
+              {parking && <p>Estacionamientos: {parking}</p>}
+              {constructionSize && (
+                <p>Metros construidos: {constructionSize}</p>
+              )}
+            </Features>
+          </FeaturesContainer>
+          {services && (
+            <Services>
+              {services.map((service) => (
+                <p key={service}>{service}</p>
+              ))}
+            </Services>
+          )}
+          {location && (
+            <>
+              {location.hasOwnProperty("lat") && (
+                <>
+                  {location.hasOwnProperty("lng") && (
+                    <HoseMap location={location} />
+                  )}
+                </>
+              )}
+            </>
+          )}
+          <HouseFormContact title={title} />
+          {whatsAppNumber.hasOwnProperty("numerPhone") && (
+            <WhatsAppButton
+              href={`https://api.whatsapp.com/send?phone=+52${whatsAppNumber.numerPhone}&text=Hola!%20Me%20interesa%20esta%20propiedad%20${title}%20y%20Quisiera%20mas%20informaci%C3%B3n-%20${window.location.href}%20-`}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Enlace a WhatsApp"
+            >
+              <WhatsApp />
+              {whatsAppNumber.numerPhone}
+            </WhatsAppButton>
+          )}
+          {related.length > 0 && (
+            <RelatedContainer>
+              <>
+                {related.map((item) => (
+                  <Related key={item._id} {...item} />
+                ))}
+              </>
+            </RelatedContainer>
+          )}
+        </Main>
+        <Footer />
+      </>
+    );
+  } else {
+    return null;
+  }
 };
 
 export default DetailsHouse;
 
-// export const getStaticPaths = async () => {
-//   const settings = {
-//     method: "POST",
-//     headers: { "Content-Type": "application/json" },
-//     body: JSON.stringify({
-//       match: {
-//         showOnweb: { $eq: true },
-//       },
-//       query: {
-//         _id: 1,
-//       },
-//       limit: 20,
-//     }),
-//   };
+export const getStaticPaths = async () => {
+  const settings = {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      match: {
+        showOnweb: { $eq: true },
+      },
+      query: {
+        _id: 1,
+      },
+      limit: 20,
+    }),
+  };
 
-//   const getHouses = await Fetch(
-//     `${process.env.NEXT_PUBLIC_URL}/api/some-houses/some`,
-//     settings
-//   );
-//   const { data } = await getHouses.json();
+  const getHouses = await Fetch(
+    `${process.env.NEXT_PUBLIC_URL}/api/some-houses/some`,
+    settings
+  );
+  const { data } = await getHouses.json();
 
-//   // Obtener las rutas que queremos pre-renderizar
-//   const paths = data.map((sub) => ({
-//     params: { id: sub._id },
-//   }));
+  // Obtener las rutas que queremos pre-renderizar
+  const paths = data.map((sub) => ({
+    params: { id: sub._id },
+  }));
 
-//   return { paths, fallback: true };
-// };
+  return { paths, fallback: true };
+};
 
-// export const getStaticProps = async ({ params }) => {
-//   const getProps = await Fetch(
-//     `${process.env.NEXT_PUBLIC_URL}/api/one-house/${params.id}`
-//   );
-//   const { data } = await getProps.json();
+export const getStaticProps = async ({ params }) => {
+  const getProps = await Fetch(
+    `${process.env.NEXT_PUBLIC_URL}/api/one-house/${params.id}`
+  );
+  const { data } = await getProps.json();
 
-//   return {
-//     props: {
-//       property: data[0],
-//     },
-//     revalidate: 10,
-//   };
-// };
+  return {
+    props: {
+      property: data[0],
+    },
+    revalidate: 10,
+  };
+};

@@ -63,76 +63,74 @@ const loader = ({ src, width, quality }) => {
   return `${src}?w=${width}&q=${quality || 75}`;
 };
 
-// { subdivisions, whatsAppNumber, houses }
-
-const HomePage = () => {
-  const [subdivisions, setSubdivisions] = useState([]);
-  const [houses, setHouses] = useState([]);
-  const [whatsAppNumber, setWhatsAppNumber] = useState([]);
+const HomePage = ({ subdivisions, whatsAppNumber, houses }) => {
+  // const [subdivisions, setSubdivisions] = useState([]);
+  // const [houses, setHouses] = useState([]);
+  // const [whatsAppNumber, setWhatsAppNumber] = useState([]);
   const [typeOfProperty, setTypeOfProperty] = useState("casa");
   const [selectedSubdivision, setSelectedSubdivision] = useState("");
 
-  useEffect(() => {
-    const getData = async () => {
-      const { data } = await Axios.post(`/api/some-houses/some`, {
-        match: {
-          showOnweb: { $eq: true },
-          subdivision: { $in: ["La Molienda", "Ojo De Agua", "Otro", null] },
-          typeOfProperty: { $in: ["casa", "departamento", "terreno"] },
-          price: { $gte: 0, $lte: 999999999 },
-          terrainSize: { $gte: 0, $lte: 999999999 },
-          rooms: { $gte: 0 },
-          bathrooms: { $gte: 0 },
-          parking: { $gte: 0 },
-        },
-        query: {
-          title: 1,
-          address: 1,
-          description: 1,
-          mainPhotography: 1,
-          price: 1,
-          _id: 1,
-          rooms: 1,
-          bathrooms: 1,
-          parking: 1,
-          terrainSize: 1,
-        },
-        limit: 4,
-      });
+  // useEffect(() => {
+  //   const getData = async () => {
+  //     const { data } = await Axios.post(`/api/some-houses/some`, {
+  //       match: {
+  //         showOnweb: { $eq: true },
+  //         subdivision: { $in: ["La Molienda", "Ojo De Agua", "Otro", null] },
+  //         typeOfProperty: { $in: ["casa", "departamento", "terreno"] },
+  //         price: { $gte: 0, $lte: 999999999 },
+  //         terrainSize: { $gte: 0, $lte: 999999999 },
+  //         rooms: { $gte: 0 },
+  //         bathrooms: { $gte: 0 },
+  //         parking: { $gte: 0 },
+  //       },
+  //       query: {
+  //         title: 1,
+  //         address: 1,
+  //         description: 1,
+  //         mainPhotography: 1,
+  //         price: 1,
+  //         _id: 1,
+  //         rooms: 1,
+  //         bathrooms: 1,
+  //         parking: 1,
+  //         terrainSize: 1,
+  //       },
+  //       limit: 4,
+  //     });
 
-      if (data.status) {
-        setHouses(data.data);
-      }
-    };
-    getData();
-  }, []);
+  //     if (data.status) {
+  //       setHouses(data.data);
+  //     }
+  //   };
+  //   getData();
+  // }, []);
 
-  useEffect(() => {
-    const getData = async () => {
-      const { data } = await Axios.post(`/api/subdivisions/some`, {
-        match: {},
-        query: {
-          name: 1,
-        },
-        limit: 2,
-      });
+  // useEffect(() => {
+  //   const getData = async () => {
+  //     const { data } = await Axios.post(`/api/subdivisions/some`, {
+  //       match: {},
+  //       query: {
+  //         name: 1,
+  //       },
+  //       limit: 2,
+  //     });
 
-      if (data.status) {
-        setSubdivisions(data.data);
-      }
-    };
-    getData();
-  }, []);
+  //     if (data.status) {
+  //       setSubdivisions(data.data);
+  //     }
+  //   };
+  //   getData();
+  // }, []);
 
-  useEffect(() => {
-    const getData = async () => {
-      const { data } = await Axios.get("/api/whatsApp-contact/all");
-      if (data.data.length > 0) {
-        setWhatsAppNumber(data.data[0]);
-      }
-    };
-    getData();
-  }, []);
+  // useEffect(() => {
+  //   const getData = async () => {
+  //     const { data } = await Axios.get("/api/whatsApp-contact/all");
+  //     if (data.data.length > 0) {
+  //       setWhatsAppNumber(data.data[0]);
+  //     }
+  //   };
+  //   getData();
+  // }, []);
 
   return (
     <>
@@ -360,74 +358,74 @@ const HomePage = () => {
 
 export default HomePage;
 
-// export const getStaticProps = async () => {
-//   const settingsHouses = {
-//     method: "POST",
-//     headers: { "Content-Type": "application/json" },
-//     body: JSON.stringify({
-//       match: {
-//         showOnweb: { $eq: true },
-//         subdivision: { $in: ["La Molienda", "Ojo De Agua", "Otro", null] },
-//         typeOfProperty: { $in: ["casa", "departamento", "terreno"] },
-//         price: { $gte: 0, $lte: 999999999 },
-//         terrainSize: { $gte: 0, $lte: 999999999 },
-//         rooms: { $gte: 0 },
-//         bathrooms: { $gte: 0 },
-//         parking: { $gte: 0 },
-//       },
-//       query: {
-//         title: 1,
-//         address: 1,
-//         description: 1,
-//         mainPhotography: 1,
-//         price: 1,
-//         _id: 1,
-//         rooms: 1,
-//         bathrooms: 1,
-//         parking: 1,
-//         terrainSize: 1,
-//       },
-//       limit: 4,
-//     }),
-//   };
+export const getStaticProps = async () => {
+  const settingsHouses = {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      match: {
+        showOnweb: { $eq: true },
+        subdivision: { $in: ["La Molienda", "Ojo De Agua", "Otro", null] },
+        typeOfProperty: { $in: ["casa", "departamento", "terreno"] },
+        price: { $gte: 0, $lte: 999999999 },
+        terrainSize: { $gte: 0, $lte: 999999999 },
+        rooms: { $gte: 0 },
+        bathrooms: { $gte: 0 },
+        parking: { $gte: 0 },
+      },
+      query: {
+        title: 1,
+        address: 1,
+        description: 1,
+        mainPhotography: 1,
+        price: 1,
+        _id: 1,
+        rooms: 1,
+        bathrooms: 1,
+        parking: 1,
+        terrainSize: 1,
+      },
+      limit: 4,
+    }),
+  };
 
-//   const settingsSubdivisions = {
-//     method: "POST",
-//     headers: { "Content-Type": "application/json" },
-//     body: JSON.stringify({
-//       match: {
-//         showOnweb: { $eq: true },
-//       },
-//       query: {
-//         name: 1,
-//       },
-//       limit: 10,
-//     }),
-//   };
+  const settingsSubdivisions = {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      match: {
+        showOnweb: { $eq: true },
+      },
+      query: {
+        name: 1,
+      },
+      limit: 10,
+    }),
+  };
 
-//   const getHouses = await Fetch(
-//     `${process.env.NEXT_PUBLIC_URL}/api/some-houses/some`,
-//     settingsHouses
-//   );
-//   const { data: houses } = await getHouses.json();
+  const getHouses = await Fetch(
+    `${process.env.NEXT_PUBLIC_URL}/api/some-houses/some`,
+    settingsHouses
+  );
+  const { data: houses } = await getHouses.json();
 
-//   const getSubdivisions = await Fetch(
-//     `${process.env.NEXT_PUBLIC_URL}/api/subdivisions/some`,
-//     settingsSubdivisions
-//   );
-//   const { data: subdivisions } = await getSubdivisions.json();
+  const getSubdivisions = await Fetch(
+    `${process.env.NEXT_PUBLIC_URL}/api/subdivisions/some`,
+    settingsSubdivisions
+  );
+  const { data: subdivisions } = await getSubdivisions.json();
 
-//   const getWhatsApp = await Fetch(
-//     `${process.env.NEXT_PUBLIC_URL}/api/whatsApp-contact/all`
-//   );
-//   const { data: whatsAppNumber } = await getWhatsApp.json();
+  const getWhatsApp = await Fetch(
+    `${process.env.NEXT_PUBLIC_URL}/api/whatsApp-contact/all`
+  );
+  const { data: whatsAppNumber } = await getWhatsApp.json();
 
-//   return {
-//     props: {
-//       subdivisions,
-//       whatsAppNumber,
-//       houses,
-//     },
-//     revalidate: 10,
-//   };
-// };
+  return {
+    props: {
+      subdivisions,
+      whatsAppNumber,
+      houses,
+    },
+    revalidate: 10,
+  };
+};

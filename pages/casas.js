@@ -14,38 +14,36 @@ import SearchFilters from "../components/SearchFilters";
 // Styled-Components
 import { Main, Filling } from "../styles/houses/style";
 
-// { houses }
+const HomePage = ({ houses }) => {
+  // const [houses, setHouses] = useState([]);
 
-const HomePage = () => {
-  const [houses, setHouses] = useState([]);
+  // useEffect(() => {
+  //   const getData = async () => {
+  //     const { data } = await Axios.post(`/api/some-houses/some`, {
+  //       match: {
+  //         showOnweb: { $eq: true },
+  //       },
+  //       query: {
+  //         title: 1,
+  //         address: 1,
+  //         description: 1,
+  //         mainPhotography: 1,
+  //         price: 1,
+  //         _id: 1,
+  //         rooms: 1,
+  //         bathrooms: 1,
+  //         parking: 1,
+  //         terrainSize: 1,
+  //       },
+  //       limit: 20,
+  //     });
 
-  useEffect(() => {
-    const getData = async () => {
-      const { data } = await Axios.post(`/api/some-houses/some`, {
-        match: {
-          showOnweb: { $eq: true },
-        },
-        query: {
-          title: 1,
-          address: 1,
-          description: 1,
-          mainPhotography: 1,
-          price: 1,
-          _id: 1,
-          rooms: 1,
-          bathrooms: 1,
-          parking: 1,
-          terrainSize: 1,
-        },
-        limit: 20,
-      });
-
-      if (data.status) {
-        setHouses(data.data);
-      }
-    };
-    getData();
-  }, []);
+  //     if (data.status) {
+  //       setHouses(data.data);
+  //     }
+  //   };
+  //   getData();
+  // }, []);
 
   return (
     <>
@@ -115,40 +113,40 @@ const HomePage = () => {
 
 export default HomePage;
 
-// export const getStaticProps = async () => {
-//   const settings = {
-//     method: "POST",
-//     headers: { "Content-Type": "application/json" },
-//     body: JSON.stringify({
-//       match: {
-//         showOnweb: { $eq: true },
-//       },
-//       query: {
-//         title: 1,
-//         address: 1,
-//         description: 1,
-//         mainPhotography: 1,
-//         price: 1,
-//         _id: 1,
-//         rooms: 1,
-//         bathrooms: 1,
-//         parking: 1,
-//         terrainSize: 1,
-//       },
-//       limit: 20,
-//     }),
-//   };
+export const getStaticProps = async () => {
+  const settings = {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      match: {
+        showOnweb: { $eq: true },
+      },
+      query: {
+        title: 1,
+        address: 1,
+        description: 1,
+        mainPhotography: 1,
+        price: 1,
+        _id: 1,
+        rooms: 1,
+        bathrooms: 1,
+        parking: 1,
+        terrainSize: 1,
+      },
+      limit: 20,
+    }),
+  };
 
-//   const getProps = await Fetch(
-//     `${process.env.NEXT_PUBLIC_URL}/api/some-houses/some`,
-//     settings
-//   );
-//   const { data } = await getProps.json();
+  const getProps = await Fetch(
+    `${process.env.NEXT_PUBLIC_URL}/api/some-houses/some`,
+    settings
+  );
+  const { data } = await getProps.json();
 
-//   return {
-//     props: {
-//       houses: data,
-//     },
-//     revalidate: 10,
-//   };
-// };
+  return {
+    props: {
+      houses: data,
+    },
+    revalidate: 10,
+  };
+};

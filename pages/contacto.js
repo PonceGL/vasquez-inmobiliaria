@@ -39,21 +39,18 @@ const formatPhoneNumber = (numer) => {
   return null;
 };
 
-// { infoContact }
+const Contacto = ({ infoContact }) => {
+  // const [infoContact, setinfoContact] = useState([]);
 
-const Contacto = () => {
-  const [infoContact, setinfoContact] = useState([]);
+  // useEffect(() => {
+  //   const getData = async () => {
+  //     const { data } = await Axios.get("/api/info-contact");
 
-  useEffect(() => {
-    const getData = async () => {
-      const { data } = await Axios.get("/api/info-contact");
+  //     setinfoContact(data.data[0]);
+  //   };
+  //   getData();
+  // }, []);
 
-      setinfoContact(data.data[0]);
-    };
-    getData();
-  }, []);
-
-  console.log(infoContact);
   if (infoContact) {
     const { _id, titleOficce, phoneNumbers, emailAddress, address, time } =
       infoContact;
@@ -128,7 +125,7 @@ const Contacto = () => {
                     <p>{address}</p>
                   </NavList>
 
-                  {/* {phoneNumbers.length > 0 && (
+                  {phoneNumbers.length > 0 && (
                     <NavList>
                       <p>Teléfono</p>
                       <PhoneNumbersContainer>
@@ -139,7 +136,7 @@ const Contacto = () => {
                         ))}
                       </PhoneNumbersContainer>
                     </NavList>
-                  )} */}
+                  )}
 
                   <NavList>
                     <p>Horaios de oficina</p>
@@ -173,26 +170,22 @@ const Contacto = () => {
       </>
     );
   } else {
-    return (
-      <Main>
-        <h3>Cargando...</h3>
-      </Main>
-    );
+    return null;
   }
 };
 
 export default Contacto;
 
-// export const getStaticProps = async () => {
-//   const getInfo = await Fetch(
-//     `${process.env.NEXT_PUBLIC_URL}/api/info-contact`
-//   );
-//   const { data } = await getInfo.json();
+export const getStaticProps = async () => {
+  const getInfo = await Fetch(
+    `${process.env.NEXT_PUBLIC_URL}/api/info-contact`
+  );
+  const { data } = await getInfo.json();
 
-//   return {
-//     props: {
-//       infoContact: data[0],
-//     },
-//     revalidate: 10,
-//   };
-// };
+  return {
+    props: {
+      infoContact: data[0],
+    },
+    revalidate: 10,
+  };
+};
