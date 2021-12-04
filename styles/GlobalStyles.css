@@ -1,0 +1,93 @@
+:root {
+  --dark-blue: #173d75;
+  --light-blue: #4798f7;
+  --black: #262626;
+  --gray: #666666;
+  --light-gray: #e6e6e6;
+  --light: #f2f2f2;
+  --white: #ffffff;
+
+  --admin-main: #4798f7;
+  --admin-bg: #d3e0ea;
+  --admin-text: #3d56b2;
+  --admin-white: #f6f5f5;
+  --admin-strong: #14279b;
+  --admin-focus: #ff5151;
+  --admin-shadow: #7a8ed6;
+  --admin-gradient: linear-gradient(
+    to right,
+    #57cc99 0%,
+    #80ed99 51%,
+    #57cc99 100%
+  );
+  --admin-ring-right: #1ee3cf;
+  --admin-ring-left: #6b48ff;
+}
+
+[data-theme="dark"] {
+  --admin-main: #f0a500;
+  --admin-bg: #2c3741;
+  --admin-text: #e6e6e6;
+  --admin-white: #041725;
+  --admin-strong: #ffffff;
+  --admin-focus: #16c79a;
+  --admin-shadow: #000000;
+  --admin-gradient: linear-gradient(
+    to right,
+    #606c88 0%,
+    #3f4c6b 51%,
+    #606c88 100%
+  );
+  --admin-ring-right: #00dbde;
+  --admin-ring-left: #fc00ff;
+}
+
+html {
+  font-size: 62.5%;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+a {
+  text-decoration: none;
+  cursor: pointer;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+li,
+ol,
+p {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Roboto", sans-serif;
+  font-size: 1.4rem;
+  font-weight: 400;
+  color: var(--black);
+}
+
+body > :first-child {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 100vw;
+  grid-template-rows: auto 1fr auto;
+  overflow-x: hidden;
+  position: relative;
+}
+
+body::-webkit-scrollbar {
+  display: none;
+}
