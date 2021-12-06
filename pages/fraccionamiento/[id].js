@@ -36,6 +36,9 @@ import {
 
 const Subdivision = ({ divicion }) => {
   const router = useRouter();
+  if (router.isFallback) {
+    return <div>Consultando...</div>;
+  }
   // const [divicion, setDivicion] = useState({});
 
   // const getData = async () => {

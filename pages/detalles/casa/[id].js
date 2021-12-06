@@ -48,6 +48,9 @@ const formatter = new Intl.NumberFormat("en-US", {
 
 const DetailsHouse = ({ property }) => {
   const router = useRouter();
+  if (router.isFallback) {
+    return <div>Consultando...</div>;
+  }
   // const [property, setProperty] = useState({});
   const [related, setRelated] = useState([]);
   const [showMoreText, setShowMoreText] = useState(false);
