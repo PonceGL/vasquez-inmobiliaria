@@ -46,10 +46,11 @@ const Property = ({
   const [valueToChange, setValueToChange] = useState({});
 
   const handleUpdateData = async () => {
-    const { data } = await Axios.post(`/api/houses/${_id}`, {
+    const { data } = await Axios.post(`/api/update-property`, {
       id: _id,
-      action: valueToChange,
+      set: valueToChange,
     });
+
     if (data.status) {
       setchangesHouses(!changesHouses);
       setModalIsOpen(false);
