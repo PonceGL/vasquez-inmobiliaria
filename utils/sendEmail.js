@@ -1,7 +1,5 @@
 import Axios from "axios";
 
-const URL = `/api/send-email`;
-
 const main = async (body, setSuccess) => {
   const { data } = await Axios.post(`/api/send-email`, body);
 
