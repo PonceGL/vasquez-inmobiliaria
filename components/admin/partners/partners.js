@@ -3,6 +3,7 @@ import Image from "next/image";
 import {
   updateUserInfo,
   removeVerification,
+  enableUser,
   disabledUser,
 } from "../../../utils/firebaseActions";
 
@@ -108,16 +109,7 @@ const Partners = ({
             Verificar Usuario
           </ButtonAction>
         )}
-        {disabled ? (
-          <ButtonAction
-            type="button"
-            onClick={() =>
-              handleDisable(uid, changePartners, setChangePartners)
-            }
-          >
-            Habilitar Usuario
-          </ButtonAction>
-        ) : (
+        {!disabled ? (
           <ButtonAction
             type="button"
             onClick={() =>
@@ -125,6 +117,13 @@ const Partners = ({
             }
           >
             Deshabilitar Usuario
+          </ButtonAction>
+        ) : (
+          <ButtonAction
+            type="button"
+            onClick={() => enableUser(uid, changePartners, setChangePartners)}
+          >
+            Habilitar Usuario
           </ButtonAction>
         )}
       </Container>

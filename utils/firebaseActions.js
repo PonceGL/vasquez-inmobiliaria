@@ -30,6 +30,17 @@ export const removeVerification = async (
   }
 };
 
+export const enableUser = async (uid, changePartners, setChangePartners) => {
+  const { data } = await Axios.post("/api/firebase", {
+    id: uid,
+    action: { disabled: false },
+  });
+
+  if (data.status) {
+    setChangePartners(!changePartners);
+  }
+};
+
 export const disabledUser = async (uid, changePartners, setChangePartners) => {
   const { data } = await Axios.post("/api/firebase", {
     id: uid,

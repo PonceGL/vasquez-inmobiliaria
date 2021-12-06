@@ -13,13 +13,10 @@ const updateProperty = async (req, res) => {
       { _id: ObjectId(`${req.body.id}`) },
       { $set: req.body.set }
     )
-      .then((data) => {
-        res.status(200).json({
-          message: `Casas`,
-          status: true,
-          total: data.length,
-          data,
-        });
+      .then(() => {
+        res
+          .status(200)
+          .json({ message: `Fraccionamiento id ${req.body.id}`, status: true });
       })
       .catch((error) => {
         console.log("Error: ", error);

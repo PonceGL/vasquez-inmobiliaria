@@ -14,7 +14,6 @@ const ListPartners = () => {
   useEffect(() => {
     const getUSers = async () => {
       const { data } = await Axios.get("/api/firebase");
-      //   console.log("data: ", data.users);
 
       if (data.users) {
         setUsers([]);

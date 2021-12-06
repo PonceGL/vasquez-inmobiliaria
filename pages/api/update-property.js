@@ -8,18 +8,15 @@ const updateProperty = async (req, res) => {
   const COLLECTION = DATABASE.collection("casas");
 
   if (req.method === "POST") {
-    // console.log(req.body);
+    console.log(req.body);
     COLLECTION.updateOne(
       { _id: ObjectId(`${req.body.id}`) },
       { $set: req.body.set }
     )
-      .then((data) => {
-        res.status(200).json({
-          message: `Casas`,
-          status: true,
-          total: data.length,
-          data,
-        });
+      .then(() => {
+        res
+          .status(200)
+          .json({ message: `Casa id ${req.body.id}`, status: true });
       })
       .catch((error) => {
         console.log("Error: ", error);

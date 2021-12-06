@@ -26,7 +26,7 @@ export const Sold = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: var(--light-blue);
+  background-color: #ff8659;
   position: fixed;
   bottom: 0;
   left: 0;
@@ -195,13 +195,14 @@ export const Price = styled.p`
   span {
     font-size: 2.2rem;
     font-weight: 700;
-    ${(props) =>
-      props.sold &&
-      `
-      color: var(--gray);
-      text-decoration: line-through;
-    `}
   }
+  ${(props) =>
+    props.sold &&
+    `
+    color: var(--gray);
+    text-decoration: line-through;
+    opacity: 0.7;
+  `}
 `;
 
 export const FeaturesContainer = styled(InfoContainer)`

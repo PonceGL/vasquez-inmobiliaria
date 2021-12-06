@@ -62,8 +62,7 @@ const PropertyPreview = ({
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [valueToChange, setValueToChange] = useState({});
 
-  const handleUpdateData = async (house) => {
-    delete house._id;
+  const handleUpdateData = async () => {
     const { data } = await Axios.post(`/api/update-property`, {
       id: _id,
       set: valueToChange,

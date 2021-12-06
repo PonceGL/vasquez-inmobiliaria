@@ -234,8 +234,8 @@ const DetailsHouse = ({ property }) => {
                 </ShowMoreButton>
               </Gradient>
             </DescriptionContainer>
-            <Price>
-              <span sold={sold}>${formatter.format(price)}</span> {currency}|{" "}
+            <Price sold={sold}>
+              <span>${formatter.format(price)}</span> {currency}|{" "}
               {typeOfTransaction}
             </Price>
             <IconsContainer>
