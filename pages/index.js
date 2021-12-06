@@ -365,13 +365,6 @@ export const getStaticProps = async () => {
     body: JSON.stringify({
       match: {
         showOnweb: { $eq: true },
-        subdivision: { $in: ["La Molienda", "Ojo De Agua", "Otro", null] },
-        typeOfProperty: { $in: ["casa", "departamento", "terreno"] },
-        price: { $gte: 0, $lte: 999999999 },
-        terrainSize: { $gte: 0, $lte: 999999999 },
-        rooms: { $gte: 0 },
-        bathrooms: { $gte: 0 },
-        parking: { $gte: 0 },
       },
       query: {
         title: 1,
@@ -423,8 +416,8 @@ export const getStaticProps = async () => {
   return {
     props: {
       subdivisions,
-      whatsAppNumber,
       houses,
+      whatsAppNumber,
     },
     revalidate: 10,
   };
