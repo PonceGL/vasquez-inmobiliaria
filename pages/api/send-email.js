@@ -12,15 +12,15 @@ export default async function sentEmail(req, res) {
 
   const transporter = nodemailer.createTransport({
     host: process.env.NEXT_PUBLIC_MAIL_HOST,
-    port: 1025,
-    secure: false, // true para 465, false para otros puertos
+    port: 465,
+    secure: true, // true para 465, false para otros puertos
     auth: {
       user: process.env.NEXT_PUBLIC_MAIL_SMTP, // generated ethereal user
       pass: process.env.NEXT_PUBLIC_MAIL_PASSWORD, // generated ethereal password
     },
-    tls: {
-      rejectUnauthorized: false,
-    },
+    // tls: {
+    //   rejectUnauthorized: false,
+    // },
   });
 
   const info = await transporter.sendMail({
