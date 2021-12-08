@@ -4,6 +4,7 @@ import Axios from "axios";
 
 //Components
 import UpdateLogoDivision from "../updateLogoDivision";
+import UpdateCoverDivision from "../updateCoverDivision";
 import UpdateImagesDivision from "../updateImagesDivision";
 import UpdatePriceDivision from "../updatePriceDivision";
 import Modal from "../modal/modal";
@@ -77,6 +78,18 @@ const DivicionPreview = ({
     handleUpdateData();
   };
 
+  // <CoverContainer>
+  //   <Image
+  //     loader={loader}
+  //     src={cover.url}
+  //     alt={cover.alt}
+  //     width={cover.width}
+  //     height={cover.height}
+  //     placeholder="blur"
+  //     blurDataURL
+  //   />
+  // </CoverContainer>
+
   return (
     <>
       <Modal
@@ -102,8 +115,8 @@ const DivicionPreview = ({
               {logo.url && (
                 <UpdateLogoDivision
                   _id={_id}
-                  title={name}
-                  logo={logo}
+                  name={name}
+                  cover={cover}
                   changeDivision={changeDivision}
                   setChangeDivision={setChangeDivision}
                 />
@@ -141,17 +154,13 @@ const DivicionPreview = ({
         </Info>
         <PhotosConatiner>
           {cover && (
-            <CoverContainer>
-              <Image
-                loader={loader}
-                src={cover.url}
-                alt={cover.alt}
-                width={cover.width}
-                height={cover.height}
-                placeholder="blur"
-                blurDataURL
-              />
-            </CoverContainer>
+            <UpdateCoverDivision
+              _id={_id}
+              name={name}
+              mainPhotography={mainPhotography}
+              changesHouses={changesHouses}
+              setchangesHouses={setchangesHouses}
+            />
           )}
           <UpdateImagesDivision
             _id={_id}

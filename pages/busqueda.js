@@ -77,7 +77,7 @@ const HomePage = () => {
           description: "Descripción",
           images: [
             {
-              url: "https://res.cloudinary.com/duibtuerj/image/upload/v1636671404/vasquez-inmobiliaria/brand/logotipo_ep0uyp.jpg",
+              url: "https://res.cloudinary.com/civsa/image/upload/v1638987890/propiedades/orrozlyzen26otnl1h3g.jpg?w=1080&q=75",
               width: 200,
               height: 200,
               alt: "Logotipo de Vasquez Inmobiliaria",

@@ -26,7 +26,7 @@ const MyApp = ({ Component, pageProps }) => {
             "Constructora e Inmobiliaria Vasquez, más de 25 años de no solo hacer y vender propiedades, sino de cumplir sueños",
           images: [
             {
-              url: "https://res.cloudinary.com/duibtuerj/image/upload/v1636671404/vasquez-inmobiliaria/brand/logotipo_ep0uyp.jpg",
+              url: "https://res.cloudinary.com/civsa/image/upload/v1638987890/propiedades/orrozlyzen26otnl1h3g.jpg?w=1080&q=75",
               width: 200,
               height: 200,
               alt: "Logotipo de Constructora e Inmobiliaria Vasquez",
@@ -40,7 +40,7 @@ const MyApp = ({ Component, pageProps }) => {
         additionalLinkTags={[
           {
             rel: "icon",
-            href: "https://res.cloudinary.com/duibtuerj/image/upload/v1636671404/vasquez-inmobiliaria/brand/logotipo_ep0uyp.jpg",
+            href: "https://res.cloudinary.com/civsa/image/upload/v1638987890/propiedades/j8yhsraogbhco6yfnywr.png?w=1080&q=75",
           },
         ]}
       />

@@ -7,6 +7,7 @@ import { admins } from "../../../database/admins";
 import { HomeIcon } from "../../IconsSVG/Home";
 import { FraccionamientosIcon } from "../../IconsSVG/Fraccionamientos";
 import { PropiedadesIcon } from "../../IconsSVG/Propiedades";
+import { ContactIcon } from "../../IconsSVG/ContactIcon";
 
 // Styled Components
 import {
@@ -42,7 +43,7 @@ const MainMenu = ({ user }) => {
           <>
             {admins.includes(user.email) && (
               <ListItem>
-                <PropiedadesIcon width="2rem" />
+                <ContactIcon width="2rem" />
                 <Link href="/admin/contact-information">
                   <ListLink>Datos de contacto</ListLink>
                 </Link>

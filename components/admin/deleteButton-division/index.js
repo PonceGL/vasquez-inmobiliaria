@@ -65,7 +65,7 @@ const DeleteButton = ({ _id, name, images }) => {
               name="confirmText"
               onChange={(e) => setConfirmText(e.target.value)}
             />
-            {confirmText.length > 3 && (
+            {confirmText === name && (
               <ButtonDelete type="button" onClick={deleteConfirm}>
                 Eliminar
               </ButtonDelete>

@@ -330,7 +330,9 @@ const Subdivision = () => {
                 )}
               </FieldsetLogoStyled>
 
-              <ButtonSumit type="submit">Registrar la propiedad</ButtonSumit>
+              <ButtonSumit type="submit">
+                Registrar Fraccionameiento
+              </ButtonSumit>
             </FormStyled>
           </MainStyled>
 

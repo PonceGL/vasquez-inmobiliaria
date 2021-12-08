@@ -41,14 +41,16 @@ export const ListItem = styled.li`
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  svg path {
+  svg path,
+  svg rect {
     transition: 0.3s ease-in-out all;
   }
   &:hover {
     ${ListLink} {
       color: var(--admin-main);
     }
-    svg path {
+    svg path,
+    svg rect {
       fill: var(--admin-main);
     }
   }

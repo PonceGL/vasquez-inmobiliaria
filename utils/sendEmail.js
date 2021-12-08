@@ -1,11 +1,6 @@
 import Axios from "axios";
 
 const main = async (body, setSuccess) => {
-  console.log("====================================");
-  console.log(process.env.NEXT_PUBLIC_MAIL_HOST);
-  console.log(process.env.NEXT_PUBLIC_MAIL_SMTP);
-  console.log(process.env.NEXT_PUBLIC_MAIL_PASSWORD);
-  console.log("====================================");
   const { data } = await Axios.post(`/api/send-email`, body);
 
   if (data.status) {
