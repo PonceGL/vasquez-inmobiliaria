@@ -25,7 +25,7 @@ export default async function sentEmail(req, res) {
 
   const info = await transporter.sendMail({
     from: process.env.NEXT_PUBLIC_MAIL_SMTP, // dirección del remitente
-    to: `poncianogl@hotmail.com`, // lista de receivers
+    to: `ginformatica@grupovasquez.com.mx, contab@grupovasquez.com.mx, civsa@grupovasquez.com.mx`, // lista de receivers
     subject: messageSubject, // Asunto
     html: messageHtml, // html body
   });
