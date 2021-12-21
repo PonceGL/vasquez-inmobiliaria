@@ -1,4 +1,5 @@
 import React from "react";
+import Link from "next/link";
 import {
   withAuthUser,
   withAuthUserTokenSSR,
@@ -6,8 +7,11 @@ import {
 } from "next-firebase-auth";
 import FirebaseAuth from "../components/FirebaseAuth";
 
+// Components
+import { Logo } from "../components/IconsSVG/Logo";
+
 // styled Components
-import { Main, LogoContainer, LogoProvisional } from "../styles/auth/style";
+import { Main, LogoContainer, LinkToHome } from "../styles/auth/style";
 
 const styles = {
   content: {
@@ -23,9 +27,12 @@ const styles = {
 const Auth = () => (
   <Main>
     <LogoContainer>
-      <LogoProvisional />
+      <Logo />
     </LogoContainer>
     <FirebaseAuth />
+    <Link href="/">
+      <LinkToHome>Volver al inicio</LinkToHome>
+    </Link>
   </Main>
 );
 

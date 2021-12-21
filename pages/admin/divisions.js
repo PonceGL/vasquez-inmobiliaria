@@ -57,10 +57,6 @@ const AdminDivisions = () => {
     }
   }, [AuthUser]);
 
-  console.log("====================================");
-  console.log(divicions);
-  console.log("====================================");
-
   // Movile
   const [mainIsOpen, setMainIsOpen] = useState(false);
   const [asideIsOpen, setAsideIsOpen] = useState(false);
