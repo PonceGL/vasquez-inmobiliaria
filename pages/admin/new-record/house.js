@@ -69,7 +69,7 @@ const House = () => {
   const [longitudeInput, setLongitudeInput] = useState("-96.848917");
   const [registered, setRegistered] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [activateSubmit, setActivateSubmit] = useState(false);
+  const [activateSubmit, setActivateSubmit] = useState(true);
 
   // Preview Images
   const [urlmainPhotography, setUrlmainPhotography] = useState(null);
@@ -84,9 +84,9 @@ const House = () => {
       typeOfProperty: newHouse.get("typeOfProperty"),
 
       title: newHouse.get("title"),
-      price: parseInt(newHouse.get("price")),
+      price: parseFloat(newHouse.get("price")),
       currency: newHouse.get("currency"),
-      pricem2: parseInt(newHouse.get("pricem2")) || 0,
+      pricem2: parseFloat(newHouse.get("pricem2")) || 0,
 
       typeOfTransaction: newHouse.get("typeOfTransaction"),
       address: newHouse.get("address"),
@@ -96,8 +96,8 @@ const House = () => {
         lng: longitudeInput,
       },
 
-      terrainSize: parseInt(newHouse.get("terrainSize")) || 0,
-      constructionSize: parseInt(newHouse.get("constructionSize")) || 0,
+      terrainSize: parseFloat(newHouse.get("terrainSize")) || 0,
+      constructionSize: parseFloat(newHouse.get("constructionSize")) || 0,
 
       subdivision: newHouse.get("subdivision"),
 
@@ -118,17 +118,17 @@ const House = () => {
     };
 
     if (typeOfPropertyValue === "casa") {
-      house.rooms = parseInt(newHouse.get("rooms")) || 0;
-      house.bathrooms = parseInt(newHouse.get("bathrooms")) || 0;
-      house.parking = parseInt(newHouse.get("parking")) || 0;
+      house.rooms = parseFloat(newHouse.get("rooms")) || 0;
+      house.bathrooms = newHouse.get("bathrooms") || 0;
+      house.parking = parseFloat(newHouse.get("parking")) || 0;
 
-      house.frontMeasurement = parseInt(newHouse.get("frontMeasurement")) || 0;
+      house.frontMeasurement =
+        parseFloat(newHouse.get("frontMeasurement")) || 0;
       house.bottomMeasurement =
-        parseInt(newHouse.get("bottomMeasurement")) || 0;
+        parseFloat(newHouse.get("bottomMeasurement")) || 0;
       house.preservation = newHouse.get("preservation");
-      house.levelsConstructed =
-        parseInt(newHouse.get("levelsConstructed")) || 0;
-      house.age = parseInt(newHouse.get("age")) || 0;
+      house.levelsConstructed = newHouse.get("levelsConstructed") || 0;
+      house.age = parseFloat(newHouse.get("age")) || 0;
     }
 
     setSaving(true);
@@ -335,7 +335,7 @@ const House = () => {
                 <Label htmlFor="terrainSize">
                   Tamaño del terreno
                   <InputNumber
-                    type="number"
+                    type="text"
                     id="terrainSize"
                     name="terrainSize"
                     placeholder="m²"
@@ -344,7 +344,7 @@ const House = () => {
                 <Label htmlFor="constructionSize">
                   Área construida
                   <InputNumber
-                    type="number"
+                    type="text"
                     id="constructionSize"
                     name="constructionSize"
                     placeholder="m²"
@@ -366,7 +366,7 @@ const House = () => {
                     <Label htmlFor="bathrooms">
                       Baños
                       <InputNumber
-                        type="number"
+                        type="text"
                         id="bathrooms"
                         name="bathrooms"
                         placeholder="1"

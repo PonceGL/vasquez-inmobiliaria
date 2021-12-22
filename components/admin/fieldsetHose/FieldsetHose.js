@@ -20,7 +20,7 @@ const FieldsetHose = ({ amenities, setAmenities }) => {
       <Label htmlFor="frontMeasurement">
         Medida de frente
         <InputNumber
-          type="number"
+          type="text"
           id="frontMeasurement"
           name="frontMeasurement"
           placeholder="m²"
@@ -29,7 +29,7 @@ const FieldsetHose = ({ amenities, setAmenities }) => {
       <Label htmlFor="bottomMeasurement">
         Medida de fondo
         <InputNumber
-          type="number"
+          type="text"
           id="bottomMeasurement"
           name="bottomMeasurement"
           placeholder="m²"
@@ -47,7 +47,7 @@ const FieldsetHose = ({ amenities, setAmenities }) => {
       <Label htmlFor="levelsConstructed">
         Niveles construidos
         <InputNumber
-          type="number"
+          type="text"
           id="levelsConstructed"
           name="levelsConstructed"
           placeholder="2"
@@ -55,7 +55,7 @@ const FieldsetHose = ({ amenities, setAmenities }) => {
       </Label>
       <Label htmlFor="age">
         Edad
-        <InputNumber type="number" id="age" name="age" placeholder="1 año" />
+        <InputNumber type="text" id="age" name="age" placeholder="1 año" />
       </Label>
       <Label htmlFor="age">
         Moneda
