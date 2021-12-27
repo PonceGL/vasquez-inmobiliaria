@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Axios from "axios";
+// import Axios from "axios";
 import Fetch from "isomorphic-unfetch";
 import Image from "next/image";
 import Link from "next/link";
@@ -198,7 +198,7 @@ const HomePage = ({ subdivisions, whatsAppNumber, houses }) => {
               {/* <a href="#">
                 <Instagram />
               </a> */}
-              {whatsAppNumber.length > 0 && (
+              {whatsAppNumber.hasOwnProperty("numerPhone") && (
                 <a
                   href={`https://api.whatsapp.com/send?phone=+52${whatsAppNumber.numerPhone}`}
                   target="_blank"
@@ -417,7 +417,7 @@ export const getStaticProps = async () => {
     props: {
       subdivisions,
       houses,
-      whatsAppNumber,
+      whatsAppNumber: whatsAppNumber[0],
     },
     revalidate: 10,
   };

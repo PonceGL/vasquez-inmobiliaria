@@ -4,7 +4,7 @@ import Axios from "axios";
 // Components
 import { Logo } from "../IconsSVG/Logo";
 import { Facebook } from "../IconsSVG/Facebook";
-import { Instagram } from "../IconsSVG/Instagram";
+// import { Instagram } from "../IconsSVG/Instagram";
 import { WhatsApp } from "../IconsSVG/WhatsApp";
 
 // Styled-Components
@@ -33,7 +33,7 @@ const formatPhoneNumber = (numer) => {
 };
 
 const Footer = () => {
-  const [whatsAppNumber, setWhatsAppNumber] = useState(null);
+  const [whatsAppNumber, setWhatsAppNumber] = useState({});
   const [infoContact, setinfoContact] = useState([]);
 
   useEffect(() => {
@@ -121,7 +121,7 @@ const Footer = () => {
           {/* <LinkIcon href="#">
             <Instagram />
           </LinkIcon> */}
-          {whatsAppNumber && (
+          {whatsAppNumber.hasOwnProperty("numerPhone") && (
             <LinkIcon
               href={`https://api.whatsapp.com/send?phone=+52${whatsAppNumber.numerPhone}`}
               target="_blank"
