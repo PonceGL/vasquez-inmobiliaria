@@ -1,7 +1,9 @@
+import { useEffect } from "react";
 import Head from "next/head";
 import initAuth from "../initAuth";
 import { DefaultSeo } from "next-seo";
 import changeColorTheme from "../utils/changeColorTheme";
+import { launchMessenger } from "../utils/messenger";
 
 // Styles
 import "../styles/GlobalStyles.css";
@@ -10,6 +12,10 @@ initAuth();
 
 const MyApp = ({ Component, pageProps }) => {
   changeColorTheme();
+
+  useEffect(() => {
+    launchMessenger();
+  }, []);
 
   return (
     <>

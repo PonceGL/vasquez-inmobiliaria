@@ -13,6 +13,8 @@ class MyDocument extends Document {
         <body>
           <Main />
           <NextScript />
+          <div id="fb-root"></div>
+          <div id="fb-customer-chat" className="fb-customerchat"></div>
           <div id="modal-root"></div>
           {/* Este script es para google maps */}
           <script
@@ -20,10 +22,7 @@ class MyDocument extends Document {
             defer
             src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_API_KEY}`}
           ></script>
-          {/* <script
-            src="//widget.cloudinary.com/global/all.js"
-            type="text/javascript"
-          ></script> */}
+
           <script
             src="https://upload-widget.cloudinary.com/global/all.js"
             type="text/javascript"

@@ -18,12 +18,14 @@ const HomePage = () => {
   const [houses, setHouses] = useState([]);
 
   // /busqueda?subdivision=La-Molienda,Ojo-De-Agua&type=casa&minp=0&maxp=999999999&minsize=0&maxsize=999999999&rooms=0&bathrooms=0&parking=0
-  // "La Molienda", "Ojo De Agua", "Otro", null
+  // "LA MOLIENDA", "OJO DE AGUA", "Otro", null
   // 'casa', 'departamento', 'terreno'
   const getData = async () => {
     const subs = query.subdivision.replace(/-/g, " ").split(",");
+
     const type = query.type.replace(/-/g, " ");
-    const { data } = await Axios.post(`/api/some-houses/some`, {
+
+    const queryConfig = {
       match: {
         showOnweb: { $eq: true },
         subdivision: { $in: subs.concat(null) },
@@ -50,7 +52,9 @@ const HomePage = () => {
         terrainSize: 1,
       },
       limit: 20,
-    });
+    };
+
+    const { data } = await Axios.post(`/api/some-houses/some`, queryConfig);
 
     if (data.status) {
       setHouses(data.data);

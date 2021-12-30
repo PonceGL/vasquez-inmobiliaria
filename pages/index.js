@@ -17,7 +17,7 @@ import { ServicioExcelente } from "../components/IconsSVG/Servicio-ExcelenteIcon
 import { PrecioJusto } from "../components/IconsSVG/Precio-JustoIcon";
 
 import { Facebook } from "../components/IconsSVG/Facebook";
-import { Instagram } from "../components/IconsSVG/Instagram";
+// import { Instagram } from "../components/IconsSVG/Instagram";
 import { WhatsApp } from "../components/IconsSVG/WhatsApp";
 // import { Twitter } from "../components/IconsSVG/Twitter";
 
@@ -64,73 +64,8 @@ const loader = ({ src, width, quality }) => {
 };
 
 const HomePage = ({ subdivisions, whatsAppNumber, houses }) => {
-  // const [subdivisions, setSubdivisions] = useState([]);
-  // const [houses, setHouses] = useState([]);
-  // const [whatsAppNumber, setWhatsAppNumber] = useState([]);
   const [typeOfProperty, setTypeOfProperty] = useState("casa");
   const [selectedSubdivision, setSelectedSubdivision] = useState("");
-
-  // useEffect(() => {
-  //   const getData = async () => {
-  //     const { data } = await Axios.post(`/api/some-houses/some`, {
-  //       match: {
-  //         showOnweb: { $eq: true },
-  //         subdivision: { $in: ["La Molienda", "Ojo De Agua", "Otro", null] },
-  //         typeOfProperty: { $in: ["casa", "departamento", "terreno"] },
-  //         price: { $gte: 0, $lte: 999999999 },
-  //         terrainSize: { $gte: 0, $lte: 999999999 },
-  //         rooms: { $gte: 0 },
-  //         bathrooms: { $gte: 0 },
-  //         parking: { $gte: 0 },
-  //       },
-  //       query: {
-  //         title: 1,
-  //         address: 1,
-  //         description: 1,
-  //         mainPhotography: 1,
-  //         price: 1,
-  //         _id: 1,
-  //         rooms: 1,
-  //         bathrooms: 1,
-  //         parking: 1,
-  //         terrainSize: 1,
-  //       },
-  //       limit: 4,
-  //     });
-
-  //     if (data.status) {
-  //       setHouses(data.data);
-  //     }
-  //   };
-  //   getData();
-  // }, []);
-
-  // useEffect(() => {
-  //   const getData = async () => {
-  //     const { data } = await Axios.post(`/api/subdivisions/some`, {
-  //       match: {},
-  //       query: {
-  //         name: 1,
-  //       },
-  //       limit: 2,
-  //     });
-
-  //     if (data.status) {
-  //       setSubdivisions(data.data);
-  //     }
-  //   };
-  //   getData();
-  // }, []);
-
-  // useEffect(() => {
-  //   const getData = async () => {
-  //     const { data } = await Axios.get("/api/whatsApp-contact/all");
-  //     if (data.data.length > 0) {
-  //       setWhatsAppNumber(data.data[0]);
-  //     }
-  //   };
-  //   getData();
-  // }, []);
 
   return (
     <>
@@ -182,6 +117,7 @@ const HomePage = ({ subdivisions, whatsAppNumber, houses }) => {
         ]}
       />
       <Header title="Constructora e Inmobiliaria Vasquez" />
+
       <Main>
         <Cover>
           <SoccialContainer>

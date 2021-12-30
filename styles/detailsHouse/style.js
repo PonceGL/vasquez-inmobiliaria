@@ -268,11 +268,19 @@ export const WhatsAppButton = styled.a`
   }
 
   @media (min-width: 1000px) {
-    width: fit-content;
+    width: 4rem;
+    height: 4rem;
+    padding: 0;
     border-radius: 2rem;
     position: fixed;
     bottom: 2rem;
     right: 2rem;
+    span {
+      display: none;
+    }
+    svg {
+      margin-right: 0;
+    }
   }
 `;
 

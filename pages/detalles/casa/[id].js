@@ -11,6 +11,7 @@ import { Cama } from "../../../components/IconsSVG/CamaIcon";
 import { Bathroom } from "../../../components/IconsSVG/BathroomIcon";
 import { Garage } from "../../../components/IconsSVG/GarageIcon";
 import { Terreno } from "../../../components/IconsSVG/TerrenoIcon";
+import Financing from "../../../components/Financing";
 import HouseGalery from "../../../components/HouseGalery";
 import HoseMap from "../../../components/HoseMap";
 import HouseFormContact from "../../../components/HouseFormContact";
@@ -51,26 +52,11 @@ const DetailsHouse = ({ property }) => {
   if (router.isFallback) {
     return <div>Consultando...</div>;
   }
-  // const [property, setProperty] = useState({});
   const [related, setRelated] = useState([]);
   const [showMoreText, setShowMoreText] = useState(false);
   const [whatsAppNumber, setWhatsAppNumber] = useState({});
   //Url Actual
   const [navigatorShare, setNavigatorShare] = useState(false);
-
-  // const getData = async () => {
-  //   const { data } = await Axios.get(`/api/one-house/${router.query.id}`);
-
-  //   if (data.status) {
-  //     setProperty(data.data[0]);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   if (router.query.id) {
-  //     getData();
-  //   }
-  // }, [router]);
 
   const share = () => {
     navigator
@@ -129,6 +115,10 @@ const DetailsHouse = ({ property }) => {
     }
   }, [property]);
 
+  console.log("====================================");
+  console.log(property);
+  console.log("====================================");
+
   if (property) {
     const {
       address,
@@ -185,11 +175,14 @@ const DetailsHouse = ({ property }) => {
         />
         <Header title={title} />
         <Main>
-          {sold && (
+          {sold ? (
             <Sold>
               <p>Vendida</p>
             </Sold>
+          ) : (
+            <>{subdivision === "OJO DE AGUA" && <Financing />}</>
           )}
+
           {navigatorShare && (
             <IconShareContainer onClick={share}>
               <ShareIcon />
@@ -324,7 +317,7 @@ const DetailsHouse = ({ property }) => {
               aria-label="Enlace a WhatsApp"
             >
               <WhatsApp />
-              {whatsAppNumber.numerPhone}
+              <span>{whatsAppNumber.numerPhone}</span>
             </WhatsAppButton>
           )}
           {related.length > 0 && (

@@ -97,6 +97,11 @@ const Header = ({ title }) => {
               <LinkItem>Contáctanos</LinkItem>
             </Link>
           </ListItem>
+          <ListItem>
+            <Link href="/vende-tu-propiedad">
+              <LinkItem>Vende tu propiedad</LinkItem>
+            </Link>
+          </ListItem>
           <ListItemLine>
             <LastLine />
           </ListItemLine>

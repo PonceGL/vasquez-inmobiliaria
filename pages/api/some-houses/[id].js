@@ -38,8 +38,8 @@ export default getSomeHouses;
 // db.casas.find(
 //     {
 //       showOnweb: { $eq: true },
-//       subdivision: { $in: ["La Molienda", "Ojo De Agua", "Otro", null] },
-//       typeOfProperty: { $eq: "departamento" },
+//       subdivision: { $in: ['LA MOLIENDA', 'OJO DE AGUA', 'Otro', 'null', null] },
+//       typeOfProperty: { $eq: "terreno" },
 //       price: { $gte: 0, $lte: 999999999 },
 //       terrainSize: { $gte: 0, $lte: 999999999 },
 //       rooms: { $in: [0, ""] },
@@ -60,12 +60,24 @@ export default getSomeHouses;
 //     }
 //   ).limit(20).sort({ registrationDate: -1 })
 
+// Terrenos
+
 // db.casas.find(
 //   {
-//     rooms: { '$in': [ 0, '' ] },
-//      bathrooms: { '$in': [ 0, '' ] },
-//      parking: { '$in': [ 0, '' ] }
+//     showOnweb: { $eq: true },
+//     subdivision: { $in: ['LA MOLIENDA', 'OJO DE AGUA', 'Otro', 'null', null] },
+//     typeOfProperty: { $eq: "terreno" },
+//   },
+//   {
+//     title: 1,
+//     address: 1,
+//     description: 1,
+//     mainPhotography: 1,
+//     price: 1,
+//     _id: 1,
+//     rooms: 1,
+//     bathrooms: 1,
+//     parking: 1,
+//     terrainSize: 1,
 //   }
 // ).limit(20).sort({ registrationDate: -1 })
-
-// db.casas.updateMany({parking: { $in: ["", null] }}, { $set: { parking: 0 } })
