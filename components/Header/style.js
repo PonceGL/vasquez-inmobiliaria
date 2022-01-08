@@ -12,7 +12,7 @@ export const HeaderStyled = styled.header`
   }
   @media (min-width: 750px) {
     display: grid;
-    grid-template-columns: 1fr 5fr;
+    grid-template-columns: 1fr 9fr;
     grid-gap: 1rem;
     justify-items: center;
     align-items: center;
@@ -92,7 +92,7 @@ export const HeaderNav = styled.nav`
   }
   @media (min-width: 750px) {
     width: 100%;
-    padding: 1rem;
+    padding: 1rem 0;
     min-height: fit-content;
     display: flex;
     justify-content: center;
