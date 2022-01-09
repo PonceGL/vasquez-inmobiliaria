@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Axios from "axios";
+import Link from "next/link";
 
 // Components
 import { Logo } from "../IconsSVG/Logo";
@@ -35,6 +36,7 @@ const formatPhoneNumber = (numer) => {
 const Footer = () => {
   const [whatsAppNumber, setWhatsAppNumber] = useState({});
   const [infoContact, setinfoContact] = useState([]);
+  const [subdivisions, setSubdivisions] = useState([]);
 
   useEffect(() => {
     const getData = async () => {
@@ -56,6 +58,23 @@ const Footer = () => {
     handleGetDataWhatsApp();
   }, []);
 
+  useEffect(() => {
+    const getData = async () => {
+      const { data } = await Axios.post(`/api/subdivisions/some`, {
+        match: {},
+        query: {
+          name: 1,
+        },
+        limit: 3,
+      });
+
+      if (data.status) {
+        setSubdivisions(data.data);
+      }
+    };
+    getData();
+  }, []);
+
   return (
     <FooterStyled>
       <LogoConatiner href="/" aria-label="Logotipo de Vasques Inmobiliaria">
@@ -64,7 +83,6 @@ const Footer = () => {
 
       {infoContact.length > 0 && (
         <ContactMenu>
-          <h5>Puede comunicarse</h5>
           <ul>
             {infoContact.map(
               ({
@@ -97,7 +115,7 @@ const Footer = () => {
       <FooterNav>
         <ul>
           <NavList>
-            <a href="/casas">Encuentra tu propiedad</a>
+            <a href="/casas">Propiedades</a>
           </NavList>
           <NavList>
             <a href="/nosotros">Nosotros</a>
@@ -105,6 +123,16 @@ const Footer = () => {
           <NavList>
             <a href="/contacto">Contáctanos</a>
           </NavList>
+          <NavList>
+            <h4>Fraccionamientos</h4>
+          </NavList>
+          {subdivisions.map(({ _id, name }) => (
+            <NavList key={_id}>
+              <Link href={`/fraccionamiento/${_id}`}>
+                <a>{name}</a>
+              </Link>
+            </NavList>
+          ))}
         </ul>
       </FooterNav>
 

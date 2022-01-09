@@ -103,8 +103,12 @@ export const HeaderNav = styled.nav`
       height: auto;
       display: flex;
       flex-direction: row;
+    }
+  }
+
+  @media (min-width: 1200px) {
+    ul {
       justify-content: flex-end;
-      align-items: center;
     }
   }
 `;
@@ -119,9 +123,14 @@ export const ListItem = styled.li`
     width: 12rem;
     object-fit: contain;
   }
+
   @media (min-width: 750px) {
     width: fit-content;
-    margin: 1rem;
+    margin: 0;
+  }
+
+  @media (min-width: 1200px) {
+    margin: 0 1rem;
   }
 `;
 

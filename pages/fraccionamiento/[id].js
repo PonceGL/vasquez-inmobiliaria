@@ -39,21 +39,6 @@ const Subdivision = ({ divicion }) => {
   if (router.isFallback) {
     return <div>Consultando...</div>;
   }
-  // const [divicion, setDivicion] = useState({});
-
-  // const getData = async () => {
-  //   const { data } = await Axios.get(`/api/one-subdivision/${router.query.id}`);
-
-  //   if (data.status) {
-  //     setDivicion(data.data[0]);
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   if (router.query.id) {
-  //     getData();
-  //   }
-  // }, [router]);
 
   if (divicion) {
     const {
@@ -86,10 +71,10 @@ const Subdivision = ({ divicion }) => {
             description: description.slice(0, 156),
             images: [
               {
-                url: logo.url,
+                url: cover.url,
                 width: 200,
                 height: 200,
-                alt: logo.alt,
+                alt: cover.alt,
               },
             ],
             site_name: "Constructora e Inmobiliaria Vasquez",

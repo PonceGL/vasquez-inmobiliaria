@@ -50,9 +50,10 @@ export const ContactMenu = styled.nav`
     font-size: 1.6rem;
   }
   ul {
+    width: 100%;
     margin: 2rem 0;
     display: flex;
-    flex-wrap: wrap;
+    flex-direction: column;
     justify-content: space-between;
     align-items: flex-start;
   }
@@ -64,6 +65,8 @@ export const ContactMenu = styled.nav`
   @media (min-width: 1000px) {
     grid-column: 2 / span 1;
     grid-row: 1 / sapn 1;
+    height: 100%;
+    justify-content: start;
   }
 `;
 
@@ -100,7 +103,7 @@ export const NavList = styled.li`
   }
   @media (min-width: 1000px) {
     width: 45%;
-    margin: 0 1rem;
+    margin: 0.5rem 0;
   }
 `;
 

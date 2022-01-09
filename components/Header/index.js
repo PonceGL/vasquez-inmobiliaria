@@ -77,9 +77,10 @@ const Header = ({ title }) => {
           </ListItemLogo>
           <ListItem>
             <Link href="/casas">
-              <LinkItem>Encuentra tu propiedad</LinkItem>
+              <LinkItem>Propiedades</LinkItem>
             </Link>
           </ListItem>
+
           {subdivisions.map(({ _id, name }) => (
             <ListItem key={_id}>
               <Link href={`/fraccionamiento/${_id}`}>
@@ -87,6 +88,7 @@ const Header = ({ title }) => {
               </Link>
             </ListItem>
           ))}
+
           <ListItem>
             <Link href="/nosotros">
               <LinkItem>Nosotros</LinkItem>
