@@ -78,18 +78,6 @@ const DivicionPreview = ({
     handleUpdateData();
   };
 
-  // <CoverContainer>
-  //   <Image
-  //     loader={loader}
-  //     src={cover.url}
-  //     alt={cover.alt}
-  //     width={cover.width}
-  //     height={cover.height}
-  //     placeholder="blur"
-  //     blurDataURL
-  //   />
-  // </CoverContainer>
-
   return (
     <>
       <Modal
@@ -112,11 +100,11 @@ const DivicionPreview = ({
           <NameAndLogoContainer>
             <h1>{name}</h1>
             <ImageContainer>
-              {logo.url && (
+              {logo && (
                 <UpdateLogoDivision
                   _id={_id}
                   name={name}
-                  cover={cover}
+                  logo={logo}
                   changeDivision={changeDivision}
                   setChangeDivision={setChangeDivision}
                 />
@@ -157,9 +145,11 @@ const DivicionPreview = ({
             <UpdateCoverDivision
               _id={_id}
               name={name}
-              mainPhotography={mainPhotography}
-              changesHouses={changesHouses}
-              setchangesHouses={setchangesHouses}
+              cover={cover}
+              // changesHouses={changesHouses}
+              // setchangesHouses={setchangesHouses}
+              changeDivision={changeDivision}
+              setChangeDivision={setChangeDivision}
             />
           )}
           <UpdateImagesDivision
