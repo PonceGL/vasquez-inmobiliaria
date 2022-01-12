@@ -146,9 +146,6 @@ const Footer = () => {
           >
             <Facebook />
           </LinkIcon>
-          {/* <LinkIcon href="#">
-            <Instagram />
-          </LinkIcon> */}
           {whatsAppNumber.hasOwnProperty("numerPhone") && (
             <LinkIcon
               href={`https://api.whatsapp.com/send?phone=+52${whatsAppNumber.numerPhone}`}
@@ -159,14 +156,10 @@ const Footer = () => {
               <WhatsApp />
             </LinkIcon>
           )}
-          {/* <LinkIcon href="#">
-            <Twitter />
-          </LinkIcon> */}
         </SoccialIconsContainer>
-        <LinkFooter href="#">Ayuda y asistencia</LinkFooter>-
-        <LinkFooter href="#">Términos y condiciones</LinkFooter>
-        <br />
-        <LinkFooter href="#">Política de privacióad</LinkFooter>
+        - <LinkFooter href="/contacto">Ayuda y asistencia</LinkFooter> -{" "}
+        <LinkFooter href="/aviso-de-privacidad">Aviso de privacidad</LinkFooter>{" "}
+        -
       </FooterLinkContainer>
     </FooterStyled>
   );

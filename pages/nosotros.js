@@ -77,15 +77,6 @@ const Nosotros = () => {
         <MainImage>
           <h1>Constructora e Inmobiliaria Vasquez</h1>
           <BackgroundCover />
-          {/* <Image
-            loader={loader}
-            src="https://res.cloudinary.com/duibtuerj/image/upload/v1638477898/vasquez-inmobiliaria/brand/about_rq0hq1.jpg"
-            alt="Agente de bienes raices mostrando una propiedad a clientes felices"
-            layout="fill"
-            objectFit="cover"
-            placeholder="blur"
-            blurDataURL
-          /> */}
         </MainImage>
         <Description>
           <p>
