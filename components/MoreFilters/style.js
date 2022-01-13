@@ -12,7 +12,7 @@ export const Container = styled.div`
   top: 0;
   right: ${(props) => (props.open ? `0` : `-100%`)};
   background: var(--white);
-  z-index: 1000;
+  z-index: 100;
   transition: 0.3s ease-in-out all;
   @media (min-width: 1100px) {
     width: 32rem;

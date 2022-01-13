@@ -117,7 +117,7 @@ export const ListItem = styled.li`
   width: 100%;
   margin: 1rem 0;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   img {
     width: 12rem;
@@ -135,12 +135,18 @@ export const ListItem = styled.li`
 `;
 
 export const ListItemLogo = styled(ListItem)`
+  a {
+    margin: 0 auto;
+  }
   @media (min-width: 750px) {
     display: none;
   }
 `;
 
 export const ListItemLine = styled(ListItem)`
+  p {
+    margin: 0 auto;
+  }
   @media (min-width: 750px) {
     display: none;
   }
@@ -148,8 +154,8 @@ export const ListItemLine = styled(ListItem)`
 
 export const LinkItem = styled.a`
   color: var(--black);
-  font-size: 2rem;
-  font-weight: 700;
+  font-size: 2.5rem;
+  font-weight: 300;
   cursor: pointer;
   transition: 0.3s ease-in-out all;
   &:hover {
@@ -168,5 +174,72 @@ export const LastLine = styled.div`
   border-bottom: 0.1rem solid var(--black);
   @media (min-width: 750px) {
     display: none;
+  }
+`;
+
+export const ListSubdivisionsContainer = styled.div`
+  width: 100%;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  @media (min-width: 750px) {
+    width: initial;
+  }
+`;
+
+export const ListSubdivisions = styled.li`
+  width: 100%;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  transition: 0.3s ease-in-out all;
+
+  @media (min-width: 750px) {
+    width: fit-content;
+    margin: 0;
+    padding: 1rem;
+    background-color: var(--white);
+    position: absolute;
+    top: -700%;
+    opacity: 0;
+    a {
+      margin: 0.5rem 0;
+      white-space: nowrap;
+    }
+
+    ${(props) =>
+      props.show &&
+      `
+        top: 200%;
+        opacity: 1;
+        box-shadow: 0.2rem 0.4rem 0.5rem 0 var(--black);
+    `}
+  }
+
+  @media (min-width: 1200px) {
+    margin: 0 1rem;
+  }
+`;
+
+export const SubdivisionsButton = styled.button`
+  display: none;
+
+  @media (min-width: 750px) {
+    display: block;
+    background: none;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    color: var(--black);
+    font-size: 1.4rem;
+    font-weight: 900;
+
+    &:hover {
+      color: var(--light-blue);
+    }
   }
 `;

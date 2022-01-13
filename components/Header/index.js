@@ -18,12 +18,16 @@ import {
   LinkItem,
   LastLine,
   ListItemLine,
+  ListSubdivisionsContainer,
+  ListSubdivisions,
+  SubdivisionsButton,
 } from "./style";
 
 const Header = ({ title }) => {
   const router = useRouter();
   const [menuIsOpen, setMenuIsOpen] = useState(false);
   const [subdivisions, setSubdivisions] = useState([]);
+  const [showSubdivisions, setShowSubdivisions] = useState(false);
 
   const handleMenuOpen = () => {
     setMenuIsOpen(!menuIsOpen);
@@ -36,7 +40,7 @@ const Header = ({ title }) => {
         query: {
           name: 1,
         },
-        limit: 2,
+        limit: 10,
       });
 
       if (data.status) {
@@ -81,13 +85,26 @@ const Header = ({ title }) => {
             </Link>
           </ListItem>
 
-          {subdivisions.map(({ _id, name }) => (
-            <ListItem key={_id}>
-              <Link href={`/fraccionamiento/${_id}`}>
-                <LinkItem>{name}</LinkItem>
-              </Link>
-            </ListItem>
-          ))}
+          <ListSubdivisionsContainer>
+            {subdivisions.length > 1 && (
+              <SubdivisionsButton
+                type="button"
+                aria-label="Boton para ver la lista de fraccionamientos"
+                onClick={() => setShowSubdivisions(!showSubdivisions)}
+              >
+                Fraccionamientos
+              </SubdivisionsButton>
+            )}
+            <ListSubdivisions show={showSubdivisions}>
+              {subdivisions.map(({ _id, name }) => (
+                <ListItem key={_id}>
+                  <Link href={`/fraccionamiento/${_id}`}>
+                    <LinkItem>{name}</LinkItem>
+                  </Link>
+                </ListItem>
+              ))}
+            </ListSubdivisions>
+          </ListSubdivisionsContainer>
 
           <ListItem>
             <Link href="/nosotros">
