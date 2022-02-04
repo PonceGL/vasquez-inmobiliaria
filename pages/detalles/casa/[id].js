@@ -145,6 +145,7 @@ const DetailsHouse = ({ property }) => {
       typeOfTransaction,
       _id,
     } = property;
+
     return (
       <>
         <NextSeo
@@ -173,7 +174,7 @@ const DetailsHouse = ({ property }) => {
         <Main>
           {sold ? (
             <Sold>
-              <p>Vendida</p>
+              {typeOfTransaction === "Venta" ? <p>Vendida</p> : <p>Rentada</p>}
             </Sold>
           ) : (
             <>{subdivision === "OJO DE AGUA" && <Financing />}</>
@@ -213,15 +214,17 @@ const DetailsHouse = ({ property }) => {
             )}
             <DescriptionContainer show={showMoreText}>
               <Description>{description}</Description>
-              <Gradient show={showMoreText}>
-                <ShowMoreButton
-                  type="button"
-                  onClick={() => setShowMoreText(!showMoreText)}
-                  show={showMoreText}
-                >
-                  {showMoreText ? `Mostrar menos` : `Mostrar más`}
-                </ShowMoreButton>
-              </Gradient>
+              {description.length > 100 && (
+                <Gradient show={showMoreText}>
+                  <ShowMoreButton
+                    type="button"
+                    onClick={() => setShowMoreText(!showMoreText)}
+                    show={showMoreText}
+                  >
+                    {showMoreText ? `Mostrar menos` : `Mostrar más`}
+                  </ShowMoreButton>
+                </Gradient>
+              )}
             </DescriptionContainer>
             <Price sold={sold}>
               <span>${formatter.format(price)}</span> {currency}|{" "}
