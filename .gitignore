@@ -146,3 +146,4 @@ node_modules
 next.config
 out
 .next
+.DS_Store
