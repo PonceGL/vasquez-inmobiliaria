@@ -34,7 +34,12 @@ export const FormStyled = styled.form`
   align-items: center;
   @media (min-width: 750px) {
     width: 90%;
+    max-width: 50vw;
     margin: 0 auto;
+  }
+  @media (min-width: 1200px) {
+    width: 80%;
+    max-width: 30vw;
   }
 `;
 

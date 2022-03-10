@@ -115,10 +115,6 @@ const DetailsHouse = ({ property }) => {
     }
   }, [property]);
 
-  console.log("====================================");
-  console.log(property);
-  console.log("====================================");
-
   if (property) {
     const {
       address,
@@ -149,6 +145,7 @@ const DetailsHouse = ({ property }) => {
       typeOfTransaction,
       _id,
     } = property;
+
     return (
       <>
         <NextSeo

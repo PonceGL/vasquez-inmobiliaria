@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 
 // Components
 import { Logo } from "../IconsSVG/Logo";
+import MenuItemSubdivisions from "../MenuItemSubdivisions";
 
 // Styled-Components
 import {
@@ -13,6 +14,7 @@ import {
   OpenButton,
   Line,
   HeaderNav,
+  NavList,
   ListItemLogo,
   ListItem,
   LinkItem,
@@ -64,7 +66,7 @@ const Header = ({ title }) => {
         <Line isOpen={menuIsOpen} />
       </OpenButton>
       <HeaderNav isOpen={menuIsOpen}>
-        <ul>
+        <NavList>
           <ListItemLogo>
             <Link href="/">
               <a aria-label="Logotipo de Vasques Inmobiliaria">
@@ -77,16 +79,16 @@ const Header = ({ title }) => {
           </ListItemLogo>
           <ListItem>
             <Link href="/casas">
-              <LinkItem>Encuentra tu propiedad</LinkItem>
+              <LinkItem>Propiedades</LinkItem>
             </Link>
           </ListItem>
-          {subdivisions.map(({ _id, name }) => (
-            <ListItem key={_id}>
-              <Link href={`/fraccionamiento/${_id}`}>
-                <LinkItem>{name}</LinkItem>
-              </Link>
-            </ListItem>
-          ))}
+          <ListItem>
+            <Link href="/detalles/preventa">
+              <LinkItem>Preventa</LinkItem>
+            </Link>
+          </ListItem>
+          <MenuItemSubdivisions subdivisions={subdivisions} />
+
           <ListItem>
             <Link href="/nosotros">
               <LinkItem>Nosotros</LinkItem>
@@ -108,7 +110,7 @@ const Header = ({ title }) => {
           <ListItemLine>
             <p>Nos especificamos en crear fraccionamientos para ti</p>
           </ListItemLine>
-        </ul>
+        </NavList>
       </HeaderNav>
     </HeaderStyled>
   );

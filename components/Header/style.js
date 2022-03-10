@@ -80,16 +80,6 @@ export const HeaderNav = styled.nav`
   left: ${(props) => (props.isOpen ? `0` : `-100%`)};
   z-index: 998;
   transition: 0.3s ease-in-out all;
-  ul {
-    grid-column: 1 / span 1;
-    grid-row: 1 / span 1;
-    width: 100%;
-    height: 90%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-evenly;
-    align-items: center;
-  }
   @media (min-width: 750px) {
     width: 100%;
     padding: 1rem;
@@ -98,14 +88,25 @@ export const HeaderNav = styled.nav`
     justify-content: center;
     align-items: center;
     position: initial;
-    ul {
-      width: 100%;
-      height: auto;
-      display: flex;
-      flex-direction: row;
-      justify-content: flex-end;
-      align-items: center;
-    }
+  }
+`;
+
+export const NavList = styled.ul`
+  grid-column: 1 / span 1;
+  grid-row: 1 / span 1;
+  width: 100%;
+  height: 90%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  align-items: center;
+  @media (min-width: 750px) {
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
   }
 `;
 
@@ -113,7 +114,7 @@ export const ListItem = styled.li`
   width: 100%;
   margin: 1rem 0;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   img {
     width: 12rem;
@@ -121,7 +122,7 @@ export const ListItem = styled.li`
   }
   @media (min-width: 750px) {
     width: fit-content;
-    margin: 1rem;
+    margin: 0.5rem;
   }
 `;
 

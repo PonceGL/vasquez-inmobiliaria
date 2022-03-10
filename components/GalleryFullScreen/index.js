@@ -47,12 +47,6 @@ const GalleryFullScreen = ({ images, setOpenGallery, indexImage }) => {
     if (e.which === 27 || e.keyCode === 27) {
       setOpenGallery(false);
     }
-
-    // else if (e.which === 37 || e.keyCode === 37) {
-    //   prev();
-    // } else if (e.which === 39 || e.keyCode === 39) {
-    //   next();
-    // }
   };
 
   useEffect(() => {
