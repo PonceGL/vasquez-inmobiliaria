@@ -12,7 +12,7 @@ export const Container = styled.div`
   top: 0;
   right: ${(props) => (props.open ? `0` : `-100%`)};
   background: var(--white);
-  z-index: 1000;
+  z-index: 100;
   transition: 0.3s ease-in-out all;
   @media (min-width: 1100px) {
     width: 32rem;
@@ -29,6 +29,7 @@ export const Container = styled.div`
 
   @media (min-width: 1500px) {
     width: 40rem;
+    right: 15rem;
   }
 
   @media (min-width: 2000px) {
@@ -47,7 +48,7 @@ export const CloseButton = styled.button`
   border: none;
   outline: none;
   cursor: pointer;
-  z-index: 1001;
+  z-index: 100;
   transition: 0.3s ease-in-out all;
   :after {
     content: "\\279E";

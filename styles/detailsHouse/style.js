@@ -2,6 +2,7 @@ import styled from "styled-components";
 
 export const Main = styled.main`
   width: 100%;
+  /* max-width: 1400px; */
   display: flex;
   flex-direction: column;
   justify-content: flex-start;

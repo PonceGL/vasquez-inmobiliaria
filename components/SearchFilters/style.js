@@ -12,7 +12,6 @@ export const FilterContainer = styled.div`
     grid-template-columns: repeat(3, 1fr);
   }
   @media (min-width: 1100px) {
-    /* grid-column: 1 / span 3; */
     display: none;
   }
 `;
@@ -58,7 +57,6 @@ export const ContainerScroll = styled.div`
   grid-gap: 0.5rem;
   justify-items: center;
   align-items: center;
-  /* box-shadow: -0.4rem 0 0.5rem 0 rgba(0, 0, 0, 0.2) inset; */
   border-right: 0.2rem solid rgba(0, 0, 0, 0.2);
 
   overflow-x: scroll;

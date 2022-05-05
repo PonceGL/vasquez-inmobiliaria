@@ -22,7 +22,7 @@ const MenuItemSubdivisions = ({ subdivisions }) => {
 
   return (
     <ListItemButton>
-      <ListButton type="ListButton" onClick={() => setOpen(!open)}>
+      <ListButton type="button" onClick={() => setOpen(!open)}>
         Fraccionamientos
       </ListButton>
       <SubList open={open}>

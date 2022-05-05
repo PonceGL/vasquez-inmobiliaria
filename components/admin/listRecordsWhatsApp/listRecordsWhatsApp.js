@@ -43,6 +43,7 @@ const ListRecordsWhatsApp = ({ _id, numerPhone, handleGetData }) => {
       <Container>
         <ButtonDelete type="button" onClick={() => setModalIsOpen(true)} />
         <LinkWhatsApp
+          // href={`https://wa.me/52${numerPhone}`}
           href={`https://api.whatsapp.com/send?phone=+52${numerPhone}`}
           target="_blank"
           rel="noopener noreferrer"

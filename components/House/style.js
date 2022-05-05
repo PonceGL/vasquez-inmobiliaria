@@ -20,6 +20,9 @@ export const Container = styled.div`
     border-radius: 2rem;
     overflow: hidden;
   }
+  @media (min-width: 1200px) {
+    min-height: 20rem;
+  }
 `;
 
 export const ImageContainer = styled.a`
