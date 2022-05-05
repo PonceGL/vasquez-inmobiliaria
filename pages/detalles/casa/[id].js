@@ -310,7 +310,7 @@ const DetailsHouse = ({ property }) => {
           <HouseFormContact title={title} />
           {whatsAppNumber.hasOwnProperty("numerPhone") && (
             <WhatsAppButton
-              href={`https://api.whatsapp.com/send?phone=+52${whatsAppNumber.numerPhone}&text=Hola!%20Me%20interesa%20esta%20propiedad%20${title}%20y%20Quisiera%20mas%20informaci%C3%B3n-%20${window.location.href}%20-`}
+              href={`https://wa.me/52${whatsAppNumber.numerPhone}/?text=Hola!%20Me%20interesa%20esta%20propiedad%20${title}%20y%20Quisiera%20mas%20informaci%C3%B3n%20%20-%20${window.location.href}%20-`}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Enlace a WhatsApp"

@@ -148,7 +148,7 @@ const Footer = () => {
           </LinkIcon>
           {whatsAppNumber.hasOwnProperty("numerPhone") && (
             <LinkIcon
-              href={`https://api.whatsapp.com/send?phone=+52${whatsAppNumber.numerPhone}`}
+              href={`https://wa.me/52${whatsAppNumber.numerPhone}`}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Enlace a WhatsApp"
