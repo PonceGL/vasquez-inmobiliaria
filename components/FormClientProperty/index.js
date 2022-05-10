@@ -10,6 +10,7 @@ import {
   InputFile,
   InputLabel,
   FileName,
+  SuccessMessage,
 } from "./style";
 
 const FormClientProperty = ({
@@ -17,6 +18,7 @@ const FormClientProperty = ({
   setImageBase64,
   form,
   handleSubmit,
+  success,
 }) => {
   const preview = useRef(null);
   const [price, setPrice] = useState("");
@@ -60,7 +62,7 @@ const FormClientProperty = ({
     <>
       <Form
         ref={form}
-        onSubmit={handleSubmit}
+        onSubmit={!success ? handleSubmit : false}
         style={{ display: "flex", flexDirection: "column" }}
       >
         <InputText
@@ -98,28 +100,32 @@ const FormClientProperty = ({
           required
         />
 
-        <div>
-          <InputFile
-            type="file"
-            id="file"
-            accept=".jpg, .png, .jpeg"
-            multiple={true}
-            onChange={handleFiles}
-            aria-label="Seleccionar archivos"
-          />
-          <InputLabel htmlFor="file">
-            Seleccionar fotografías
-            <FileName />
-          </InputLabel>
-        </div>
-
-        {/* <input
-          type="file"
-          accept=".jpg, .png, .jpeg"
-          multiple={true}
-          onChange={handleFiles}
-        /> */}
-        <SendButton type="submit">Enviar</SendButton>
+        {!success ? (
+          <>
+            <div>
+              <InputFile
+                type="file"
+                id="file"
+                accept=".jpg, .png, .jpeg"
+                multiple={true}
+                onChange={handleFiles}
+                aria-label="Seleccionar archivos"
+              />
+              <InputLabel htmlFor="file">
+                Seleccionar fotografías
+                <FileName />
+              </InputLabel>
+            </div>
+            <SendButton type="submit">Enviar</SendButton>
+          </>
+        ) : (
+          <>
+            <SuccessMessage>
+              <h4>Su mensaje se envió correctamente.</h4>
+              <p>Nos pondremos en contacto cuanto antes.</p>
+            </SuccessMessage>
+          </>
+        )}
       </Form>
       <ImagesPreview ref={preview} />
     </>

@@ -95,15 +95,17 @@ const Subdivision = ({
     <SubdivisionStyled showImage={showImage}>
       {showImage && (
         <ImageContainer>
-          <Image
-            loader={loader}
-            src={logo.url}
-            alt={`Logotipo de ${name}`}
-            layout="fill"
-            objectFit="cover"
-            placeholder="blur"
-            blurDataURL
-          />
+          {logo && (
+            <Image
+              loader={loader}
+              src={logo.url}
+              alt={`Logotipo de ${name}`}
+              layout="fill"
+              objectFit="cover"
+              placeholder="blur"
+              blurDataURL
+            />
+          )}
         </ImageContainer>
       )}
       <InfoContainer showImage={showImage}>

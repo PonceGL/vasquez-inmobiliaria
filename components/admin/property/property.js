@@ -38,6 +38,7 @@ const Property = ({
   typeOfTransaction,
   showOnweb,
   sold,
+  registrationDate,
 
   changesHouses,
   setchangesHouses,
@@ -107,6 +108,9 @@ const Property = ({
           </p>
           <p>
             Precio: <span>${formatter.format(price)}</span>
+          </p>
+          <p style={{ color: "#f0a500", fontSize: "1rem" }}>
+            Fecha de registro: {registrationDate.slice(0, 10)}
           </p>
           <ButtonsContainer>
             <ButtonActions

@@ -44,6 +44,7 @@ const PropertyPreview = ({
   parking,
   preservation,
   price,
+  registrationDate,
   rooms,
   services,
   showOnweb,
@@ -103,6 +104,9 @@ const PropertyPreview = ({
       <Conatiner>
         <Info>
           <h3>{title}</h3>
+          <h4 style={{ color: "#f0a500" }}>
+            Fecha de registro: {registrationDate.slice(0, 10)}
+          </h4>
           <p>{address}</p>
           <p>Tipo de propiedad: {typeOfProperty}</p>
           <p>Propiedad para: {typeOfTransaction}</p>

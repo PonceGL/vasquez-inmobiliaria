@@ -13,6 +13,7 @@ import { Main } from "../styles/vende-tu-propiedad/style";
 const TuPropiedad = () => {
   const form = useRef(null);
   const [imageBase64, setImageBase64] = useState([]);
+  const [success, setSuccess] = useState(false);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -29,7 +30,7 @@ const TuPropiedad = () => {
       image: imageBase64,
     };
 
-    sendEmailWithImages(message);
+    sendEmailWithImages(message, setSuccess);
   };
 
   return (
@@ -43,6 +44,7 @@ const TuPropiedad = () => {
           setImageBase64={setImageBase64}
           form={form}
           handleSubmit={handleSubmit}
+          success={success}
         />
       </Main>
       <Footer />

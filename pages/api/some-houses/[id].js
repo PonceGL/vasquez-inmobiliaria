@@ -33,7 +33,45 @@ const getSomeHouses = async (req, res) => {
 
 export default getSomeHouses;
 
-// db.casas.updateOne({_id: ObjectId("619952c66ae55ad9b1a13e86")}, {$set: {subdivision: "La Molienda"}})
+// db.casas.updateOne({ _id: ObjectId("61f58a7b1ebbfece1daa0e69") }, {$set: {typeOfProperty: "terreno"}});
+
+// {
+//   _id: ObjectId("61f57596a9530ed646a82076"),
+//   typeOfProperty: 'casa',
+//   title: 'RESIDENCIAL LA MOLIENDA (G-127)',
+//   price: 832464,
+//   currency: null,
+//   pricem2: 5400,
+//   typeOfTransaction: 'Venta',
+//   address: 'LOTE 127 MZNA G',
+//   location: { lat: '19.506619', lng: '-96.846997' },
+//   terrainSize: 154.16,
+//   constructionSize: 0,
+//   subdivision: 'LA MOLIENDA',
+//   description: 'LOTE 127 MZNA G',
+//   mainPhotography: {
+//     url: 'https://res.cloudinary.com/civsa/image/upload/v1643481386/propiedades/kqqzxmm6u7xcnhkkdayi.jpg',
+//     width: 1280,
+//     height: 720,
+//     public_id: 'propiedades/kqqzxmm6u7xcnhkkdayi',
+//     alt: 'LOTE 127 MZNA G'
+//   },
+//   morePictures: [
+//     {
+//       url: 'https://res.cloudinary.com/civsa/image/upload/v1643480683/propiedades/dpobitgtqbqh5jbhrwa9.jpg',
+//       width: 1280,
+//       height: 720,
+//       public_id: 'propiedades/dpobitgtqbqh5jbhrwa9',
+//       alt: 'general'
+//     }
+//   ],
+//   services: [],
+//   sold: false,
+//   showOnweb: true,
+//   registrationDate: '2022-01-29T17:12:53.323Z'
+// }
+
+// db.casas.find({_id: ObjectId("61f57596a9530ed646a82076")})
 
 // db.casas.find(
 //     {

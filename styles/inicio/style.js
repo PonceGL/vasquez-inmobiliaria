@@ -240,6 +240,7 @@ export const SearchButton = styled.a`
   margin: 0 1rem;
   padding: 1rem 2rem;
   color: var(--white);
+  white-space: nowrap;
   border: 0.1rem solid var(--light-blue);
   background: var(--light-blue);
   border-radius: 3rem;

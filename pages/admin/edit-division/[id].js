@@ -60,8 +60,6 @@ const EditDivision = () => {
   const [mainIsOpen, setMainIsOpen] = useState(false);
   const [asideIsOpen, setAsideIsOpen] = useState(false);
 
-  console.log(divicion);
-
   return (
     <>
       <NextSeo noindex={true} />

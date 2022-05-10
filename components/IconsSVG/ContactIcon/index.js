@@ -14,18 +14,18 @@ export const ContactIcon = ({ width = "100%" }) => {
         rx="25"
         fill="#999999"
         stroke="#707070"
-        stroke-width="10"
+        strokeWidth="10"
       />
       <rect x="140" y="10" width="220" height="480" rx="20" fill="#D8D9F2" />
-      <circle cx="180" cy="270" r="17.5" stroke="#688BC0" stroke-width="5" />
-      <circle cx="250" cy="270" r="17.5" stroke="#688BC0" stroke-width="5" />
-      <circle cx="320" cy="270" r="17.5" stroke="#688BC0" stroke-width="5" />
-      <circle cx="180" cy="340" r="17.5" stroke="#688BC0" stroke-width="5" />
-      <circle cx="250" cy="340" r="17.5" stroke="#688BC0" stroke-width="5" />
-      <circle cx="320" cy="340" r="17.5" stroke="#688BC0" stroke-width="5" />
-      <circle cx="180" cy="410" r="17.5" stroke="#688BC0" stroke-width="5" />
-      <circle cx="250" cy="410" r="17.5" stroke="#688BC0" stroke-width="5" />
-      <circle cx="320" cy="410" r="17.5" stroke="#688BC0" stroke-width="5" />
+      <circle cx="180" cy="270" r="17.5" stroke="#688BC0" strokeWidth="5" />
+      <circle cx="250" cy="270" r="17.5" stroke="#688BC0" strokeWidth="5" />
+      <circle cx="320" cy="270" r="17.5" stroke="#688BC0" strokeWidth="5" />
+      <circle cx="180" cy="340" r="17.5" stroke="#688BC0" strokeWidth="5" />
+      <circle cx="250" cy="340" r="17.5" stroke="#688BC0" strokeWidth="5" />
+      <circle cx="320" cy="340" r="17.5" stroke="#688BC0" strokeWidth="5" />
+      <circle cx="180" cy="410" r="17.5" stroke="#688BC0" strokeWidth="5" />
+      <circle cx="250" cy="410" r="17.5" stroke="#688BC0" strokeWidth="5" />
+      <circle cx="320" cy="410" r="17.5" stroke="#688BC0" strokeWidth="5" />
     </svg>
   );
 };

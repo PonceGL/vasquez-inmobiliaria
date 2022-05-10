@@ -270,17 +270,18 @@ export const WhatsAppButton = styled.a`
   }
 
   @media (min-width: 1000px) {
-    width: 4rem;
-    height: 4rem;
+    width: 6.2rem;
+    height: 6.2rem;
     padding: 0;
-    border-radius: 2rem;
+    border-radius: 50%;
     position: fixed;
-    bottom: 2rem;
-    right: 2rem;
+    bottom: 2.5rem;
+    right: 9rem;
     span {
       display: none;
     }
     svg {
+      width: 4rem;
       margin-right: 0;
     }
   }

@@ -59,16 +59,23 @@ const loader = ({ src, width, quality }) => {
 };
 
 const Preventa = () => {
-  const router = useRouter();
-  if (router.isFallback) {
-    return <div>Consultando...</div>;
-  }
-
   const [openFullScreen, setOpenFullScreen] = useState(false);
   const [indexImage, setIndexImage] = useState(0);
   const [showMoreText, setShowMoreText] = useState(true);
   //Url Actual
   const [navigatorShare, setNavigatorShare] = useState(false);
+
+  const router = useRouter();
+
+  useEffect(() => {
+    if ("share" in navigator) {
+      setNavigatorShare(true);
+    }
+  }, []);
+
+  if (router.isFallback) {
+    return <div>Consultando...</div>;
+  }
 
   const share = () => {
     navigator
@@ -80,12 +87,6 @@ const Preventa = () => {
       .then(() => console.log("Compartir fue un éxito."))
       .catch((error) => console.log("El reparto falló", error));
   };
-
-  useEffect(() => {
-    if ("share" in navigator) {
-      setNavigatorShare(true);
-    }
-  }, []);
 
   const handleGetDataWhatsApp = async () => {
     const { data } = await Axios.get("/api/whatsApp-contact/all");
@@ -338,6 +339,7 @@ const Preventa = () => {
               <>
                 {imagesUrl.map(({ url, alt }, index) => (
                   <ImageGallery
+                    key={url}
                     onClick={() => {
                       setIndexImage(index);
                       setOpenFullScreen(!openFullScreen);

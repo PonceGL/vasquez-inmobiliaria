@@ -118,3 +118,26 @@ export const FileName = styled.p`
   color: #555;
   transition: 0.3s ease-in-out all;
 `;
+
+export const SuccessMessage = styled.div`
+  width: 100%;
+  min-height: 20rem;
+  padding: 1rem;
+  margin: 2rem auto;
+
+  color: var(--black);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+
+  h4 {
+    font-size: 2rem;
+    text-align: center;
+  }
+
+  p {
+    text-align: center;
+  }
+`;

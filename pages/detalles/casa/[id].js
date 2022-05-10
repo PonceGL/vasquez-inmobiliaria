@@ -174,7 +174,7 @@ const DetailsHouse = ({ property }) => {
         <Main>
           {sold ? (
             <Sold>
-              <p>Vendida</p>
+              {typeOfTransaction === "Venta" ? <p>Vendida</p> : <p>Rentada</p>}
             </Sold>
           ) : (
             <>{subdivision === "OJO DE AGUA" && <Financing />}</>
@@ -214,15 +214,17 @@ const DetailsHouse = ({ property }) => {
             )}
             <DescriptionContainer show={showMoreText}>
               <Description>{description}</Description>
-              <Gradient show={showMoreText}>
-                <ShowMoreButton
-                  type="button"
-                  onClick={() => setShowMoreText(!showMoreText)}
-                  show={showMoreText}
-                >
-                  {showMoreText ? `Mostrar menos` : `Mostrar más`}
-                </ShowMoreButton>
-              </Gradient>
+              {description.length > 100 && (
+                <Gradient show={showMoreText}>
+                  <ShowMoreButton
+                    type="button"
+                    onClick={() => setShowMoreText(!showMoreText)}
+                    show={showMoreText}
+                  >
+                    {showMoreText ? `Mostrar menos` : `Mostrar más`}
+                  </ShowMoreButton>
+                </Gradient>
+              )}
             </DescriptionContainer>
             <Price sold={sold}>
               <span>${formatter.format(price)}</span> {currency}|{" "}
@@ -308,7 +310,7 @@ const DetailsHouse = ({ property }) => {
           <HouseFormContact title={title} />
           {whatsAppNumber.hasOwnProperty("numerPhone") && (
             <WhatsAppButton
-              href={`https://api.whatsapp.com/send?phone=+52${whatsAppNumber.numerPhone}&text=Hola!%20Me%20interesa%20esta%20propiedad%20${title}%20y%20Quisiera%20mas%20informaci%C3%B3n-%20${window.location.href}%20-`}
+              href={`https://wa.me/52${whatsAppNumber.numerPhone}/?text=Hola!%20Me%20interesa%20esta%20propiedad%20${title}%20y%20Quisiera%20mas%20informaci%C3%B3n%20%20-%20${window.location.href}%20-`}
               target="_blank"
               rel="noopener noreferrer"
               aria-label="Enlace a WhatsApp"

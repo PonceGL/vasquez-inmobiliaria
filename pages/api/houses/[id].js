@@ -49,3 +49,11 @@ export default Houses;
 //     parking: 1,
 //   }
 // ).limit(20).sort({ registrationDate: -1 })
+
+// db.casas.find(
+//   {},
+//   {
+//     title: 1,
+//     registrationDate: 1,
+//   }
+// ).sort({ registrationDate: -1 })
