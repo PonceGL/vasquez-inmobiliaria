@@ -25,12 +25,14 @@ export const InfoContainer = styled.section`
   h1 {
     font-size: 2rem;
     margin-bottom: 1rem;
+    color: var(--black);
   }
   @media (min-width: 750px) {
     width: 90%;
     margin: 0 auto;
   }
   @media (min-width: 1000px) {
+    padding: 4rem;
     grid-column: 1 / span 2;
     background-color: var(--white);
     border-radius: 1rem 1rem 0 0;
@@ -76,12 +78,14 @@ export const RenderContainer = styled.div`
   width: 100%;
   display: flex;
   justify-content: space-around;
-  align-items: flex-start;
   ${(props) =>
     props.reverse && "margin-top: 4rem; flex-direction: row-reverse;"}
+  ${(props) =>
+    props.second ? "align-items: flex-end;" : "align-items: flex-start;"}
   @media (min-width: 750px) {
     width: 100%;
     flex-direction: row-reverse;
+    align-items: flex-start;
     justify-content: flex-start;
     ${(props) => props.reverse && "margin-top: 0; flex-direction: row;"}
   }
@@ -141,19 +145,19 @@ export const ImagesContainer = styled.div`
   width: 100%;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(3, 12rem);
-  grid-gap: 0.7rem;
+  grid-template-rows: repeat(5, 12rem);
+  grid-gap: 0.5rem;
   @media (min-width: 750px) {
     width: fit-content;
     margin: 1rem auto;
     grid-template-columns: repeat(4, 18rem);
-    grid-template-rows: repeat(2, 18rem);
-    grid-gap: 1.5rem;
+    grid-template-rows: repeat(4, 18rem);
+    grid-gap: 1rem;
   }
   @media (min-width: 1000px) {
     width: 100%;
     grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: repeat(2, 22rem);
+    grid-template-rows: repeat(4, 24rem);
     margin: 1rem 0;
   }
 `;

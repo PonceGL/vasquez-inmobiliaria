@@ -49,12 +49,13 @@ export const IconsContainer = styled.section`
 `;
 
 export const IconInfo = styled.div`
-  width: 5rem;
+  margin 0 0.5rem;
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-gap: 0.5rem;
   align-items: center;
   p {
+    display: inline-flex;
     color: var(--black);
   }
   @media (min-width: 1000px) {

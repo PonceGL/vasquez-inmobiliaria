@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import Axios from "axios";
-import Fetch from "isomorphic-unfetch";
 import { NextSeo } from "next-seo";
 import { useRouter } from "next/router";
 import Image from "next/image";
@@ -67,7 +66,7 @@ const Preventa = () => {
 
   const [openFullScreen, setOpenFullScreen] = useState(false);
   const [indexImage, setIndexImage] = useState(0);
-  const [showMoreText, setShowMoreText] = useState(false);
+  const [showMoreText, setShowMoreText] = useState(true);
   //Url Actual
   const [navigatorShare, setNavigatorShare] = useState(false);
 
@@ -117,11 +116,15 @@ const Preventa = () => {
       alt: "Fotografia de preventa",
     },
     {
+      url: "https://res.cloudinary.com/civsa/image/upload/v1652202042/propiedades/l2rs2giuqqk514deqlyf.jpg",
+      alt: "Fotografia de preventa",
+    },
+    {
       url: "https://res.cloudinary.com/duibtuerj/image/upload/v1646853608/vasquez-inmobiliaria/Preventa/by2lm2keatgii3g2eu2a.jpg",
       alt: "Fotografia de preventa",
     },
     {
-      url: "https://res.cloudinary.com/duibtuerj/image/upload/v1646853608/vasquez-inmobiliaria/Preventa/nulacnfqc7q7kmfrlbaz.jpg",
+      url: "https://res.cloudinary.com/civsa/image/upload/v1645984519/propiedades/ctfqom8gduen8pgn5pe5.jpg",
       alt: "Fotografia de preventa",
     },
     {
@@ -129,7 +132,19 @@ const Preventa = () => {
       alt: "Fotografia de preventa",
     },
     {
+      url: "https://res.cloudinary.com/civsa/image/upload/v1645984519/propiedades/t9hdjsbbllaq8ez6q19w.jpg",
+      alt: "Fotografia de preventa",
+    },
+    {
       url: "https://res.cloudinary.com/duibtuerj/image/upload/v1646853608/vasquez-inmobiliaria/Preventa/v4vhzkk2frmfqqlrxmw7.jpg",
+      alt: "Fotografia de preventa",
+    },
+    {
+      url: "https://res.cloudinary.com/civsa/image/upload/v1645984519/propiedades/pypf851bezmxmorywq1j.jpg",
+      alt: "Fotografia de preventa",
+    },
+    {
+      url: "https://res.cloudinary.com/civsa/image/upload/v1652202043/propiedades/mivire5b9oypzktpyleu.jpg",
       alt: "Fotografia de preventa",
     },
   ];
@@ -146,7 +161,7 @@ const Preventa = () => {
           description: "Propiedad en preventa",
           images: [
             {
-              url: "https://res.cloudinary.com/duibtuerj/image/upload/v1646853609/vasquez-inmobiliaria/Preventa/vxnw1jzpaky9l8qzgtxi.jpg",
+              url: imagesUrl[11].url,
               width: 1024,
               height: 687,
               alt: "Proyecto de preventa",
@@ -176,10 +191,8 @@ const Preventa = () => {
         <MainImage>
           <Image
             loader={loader}
-            src="https://res.cloudinary.com/duibtuerj/image/upload/v1646853609/vasquez-inmobiliaria/Preventa/vxnw1jzpaky9l8qzgtxi.jpg"
+            src={imagesUrl[11].url}
             alt="Proyecto de preventa"
-            // width={1024}
-            // height={687}
             layout="fill"
             objectFit="cover"
             placeholder="blur"
@@ -188,18 +201,15 @@ const Preventa = () => {
         </MainImage>
         <InfoContainer>
           <h1>Preventa</h1>
-          <p>2a. calle de Los Pinos 28-C</p>
-          <p>San Felipe Ecatepec, San Cristóbal De Las...</p>
+          {/* <p>2a. calle de Los Pinos 28-C</p>
+          <p>San Felipe Ecatepec, San Cristóbal De Las...</p> */}
           <DescriptionContainer show={showMoreText}>
             <Description>
-              Lorem ipsum dolor sit amet, consectetuer adipiscing elit. Aenean
-              commodo ligula eget dolor. Aenean massa. Cum sociis natoque
-              penatibus et magnis dis parturient montes. Lorem ipsum dolor sit
-              amet, consectetuer adipiscing elit. Aenean commodo ligula eget
-              dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis
-              parturient montes
+              PREVENTA PROTOTIPO LIVENZA VENTA DE CASA NUEVA CON 2 RECAMARAS, 2
+              1/2 BAÑOS, CISTERNA, COCHERA, PATIO TRASERO, SALA, COMEDOR,
+              COCINA.
             </Description>
-            <Gradient show={showMoreText}>
+            {/* <Gradient show={showMoreText}>
               <ShowMoreButton
                 type="button"
                 onClick={() => setShowMoreText(!showMoreText)}
@@ -207,45 +217,49 @@ const Preventa = () => {
               >
                 {showMoreText ? `Mostrar menos` : `Mostrar más`}
               </ShowMoreButton>
-            </Gradient>
+            </Gradient> */}
           </DescriptionContainer>
-          <Price>
+          {/* <Price>
             <span>${formatter.format(3500000)}</span> MXN|{" "}
-          </Price>
+          </Price> */}
           <IconsContainer>
             <IconInfo>
-              <Cama />
+              <Cama width="2rem" />
               <p>2</p>
             </IconInfo>
             <IconInfo>
-              <Bathroom />
-              <p>3</p>
+              <Bathroom width="1.5rem" />
+              <p>
+                2 <span style={{ fontSize: "1rem" }}>1/2</span>
+              </p>
             </IconInfo>
             <IconInfo>
-              <Garage />
+              <Garage width="2rem" />
               <p>1</p>
             </IconInfo>
             <IconInfo>
-              <Terreno />
-              <p>120</p>
+              <Terreno width="2rem" />
+              <p>125</p>
             </IconInfo>
           </IconsContainer>
 
           <FeaturesContainer>
             <h3>Características del inmueble</h3>
             <Features>
-              <p>Tipo: Hacienda</p>
-              <p>Medida de frente: 5.0 m</p>
-              <p>Medida de fondo: 20.0 m</p>
-              <p>Edad: 15</p>
-              <p>Niveles construidos: 3</p>
-              <p>Cocina: integral</p>
-              <p>Conservación: Muy Bueno</p>
+              <p>Tipo: Casa Nueva</p>
+              <p>Niveles construidos: 2</p>
+              <p>84 m2 de construcción</p>
+              <p>Conservación: Nuevo</p>
             </Features>
           </FeaturesContainer>
         </InfoContainer>
         <RenderSection>
-          <RenderContainer>
+          <RenderContainer
+            style={{
+              position: "sticky",
+              top: "0",
+            }}
+          >
             <Render>
               <Image
                 loader={loader}
@@ -262,18 +276,31 @@ const Preventa = () => {
             <DatailsRender>
               <DatailsRenderTitle>Planta Baja</DatailsRenderTitle>
               <DatailsRenderList>
-                <li>Niveles construidos: 3</li>
-                <li>Cocina: integral</li>
-                <li>Conservación: Muy Bueno</li>
-                <li>Tipo: Hacienda</li>
-                <li>Medida de frente: 5.0 m</li>
-                <li>Medida de fondo: 20.0 m</li>
-                <li>Edad: 15</li>
+                <br />
+                <p>Cocina: integral</p>
+                <br />
+                <p>Sala</p>
+                <br />
+                <p>Comedor</p>
+                <br />
+                <p>1/2 Baño</p>
+                <br />
+                <p>Cisterna</p>
+                <br />
+                <p>Patio Trasero</p>
+                <br />
+                <p>Estacionamiento</p>
               </DatailsRenderList>
             </DatailsRender>
           </RenderContainer>
 
-          <RenderContainer reverse={true}>
+          <RenderContainer
+            reverse={true}
+            // style={{
+            //   alignItems: "flex-end",
+            // }}
+            second={true}
+          >
             <Render>
               <Image
                 loader={loader}
@@ -287,16 +314,19 @@ const Preventa = () => {
                 blurDataURL
               />
             </Render>
-            <DatailsRender>
+            <DatailsRender
+            // style={{
+            //   transform: "translateY(10rem)",
+            //   position: "relative",
+            //   zIndex: "-1",
+            // }}
+            >
               <DatailsRenderTitle>Planta Alta</DatailsRenderTitle>
               <DatailsRenderList>
-                <li>Niveles construidos: 3</li>
-                <li>Cocina: integral</li>
-                <li>Conservación: Muy Bueno</li>
-                <li>Tipo: Hacienda</li>
-                <li>Medida de frente: 5.0 m</li>
-                <li>Medida de fondo: 20.0 m</li>
-                <li>Edad: 15</li>
+                <br />
+                <li>2 Habitaciones</li>
+                <br />
+                <li>2 Baños</li>
               </DatailsRenderList>
             </DatailsRender>
           </RenderContainer>
@@ -304,7 +334,31 @@ const Preventa = () => {
         <GalleryContainer>
           <DatailsRenderTitle>Galería</DatailsRenderTitle>
           <ImagesContainer>
-            <ImageGallery
+            {imagesUrl.length > 0 && (
+              <>
+                {imagesUrl.map(({ url, alt }, index) => (
+                  <ImageGallery
+                    onClick={() => {
+                      setIndexImage(index);
+                      setOpenFullScreen(!openFullScreen);
+                    }}
+                  >
+                    <Image
+                      loader={loader}
+                      src={url}
+                      alt={alt}
+                      //   width={883}
+                      //   height={768}
+                      layout="fill"
+                      objectFit="cover"
+                      placeholder="blur"
+                      blurDataURL
+                    />
+                  </ImageGallery>
+                ))}
+              </>
+            )}
+            {/* <ImageGallery
               onClick={() => {
                 setIndexImage(0);
                 setOpenFullScreen(!openFullScreen);
@@ -465,13 +519,12 @@ const Preventa = () => {
                 placeholder="blur"
                 blurDataURL
               />
-            </ImageGallery>
-            <ImageGallery></ImageGallery>
+            </ImageGallery> */}
           </ImagesContainer>
         </GalleryContainer>
         <MapContainer>
           <DatailsRenderTitle>Excelente Ubicación</DatailsRenderTitle>
-          <HoseMap location={{ lat: "19.497098", lng: "-96.874741" }} />
+          <HoseMap location={{ lat: "19.495433", lng: "-96.875245" }} />
         </MapContainer>
         <FinancingContainer>
           <DatailsRenderTitle>Opciones de financiamiento</DatailsRenderTitle>
