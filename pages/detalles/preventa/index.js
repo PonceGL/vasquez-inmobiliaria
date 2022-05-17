@@ -133,10 +133,6 @@ const Preventa = () => {
       alt: "Fotografia de preventa",
     },
     {
-      url: "https://res.cloudinary.com/civsa/image/upload/v1645984519/propiedades/t9hdjsbbllaq8ez6q19w.jpg",
-      alt: "Fotografia de preventa",
-    },
-    {
       url: "https://res.cloudinary.com/duibtuerj/image/upload/v1646853608/vasquez-inmobiliaria/Preventa/v4vhzkk2frmfqqlrxmw7.jpg",
       alt: "Fotografia de preventa",
     },
@@ -531,15 +527,16 @@ const Preventa = () => {
         <FinancingContainer>
           <DatailsRenderTitle>Opciones de financiamiento</DatailsRenderTitle>
           <FinancingOptions>
-            <li>40% DE ENGANCHE A 6 MESES SIN INTERESES</li>
+            {/* <li>40% DE ENGANCHE A 6 MESES SIN INTERESES</li>
             <li>
               40% DE ENGANCHE A 12 MESES CON EL 1.2% DE INTERES SOBRE SALDOS
               INSOLUTOS
-            </li>
+            </li> */}
             <li>
-              TAMBIÉN ACEPTAMOS CRÉDITOS FOVISSTE, INFONAVIT, INSTITUCIONES
-              BANCARIAS, SIMULACIÓN DE CRÉDITO
+              ACEPTAMOS CRÉDITOS FOVISSTE, INFONAVIT, INSTITUCIONES BANCARIAS,
+              SIMULACIÓN DE CRÉDITO
             </li>
+            <li>PREGUNTE CON UN ASESOR NUESTRAS OPCIONES DE FINANCIAMIENTO</li>
           </FinancingOptions>
         </FinancingContainer>
         <HouseFormContact title="Preventa" />

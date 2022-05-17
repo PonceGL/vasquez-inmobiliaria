@@ -145,19 +145,19 @@ export const ImagesContainer = styled.div`
   width: 100%;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(5, 12rem);
+  grid-template-rows: repeat(4, 12rem);
   grid-gap: 0.5rem;
   @media (min-width: 750px) {
     width: fit-content;
     margin: 1rem auto;
     grid-template-columns: repeat(4, 18rem);
-    grid-template-rows: repeat(4, 18rem);
+    grid-template-rows: repeat(3, 18rem);
     grid-gap: 1rem;
   }
   @media (min-width: 1000px) {
     width: 100%;
     grid-template-columns: repeat(4, 1fr);
-    grid-template-rows: repeat(4, 24rem);
+    grid-template-rows: repeat(3, 24rem);
     margin: 1rem 0;
   }
 `;
