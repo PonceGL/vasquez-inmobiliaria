@@ -1,4 +1,31 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
+
+const chacheColor = keyframes`
+  0%,
+	100% {
+    background-color: #ff5151;
+	}
+
+	15% {
+    background-color: #7a8ed6;
+	}
+
+	30% {
+    background-color: #4798f7;
+	}
+
+	45% {
+    background-color: #1ee3cf;
+	}
+
+	60% {
+    background-color: #f0a500;
+	}
+
+	75% {
+    background-color: #ff5151;
+	}
+`;
 
 export const MainImage = styled.section`
   width: 100%;
@@ -113,6 +140,26 @@ export const DatailsRenderTitle = styled.p`
   font-weight: 800;
 `;
 
+export const DatailsRenderTitleOptions = styled.p`
+  width: 100%;
+  padding: 0;
+  font-size: 2.4rem;
+  text-align: center;
+  font-weight: 800;
+  position: relative;
+  &:after {
+    content: "";
+    width: 100%;
+    height: 2.8rem;
+    position: absolute;
+    background-color: #ff5151;
+    opacity: 0.4;
+    inset: 0;
+    z-index: -1;
+    animation: ${chacheColor} 10s linear 0s infinite normal forwards;
+  }
+`;
+
 export const DatailsRenderList = styled.ul`
   width: 100%;
   display: flex;
@@ -201,9 +248,9 @@ export const FinancingContainer = styled.section`
   flex-direction: column;
   justify-content: flex-start;
   align-items: flex-start;
-  p {
+  /* p {
     padding-left: 1rem;
-  }
+  } */
   @media (min-width: 750px) {
     margin: 2rem auto;
     p {

@@ -27,6 +27,7 @@ import {
   DatailsRender,
   DatailsRenderList,
   DatailsRenderTitle,
+  DatailsRenderTitleOptions,
   GalleryContainer,
   ImagesContainer,
   ImageGallery,
@@ -198,27 +199,13 @@ const Preventa = () => {
         </MainImage>
         <InfoContainer>
           <h1>Preventa</h1>
-          {/* <p>2a. calle de Los Pinos 28-C</p>
-          <p>San Felipe Ecatepec, San Cristóbal De Las...</p> */}
           <DescriptionContainer show={showMoreText}>
             <Description>
-              PREVENTA PROTOTIPO LIVENZA VENTA DE CASA NUEVA CON 2 RECAMARAS, 2
-              1/2 BAÑOS, CISTERNA, COCHERA, PATIO TRASERO, SALA, COMEDOR,
-              COCINA.
+              PREVENTA DE CASA NUEVA CON UN DISEÑO MODERNO Y A LA VEZ
+              VANGUARDISTA, ESPACIOS AMPLIOS Y TOTALMENTE FUNCIONALES, A SOLO 8
+              MINUTOS DE PLAZA AMERICAS.
             </Description>
-            {/* <Gradient show={showMoreText}>
-              <ShowMoreButton
-                type="button"
-                onClick={() => setShowMoreText(!showMoreText)}
-                show={showMoreText}
-              >
-                {showMoreText ? `Mostrar menos` : `Mostrar más`}
-              </ShowMoreButton>
-            </Gradient> */}
           </DescriptionContainer>
-          {/* <Price>
-            <span>${formatter.format(3500000)}</span> MXN|{" "}
-          </Price> */}
           <IconsContainer>
             <IconInfo>
               <Cama width="2rem" />
@@ -291,13 +278,7 @@ const Preventa = () => {
             </DatailsRender>
           </RenderContainer>
 
-          <RenderContainer
-            reverse={true}
-            // style={{
-            //   alignItems: "flex-end",
-            // }}
-            second={true}
-          >
+          <RenderContainer reverse={true} second={true}>
             <Render>
               <Image
                 loader={loader}
@@ -311,13 +292,7 @@ const Preventa = () => {
                 blurDataURL
               />
             </Render>
-            <DatailsRender
-            // style={{
-            //   transform: "translateY(10rem)",
-            //   position: "relative",
-            //   zIndex: "-1",
-            // }}
-            >
+            <DatailsRender>
               <DatailsRenderTitle>Planta Alta</DatailsRenderTitle>
               <DatailsRenderList>
                 <br />
@@ -345,8 +320,6 @@ const Preventa = () => {
                       loader={loader}
                       src={url}
                       alt={alt}
-                      //   width={883}
-                      //   height={768}
                       layout="fill"
                       objectFit="cover"
                       placeholder="blur"
@@ -356,168 +329,6 @@ const Preventa = () => {
                 ))}
               </>
             )}
-            {/* <ImageGallery
-              onClick={() => {
-                setIndexImage(0);
-                setOpenFullScreen(!openFullScreen);
-              }}
-            >
-              <Image
-                loader={loader}
-                src="https://res.cloudinary.com/duibtuerj/image/upload/v1646853609/vasquez-inmobiliaria/Preventa/knyjjvhlyrvbsrn0stvc.jpg"
-                alt="Proyecto de preventa"
-                //   width={883}
-                //   height={768}
-                layout="fill"
-                objectFit="cover"
-                placeholder="blur"
-                blurDataURL
-              />
-            </ImageGallery>
-            <ImageGallery
-              onClick={() => {
-                setIndexImage(1);
-                setOpenFullScreen(!openFullScreen);
-              }}
-            >
-              <Image
-                loader={loader}
-                src="https://res.cloudinary.com/duibtuerj/image/upload/v1646853609/vasquez-inmobiliaria/Preventa/vxnw1jzpaky9l8qzgtxi.jpg"
-                alt="Proyecto de preventa"
-                //   width={1024}
-                //   height={687}
-                layout="fill"
-                objectFit="cover"
-                placeholder="blur"
-                blurDataURL
-              />
-            </ImageGallery>
-            <ImageGallery
-              onClick={() => {
-                setIndexImage(2);
-                setOpenFullScreen(!openFullScreen);
-              }}
-            >
-              <Image
-                loader={loader}
-                src="https://res.cloudinary.com/duibtuerj/image/upload/v1646853609/vasquez-inmobiliaria/Preventa/f6j7vft6s8u3ocnoz2gl.jpg"
-                alt="Proyecto de preventa"
-                //   width={862}
-                //   height={768}
-                layout="fill"
-                objectFit="cover"
-                placeholder="blur"
-                blurDataURL
-              />
-            </ImageGallery>
-            <ImageGallery
-              onClick={() => {
-                setIndexImage(3);
-                setOpenFullScreen(!openFullScreen);
-              }}
-            >
-              <Image
-                loader={loader}
-                src="https://res.cloudinary.com/duibtuerj/image/upload/v1646853608/vasquez-inmobiliaria/Preventa/tfg8lirkdzc85o8ipb86.jpg"
-                alt="Proyecto de preventa"
-                //   width={992}
-                //   height={604}
-                layout="fill"
-                objectFit="cover"
-                placeholder="blur"
-                blurDataURL
-              />
-            </ImageGallery>
-            <ImageGallery
-              onClick={() => {
-                setIndexImage(4);
-                setOpenFullScreen(!openFullScreen);
-              }}
-            >
-              <Image
-                loader={loader}
-                src="https://res.cloudinary.com/duibtuerj/image/upload/v1646853609/vasquez-inmobiliaria/Preventa/pih7aa5bxsfjdprsinqe.jpg"
-                alt="Proyecto de preventa"
-                //   width={1024}
-                //   height={576}
-                layout="fill"
-                objectFit="cover"
-                placeholder="blur"
-                blurDataURL
-              />
-            </ImageGallery>
-            <ImageGallery
-              onClick={() => {
-                setIndexImage(5);
-                setOpenFullScreen(!openFullScreen);
-              }}
-            >
-              <Image
-                loader={loader}
-                src="https://res.cloudinary.com/duibtuerj/image/upload/v1646853608/vasquez-inmobiliaria/Preventa/by2lm2keatgii3g2eu2a.jpg"
-                alt="Proyecto de preventa"
-                //   width={1024}
-                //   height={613}
-                layout="fill"
-                objectFit="cover"
-                placeholder="blur"
-                blurDataURL
-              />
-            </ImageGallery>
-            <ImageGallery
-              onClick={() => {
-                setIndexImage(6);
-                setOpenFullScreen(!openFullScreen);
-              }}
-            >
-              <Image
-                loader={loader}
-                src="https://res.cloudinary.com/duibtuerj/image/upload/v1646853608/vasquez-inmobiliaria/Preventa/nulacnfqc7q7kmfrlbaz.jpg"
-                alt="Proyecto de preventa"
-                //   width={1024}
-                //   height={639}
-                layout="fill"
-                objectFit="cover"
-                placeholder="blur"
-                blurDataURL
-              />
-            </ImageGallery>
-            <ImageGallery
-              onClick={() => {
-                setIndexImage(7);
-                setOpenFullScreen(!openFullScreen);
-              }}
-            >
-              <Image
-                loader={loader}
-                src="https://res.cloudinary.com/duibtuerj/image/upload/v1646853608/vasquez-inmobiliaria/Preventa/vd8dsrmn01kevme43gee.jpg"
-                alt="Proyecto de preventa"
-                //   width={1024}
-                //   height={639}
-                layout="fill"
-                objectFit="cover"
-                placeholder="blur"
-                blurDataURL
-              />
-            </ImageGallery>
-            <ImageGallery
-              onClick={() => {
-                setIndexImage(8);
-                setOpenFullScreen(!openFullScreen);
-              }}
-            >
-              <Image
-                loader={loader}
-                src="https://res.cloudinary.com/duibtuerj/image/upload/v1646853608/vasquez-inmobiliaria/Preventa/v4vhzkk2frmfqqlrxmw7.jpg"
-                alt="Proyecto de preventa"
-                //   width={906}
-                //   height={768}
-                layout="fill"
-                objectFit="cover"
-                placeholder="blur"
-                blurDataURL
-              />
-            </ImageGallery> */}
           </ImagesContainer>
         </GalleryContainer>
         <MapContainer>
@@ -525,7 +336,9 @@ const Preventa = () => {
           <HoseMap location={{ lat: "19.495433", lng: "-96.875245" }} />
         </MapContainer>
         <FinancingContainer>
-          <DatailsRenderTitle>Opciones de financiamiento</DatailsRenderTitle>
+          <DatailsRenderTitleOptions>
+            OPCIONES DE FINANCIAMIENTO
+          </DatailsRenderTitleOptions>
           <FinancingOptions>
             {/* <li>40% DE ENGANCHE A 6 MESES SIN INTERESES</li>
             <li>
