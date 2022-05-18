@@ -198,7 +198,7 @@ const Preventa = () => {
           />
         </MainImage>
         <InfoContainer>
-          <h1>Preventa</h1>
+          <h1>PROTOTIPO LIVENZA</h1>
           <DescriptionContainer show={showMoreText}>
             <Description>
               PREVENTA DE CASA NUEVA CON UN DISEÑO MODERNO Y A LA VEZ
