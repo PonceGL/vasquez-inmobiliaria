@@ -9,7 +9,7 @@ const HoseMap = ({ location }) => {
   const selectLocation = () => {
     // Crea el objeto map
     const map = new google.maps.Map(mapConatiner.current, {
-      zoom: 14,
+      zoom: 16, // 14
       center: new google.maps.LatLng(location.lat, location.lng),
       mapTypeId: google.maps.MapTypeId.ROADMAP,
     });
