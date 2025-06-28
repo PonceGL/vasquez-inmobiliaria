@@ -1,0 +1,6 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+siempre que se instalen dependecias, instalar utiliando yarn

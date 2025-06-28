@@ -9,11 +9,12 @@
     "lint": "next lint",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "test": "jest",
+    "test": "jest --collect-coverage --no-cache --runInBand",
     "test:watch": "jest --watch",
-    "prepare": "husky"
+    "typeslint": "tsc --noEmit && yarn lint"
   },
   "dependencies": {
+    "@uidotdev/usehooks": "^2.4.1",
     "next": "15.3.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
@@ -30,8 +31,11 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@typescript-eslint/eslint-plugin": "^8.35.0",
+    "@typescript-eslint/parser": "^8.35.0",
     "eslint": "^9",
     "eslint-config-next": "15.3.4",
+    "eslint-plugin-simple-import-sort": "^10.0.0",
     "husky": "^9.1.7",
     "jest": "^30.0.3",
     "jest-environment-jsdom": "^30.0.2",

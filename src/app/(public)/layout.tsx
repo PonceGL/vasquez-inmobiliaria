@@ -1,7 +1,8 @@
+import "../globals.css";
+
+import { Footer, Navbar } from "@/components";
+
 import type { Metadata } from "next";
-import Navbar from "../components/Navbar";
-import Footer from "../components/Footer";
-import "./globals.css";
 
 export const metadata: Metadata = {
   title: "Vasquez Inmobiliaria",
@@ -15,9 +16,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es">
-      <header>
-        <h1>Next</h1>
-      </header>
       <body>
         <Navbar />
         <main>{children}</main>
