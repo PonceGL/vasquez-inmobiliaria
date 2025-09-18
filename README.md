@@ -21,9 +21,7 @@
 
 2. **Configurar variables de entorno**:
 
-   ```bash
    # Ver sección **Variables de Entorno** más abajo
-   ```
 
 3. **Instalar dependencias**:
 
