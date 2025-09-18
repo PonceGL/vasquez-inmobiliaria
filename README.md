@@ -22,7 +22,6 @@
 2. **Configurar variables de entorno**:
 
    ```bash
-   # Crear archivo .env con las variables necesarias
    # Ver sección **Variables de Entorno** más abajo
    ```
 
@@ -51,12 +50,12 @@
 
 ## 📋 Variables de Entorno Requeridas
 
-Reviza el archivo [Configuración de Variables de Entorno](/docs/env_setup.md)
+Reviza el archivo [Configuración de Variables de Entorno](/docs/git-crypt.md)
 
 ## 📚 Documentación
 
 - **[Documentación Técnica Completa](/docs/README.md)** - Guía detallada del proyecto
-- **[Configuración de Variables de Entorno](/docs/env_setup.md)** - Setup completo del archivo .env
+- **[Configuración de Variables de Entorno](/docs/git-crypt.md)** - Setup completo del archivo .env
 - **[Configuración de Google Analytics](/docs/analitycs.md)** - Setup de GA4
 - **[Configuración de N8N](/docs/n8n_setup.md)** - Automatización y workflows
 
@@ -67,6 +66,7 @@ yarn dev          # Servidor de desarrollo
 yarn build        # Construir para producción
 yarn start        # Servidor de producción
 yarn lint         # Ejecutar linter
+yarn test         # Ejecutar tests
 ```
 
 ## 🏗️ Stack Tecnológico
