@@ -3,8 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "//--- AMBIENTE DEV ---//": "",
+    "dev:services:up": "docker-compose --env-file .env.development up -d",
+    "dev:services:down": "docker-compose --env-file .env.development down",
     "dev": "env-cmd -f .env.development next dev",
     "build:dev": "env-cmd -f .env.development next build",
+    "qa:services:up": "docker-compose --env-file .env.qa up -d",
+    "qa:services:down": "docker-compose --env-file .env.qa down",
     "qa": "env-cmd -f .env.qa next dev",
     "build:qa": "env-cmd -f .env.qa next build",
     "prod": "env-cmd -f .env.production next dev",
