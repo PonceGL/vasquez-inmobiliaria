@@ -56,6 +56,8 @@ Reviza el archivo [Configuración de Variables de Entorno](/docs/git-crypt.md)
 - **[Configuración de Variables de Entorno](/docs/git-crypt.md)** - Setup completo del archivo .env
 - **[Configuración de Google Analytics](/docs/analitycs.md)** - Setup de GA4
 - **[Configuración de N8N](/docs/n8n_setup.md)** - Automatización y workflows
+- **[API de Gestión de Imágenes](/docs/api-images.md)** - Sistema completo de gestión de imágenes con Cloudinary
+- **[Integración con Cloudinary](/docs/cloudinary.md)** - Configuración y estrategia de subida de archivos
 
 ## 🛠️ Scripts Disponibles
 
@@ -74,6 +76,7 @@ yarn test         # Ejecutar tests
 - **Tailwind CSS** - Estilos
 - **MongoDB** - Base de datos principal
 - **PostgreSQL** - Base de datos para N8N
+- **Cloudinary** - Gestión de imágenes y archivos multimedia
 - **Google Analytics 4** - Análisis
 - **N8N** - Automatización
 - **Docker** - Contenedores
@@ -82,6 +85,7 @@ yarn test         # Ejecutar tests
 
 - ✅ Autenticación con JWT
 - ✅ Gestión de propiedades inmobiliarias
+- ✅ **Gestión de Imágenes** - API REST para subir, organizar y gestionar imágenes con Cloudinary
 - ✅ Google Analytics integrado
 - ✅ Panel de administración
 - ✅ APIs RESTful
@@ -104,6 +108,12 @@ yarn test         # Ejecutar tests
 
 - Asegúrate de que Docker esté ejecutándose: `docker-compose up -d`
 - Verifica que los servicios estén activos: `docker-compose ps`
+
+### Error al subir imágenes
+
+- Verifica que las variables de entorno de Cloudinary estén configuradas correctamente
+- Consulta [API de Gestión de Imágenes](/docs/api-images.md) para configuración detallada
+- Revisa [Integración con Cloudinary](/docs/cloudinary.md) para setup del Upload Preset
 
 ### ⚙️ Configuraciones y Estándares del Proyecto
 
