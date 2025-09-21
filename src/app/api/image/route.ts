@@ -20,13 +20,14 @@ export async function GET() {
         {
           message: "Datos invalidos para obtener las imagenes",
           errors: error?.issues,
+          data: null,
         },
         { status: 400 }
       );
     }
 
     return NextResponse.json(
-      { message: (error as Error).message },
+      { success: false, message: (error as Error).message, data: null },
       { status: 500 }
     );
   }

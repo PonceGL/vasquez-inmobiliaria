@@ -57,6 +57,7 @@ Reviza el archivo [Configuración de Variables de Entorno](/docs/git-crypt.md)
 - **[Configuración de Google Analytics](/docs/analitycs.md)** - Setup de GA4
 - **[Configuración de N8N](/docs/n8n_setup.md)** - Automatización y workflows
 - **[API de Gestión de Imágenes](/docs/api-images.md)** - Sistema completo de gestión de imágenes con Cloudinary
+- **[Sistema de Usuarios](/docs/users.md)** - Gestión de usuarios, roles y autenticación
 - **[Integración con Cloudinary](/docs/cloudinary.md)** - Configuración y estrategia de subida de archivos
 
 ## 🛠️ Scripts Disponibles

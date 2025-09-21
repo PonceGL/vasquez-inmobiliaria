@@ -11,7 +11,7 @@ import {
 import { IImage, Image } from "./image.entity";
 
 class ImageService {
-  public async getAll() {
+  public async getAll(): Promise<IImage[]> {
     await dbConnect();
     const images = await Image.find({});
     return images;
@@ -26,7 +26,7 @@ class ImageService {
     return image;
   }
 
-  public async create(formData: FormData) {
+  public async create(formData: FormData): Promise<IImage> {
     const file = formData.get("file") as File;
     if (!file) {
       throw new Error("No se encontró la imagen en el FormData");
@@ -65,10 +65,7 @@ class ImageService {
     return newImage;
   }
 
-  public async update(
-    id: string,
-    imageData: UpdateImageDto
-  ): Promise<IImage | null> {
+  public async update(id: string, imageData: UpdateImageDto): Promise<IImage> {
     updateImageDto.parse(imageData);
 
     await this.getById(id);
