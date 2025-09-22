@@ -2,3 +2,4 @@
 google-services*.json filter=git-crypt diff=git-crypt
 *.key filter=git-crypt diff=git-crypt
 backup/** filter=git-crypt diff=git-crypt
+docs/** filter=git-crypt diff=git-crypt

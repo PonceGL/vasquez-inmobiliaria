@@ -1,10 +1,22 @@
-import { NextResponse } from "next/server";
-import { ZodError } from "zod";
+import { NextRequest, NextResponse } from "next/server";
+
+import { isAuthenticated } from "@/app/lib/auth";
+import { handleHttpError } from "@/app/lib/errorResponse";
 
 import { userService } from "./user.services";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    // const { payload } = await jwtVerify(token, secret);
+    const { payload } = await isAuthenticated(request);
+    // Opcional: podrías verificar si el usuario tiene el rol necesario para crear
+    // if (payload.role !== 'editor') {
+    //   return NextResponse.json({ message: 'Forbidden' }, { status: 403 });
+    // }
+    console.log("====================================");
+    console.log(`User ${payload.sub} is creating an item.`);
+    console.log("====================================");
+
     const users = await userService.getAll();
     return NextResponse.json(
       {
@@ -15,25 +27,20 @@ export async function GET() {
       { status: 200 }
     );
   } catch (error) {
-    if (error instanceof ZodError) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Datos invalidos para obtener los usuarios",
-          data: null,
-        },
-        { status: 200 }
-      );
-    }
-    return NextResponse.json(
-      { success: false, message: (error as Error).message, data: null },
-      { status: 500 }
-    );
+    return handleHttpError(error);
   }
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
+    const { payload } = await isAuthenticated(request);
+    // Opcional: podrías verificar si el usuario tiene el rol necesario para crear
+    // if (payload.role !== 'editor') {
+    //   return NextResponse.json({ message: 'Forbidden' }, { status: 403 });
+    // }
+    console.log("====================================");
+    console.log(`User ${payload.sub} is creating an item.`);
+    console.log("====================================");
     const body = await request.json();
     const newUser = await userService.create(body);
     return NextResponse.json(
@@ -45,26 +52,6 @@ export async function POST(request: Request) {
       { status: 201 }
     );
   } catch (error) {
-    if (error instanceof ZodError) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Datos inválidos para crear el usuario.",
-          errors: error.issues,
-        },
-        { status: 400 }
-      );
-    }
-    if (error instanceof Error && error.message.includes("ya está en uso")) {
-      return NextResponse.json(
-        { success: false, message: error.message },
-        { status: 409 }
-      );
-    }
-
-    return NextResponse.json(
-      { success: false, message: (error as Error).message, data: null },
-      { status: 500 }
-    );
+    return handleHttpError(error);
   }
 }

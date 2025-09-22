@@ -59,6 +59,7 @@ Reviza el archivo [Configuración de Variables de Entorno](/docs/git-crypt.md)
 - **[API de Gestión de Imágenes](/docs/api-images.md)** - Sistema completo de gestión de imágenes con Cloudinary
 - **[Sistema de Usuarios](/docs/users.md)** - Gestión de usuarios, roles y autenticación
 - **[Integración con Cloudinary](/docs/cloudinary.md)** - Configuración y estrategia de subida de archivos
+- **[Autenticación y Manejo de Errores](/docs/authentication.md)** - Sistema de autenticación JWT y manejo centralizado de errores
 
 ## 🛠️ Scripts Disponibles
 

@@ -1,16 +1,13 @@
 import { NextResponse } from "next/server";
-import { ZodError } from "zod";
+
+import { handleHttpError } from "@/app/lib/errorResponse";
 
 import { userService } from "../../user.services";
 
-interface Params {
-  params: { email: string };
-}
-
-export async function POST(request: Request, { params }: Params) {
+export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const user = await userService.getByEmail(params.email, body);
+    const user = await userService.getByEmail(body);
     return NextResponse.json(
       {
         success: true,
@@ -20,19 +17,6 @@ export async function POST(request: Request, { params }: Params) {
       { status: 200 }
     );
   } catch (error) {
-    if (error instanceof ZodError) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Datos invalidos para obtener el usuario",
-          data: null,
-        },
-        { status: 200 }
-      );
-    }
-    return NextResponse.json(
-      { success: false, message: (error as Error).message, data: null },
-      { status: 500 }
-    );
+    return handleHttpError(error);
   }
 }

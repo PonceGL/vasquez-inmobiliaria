@@ -1,5 +1,13 @@
 import z from "zod";
 
+export const findUserByEmailDto = z
+  .object({
+    email: z.email("El email es invalido").min(3, {
+      message: "El email es requerido",
+    }),
+  })
+  .strict();
+
 export const createUserDto = z
   .object({
     name: z.string("El nombre es requerido").min(3),
@@ -17,5 +25,6 @@ export const createUserDto = z
   .strict();
 
 export type CreateUserDto = z.infer<typeof createUserDto>;
+export type FindUserByEmailDto = z.infer<typeof findUserByEmailDto>;
 export const updateUserDto = createUserDto.partial();
 export type UpdateUserDto = z.infer<typeof updateUserDto>;
