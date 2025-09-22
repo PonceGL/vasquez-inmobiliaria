@@ -11,7 +11,7 @@ import {
 } from "@/app/lib/httpErrors";
 import { dbConnect } from "@/app/lib/mongodb";
 
-import { LoginDto, loginSchema } from "../auth/login/dtos/login.dto";
+import { LoginDto, loginSchema } from "../auth/dtos/login.dto";
 import {
   CreateUserDto,
   createUserDto,

@@ -11,7 +11,7 @@ import {
 } from "@/app/lib/httpErrors";
 import { dbConnect } from "@/app/lib/mongodb";
 
-import { userService } from "../../user/user.services";
+import { userService } from "../user/user.services";
 import { LoginDto, loginSchema } from "./dtos/login.dto";
 
 class LoginService {
