@@ -60,6 +60,7 @@ Reviza el archivo [Configuración de Variables de Entorno](/docs/git-crypt.md)
 - **[Sistema de Usuarios](/docs/users.md)** - Gestión de usuarios, roles y autenticación
 - **[Integración con Cloudinary](/docs/cloudinary.md)** - Configuración y estrategia de subida de archivos
 - **[Autenticación y Manejo de Errores](/docs/authentication.md)** - Sistema de autenticación JWT y manejo centralizado de errores
+- **[Criptografía y Seguridad](/docs/encryption.md)** - Funciones de hash y encriptación de datos
 
 ## 🛠️ Scripts Disponibles
 
