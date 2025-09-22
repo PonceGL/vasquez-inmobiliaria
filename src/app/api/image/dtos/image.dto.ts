@@ -1,10 +1,9 @@
 import { z } from "zod";
 
-export const uploadImageDto = z.object({
-  file: z.file("El archivo es necesario"),
-  alt: z.string("El texto alternativo es requerido.").min(5, {
-    message: "El texto alternativo debe tener al menos 5 caracteres.",
-  }),
+export const createImageFromFormDataDto = z.object({
+  file: z.instanceof(File, { message: "El archivo es requerido." }),
+  alt: z.string().min(1, "El texto alternativo es requerido."),
+  folder: z.string().optional(),
 });
 
 export const createImageDto = z
@@ -25,7 +24,9 @@ export const createImageDto = z
   })
   .strict();
 
-export type UploadImageDto = z.infer<typeof uploadImageDto>;
+export type CreateImageFromFormDataDto = z.infer<
+  typeof createImageFromFormDataDto
+>;
 
 export type CreateImageDto = z.infer<typeof createImageDto>;
 

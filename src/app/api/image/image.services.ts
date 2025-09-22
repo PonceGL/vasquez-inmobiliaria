@@ -1,10 +1,21 @@
+import { MongooseError } from "mongoose";
+import { ZodError } from "zod";
+
 import { CLOUDINARY_FOLDER } from "@/app/constants/cloudinary";
+import { IS_DEV } from "@/app/constants/enviroment";
 import { cloudinaryService } from "@/app/lib/cloudinary/cloudinary.service";
+import {
+  BadRequestError,
+  HttpError,
+  InternalServerErrorException,
+  NotFoundException,
+} from "@/app/lib/httpErrors";
 import { dbConnect } from "@/app/lib/mongodb";
 
 import {
   CreateImageDto,
   createImageDto,
+  createImageFromFormDataDto,
   UpdateImageDto,
   updateImageDto,
 } from "./dtos/image.dto";
@@ -12,81 +23,135 @@ import { IImage, Image } from "./image.entity";
 
 class ImageService {
   public async getAll(): Promise<IImage[]> {
-    await dbConnect();
-    const images = await Image.find({});
-    return images;
+    try {
+      await dbConnect();
+      const images = await Image.find({});
+      return images;
+    } catch (error) {
+      throw this.handleServiceError(error, {
+        internal: "Error al obtener las imágenes.",
+      });
+    }
   }
 
   public async getById(id: string): Promise<IImage> {
-    await dbConnect();
-    const image = await Image.findById(id);
-    if (!image) {
-      throw new Error("Imagen no encontrada.");
+    try {
+      await dbConnect();
+      const image = await Image.findById(id);
+      if (!image) {
+        throw new NotFoundException("Imagen no encontrada.");
+      }
+      return image;
+    } catch (error) {
+      throw this.handleServiceError(error, {
+        internal: "La imagen no se encontró.",
+      });
     }
-    return image;
   }
 
   public async create(formData: FormData): Promise<IImage> {
-    const file = formData.get("file") as File;
-    if (!file) {
-      throw new Error("No se encontró la imagen en el FormData");
+    try {
+      const validatedData = createImageFromFormDataDto.parse({
+        file: formData.get("file"),
+        alt: formData.get("alt"),
+        folder: formData.get("folder"),
+      });
+
+      const { file, alt, folder: folderToSave } = validatedData;
+
+      if (!CLOUDINARY_FOLDER) {
+        throw new InternalServerErrorException(
+          IS_DEV
+            ? "CLOUDINARY_FOLDER is not defined in environment variables"
+            : "Internal server error"
+        );
+      }
+      const cloudinaryImage = await cloudinaryService.upload({
+        file,
+        folder: `${CLOUDINARY_FOLDER}/${folderToSave ?? ""}`,
+      });
+
+      if (!cloudinaryImage) {
+        throw new InternalServerErrorException(
+          "error al crear cloudinary Image"
+        );
+      }
+
+      const imageData: CreateImageDto = {
+        alt,
+        asset_id: cloudinaryImage.asset_id,
+        public_id: cloudinaryImage.public_id,
+        folder: cloudinaryImage.folder,
+        url: cloudinaryImage.url,
+        width: cloudinaryImage.width,
+        height: cloudinaryImage.height,
+      };
+
+      createImageDto.parse(imageData);
+
+      await dbConnect();
+      const newImage = await Image.create(imageData);
+      return newImage;
+    } catch (error) {
+      throw this.handleServiceError(error, {
+        internal: "Error al crear la imagen.",
+      });
     }
-    const alt = formData.get("alt") as string;
-    const folderToSave = formData.get("folder") as string;
-
-    if (!CLOUDINARY_FOLDER) {
-      throw new Error("CLOUDINARY_FOLDER no esta disponible");
-    }
-    const cloudinaryImage = await cloudinaryService.upload({
-      file,
-      folder: `${CLOUDINARY_FOLDER}/${folderToSave ?? ""}`,
-    });
-
-    if (!cloudinaryImage) {
-      throw new Error("error al crear cloudinaryImage");
-    }
-
-    const { asset_id, public_id, width, height, folder, url } = cloudinaryImage;
-
-    const imageData: CreateImageDto = {
-      alt: alt ?? file.name,
-      asset_id,
-      public_id,
-      folder,
-      url,
-      width,
-      height,
-    };
-
-    createImageDto.parse(imageData);
-
-    await dbConnect();
-    const newImage = await Image.create(imageData);
-    return newImage;
   }
 
   public async update(id: string, imageData: UpdateImageDto): Promise<IImage> {
-    updateImageDto.parse(imageData);
+    try {
+      const validatedData = updateImageDto.parse(imageData);
 
-    await this.getById(id);
+      await this.getById(id);
 
-    await dbConnect();
-    const updatedImage = await Image.findByIdAndUpdate(id, imageData, {
-      new: true,
-    }).exec();
+      await dbConnect();
+      const updatedImage = await Image.findByIdAndUpdate(id, validatedData, {
+        new: true,
+      }).exec();
 
-    if (!updatedImage) {
-      throw new Error("Imagen no actualizada.");
+      if (!updatedImage) {
+        throw new InternalServerErrorException("Imagen no actualizada.");
+      }
+      return updatedImage;
+    } catch (error) {
+      throw this.handleServiceError(error, {
+        internal: "Error al actualizar la imagen.",
+      });
     }
-    return this.getById(id);
   }
 
   public async delete(id: string): Promise<IImage | null> {
-    const image = await this.getById(id);
-    await cloudinaryService.deleteByAssetId(image.asset_id);
-    await dbConnect();
-    const deletedImage = await Image.findByIdAndDelete(id).exec();
-    return deletedImage;
+    try {
+      const image = await this.getById(id);
+      await cloudinaryService.deleteByAssetId(image.asset_id);
+      await dbConnect();
+      const deletedImage = await Image.findByIdAndDelete(id).exec();
+      return deletedImage;
+    } catch (error) {
+      throw this.handleServiceError(error, {
+        internal: "Error al eliminar la imagen.",
+      });
+    }
+  }
+
+  private handleServiceError(
+    error: unknown,
+    customMessages?: { [key: string]: string }
+  ): Error {
+    if (error instanceof HttpError || error instanceof ZodError) {
+      return error;
+    }
+
+    if (error instanceof MongooseError) {
+      const message = customMessages?.mongoose || "Error en la base de datos.";
+      return new BadRequestError(IS_DEV ? error.message : message);
+    }
+
+    const message = customMessages?.internal || "Error interno.";
+    return new InternalServerErrorException(
+      IS_DEV ? (error as Error).message : message
+    );
   }
 }
 

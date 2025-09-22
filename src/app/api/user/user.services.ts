@@ -28,12 +28,9 @@ class UserService {
       const users = await User.find({});
       return users;
     } catch (error) {
-      if (error instanceof MongooseError) {
-        throw new BadRequestError(
-          IS_DEV ? error.message : "Error al obtener usuarios."
-        );
-      }
-      throw new InternalServerErrorException("Error al obtener usuarios.");
+      throw this.handleServiceError(error, {
+        internal: "Error al obtener usuarios.",
+      });
     }
   }
 
@@ -96,10 +93,11 @@ class UserService {
   }
 
   public async update(id: string, userData: UpdateUserDto) {
-    const validatedData = updateUserDto.parse(userData);
-    await this.getById(id);
-
+    
     try {
+      const validatedData = updateUserDto.parse(userData);
+      await this.getById(id);
+
       await dbConnect();
       const updatedUser = await User.findByIdAndUpdate(id, validatedData, {
         new: true,

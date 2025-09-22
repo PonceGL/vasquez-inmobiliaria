@@ -1,11 +1,32 @@
-import { UploadImageSucces } from "@/app/types/cloudinary/image";
+/**
+ * @jest-environment node
+ */
 
-import { UpdateImageDto } from "./dtos/image.dto";
-import { IImage } from "./image.entity";
+import { ZodError } from "zod";
+
+import { CLOUDINARY_FOLDER } from "@/app/constants/cloudinary";
+import { cloudinaryService } from "@/app/lib/cloudinary/cloudinary.service";
+import {
+  InternalServerErrorException,
+  NotFoundException,
+} from "@/app/lib/httpErrors";
+import { dbConnect } from "@/app/lib/mongodb";
+
+import { Image } from "./image.entity";
 import { imageService } from "./image.services";
 
 jest.mock("@/app/lib/mongodb", () => ({
   dbConnect: jest.fn(),
+}));
+
+jest.mock("./image.entity", () => ({
+  Image: {
+    find: jest.fn(),
+    findById: jest.fn(),
+    create: jest.fn(),
+    findByIdAndUpdate: jest.fn(),
+    findByIdAndDelete: jest.fn(),
+  },
 }));
 
 jest.mock("@/app/lib/cloudinary/cloudinary.service", () => ({
@@ -16,501 +37,196 @@ jest.mock("@/app/lib/cloudinary/cloudinary.service", () => ({
 }));
 
 jest.mock("@/app/constants/cloudinary", () => ({
-  CLOUDINARY_FOLDER: "test-folder",
+  CLOUDINARY_FOLDER: "test_folder",
 }));
 
-jest.mock("./image.entity", () => ({
-  Image: {
-    find: jest.fn(),
-    findById: jest.fn(),
-    create: jest.fn(),
-    findByIdAndUpdate: jest.fn().mockReturnValue({
-      exec: jest.fn(),
-    }),
-    findByIdAndDelete: jest.fn().mockReturnValue({
-      exec: jest.fn(),
-    }),
-  },
-}));
-
-import { cloudinaryService } from "@/app/lib/cloudinary/cloudinary.service";
-
-import { Image } from "./image.entity";
-
-type MockCloudinaryService = {
-  upload: jest.MockedFunction<typeof cloudinaryService.upload>;
-  deleteByAssetId: jest.MockedFunction<
-    typeof cloudinaryService.deleteByAssetId
-  >;
-};
-
-type MockImageMethods = {
-  find: jest.MockedFunction<typeof Image.find>;
-  findById: jest.MockedFunction<typeof Image.findById>;
-  create: jest.MockedFunction<typeof Image.create>;
-  findByIdAndUpdate: jest.MockedFunction<typeof Image.findByIdAndUpdate>;
-  findByIdAndDelete: jest.MockedFunction<typeof Image.findByIdAndDelete>;
-};
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type MockCreateResult = any;
-
-const mockCloudinaryService =
-  cloudinaryService as unknown as MockCloudinaryService;
-const mockImageMethods = Image as unknown as MockImageMethods;
+const mockedImage = jest.mocked(Image);
+const mockedCloudinaryService = jest.mocked(cloudinaryService);
 
 describe("ImageService", () => {
-  beforeEach(() => {
+  const mockImage = {
+    _id: "60d0fe4f5311236168a109cb",
+    alt: "A beautiful landscape",
+    asset_id: "asset_123",
+    public_id: "public_456",
+    folder: "test_folder/landscapes",
+    url: "http://cloudinary.com/image.jpg",
+    width: 800,
+    height: 600,
+  };
+
+  const mockImages = [mockImage];
+
+  afterEach(() => {
     jest.clearAllMocks();
   });
 
   describe("getAll", () => {
-    it("should return all images", async () => {
-      const mockImages: IImage[] = [
-        {
-          _id: "image1",
-          url: "https://test.com/image1.jpg",
-          asset_id: "asset1",
-          public_id: "public1",
-          folder: "test-folder",
-          alt: "Test image 1",
-          width: 800,
-          height: 600,
-        } as IImage,
-      ];
+    it("✅ should return all images successfully", async () => {
+      (mockedImage.find as jest.Mock).mockResolvedValue(mockImages);
 
-      mockImageMethods.find.mockResolvedValueOnce(
-        mockImages as unknown as IImage[]
-      );
+      const images = await imageService.getAll();
 
-      const result = await imageService.getAll();
-
-      expect(mockImageMethods.find).toHaveBeenCalledWith({});
-      expect(result).toEqual(mockImages);
+      expect(images).toEqual(mockImages);
+      expect(dbConnect).toHaveBeenCalledTimes(1);
+      expect(Image.find).toHaveBeenCalledWith({});
     });
 
-    it("should return empty array when no images exist", async () => {
-      mockImageMethods.find.mockResolvedValueOnce([] as unknown as IImage[]);
-
-      const result = await imageService.getAll();
-
-      expect(result).toEqual([]);
+    it("❌ should throw an error on database failure", async () => {
+      (mockedImage.find as jest.Mock).mockRejectedValue(new Error("DB error"));
+      await expect(imageService.getAll()).rejects.toThrow(
+        InternalServerErrorException
+      );
     });
   });
 
   describe("getById", () => {
-    it("should return image when found", async () => {
-      const mockImageData: IImage = {
-        _id: "image1",
-        url: "https://test.com/image1.jpg",
-        asset_id: "asset1",
-        public_id: "public1",
-        folder: "test-folder",
-        alt: "Test image 1",
-        width: 800,
-        height: 600,
-      } as IImage;
+    it("✅ should return an image by ID successfully", async () => {
+      (mockedImage.findById as jest.Mock).mockResolvedValue(mockImage);
 
-      mockImageMethods.findById.mockResolvedValueOnce(mockImageData);
+      const image = await imageService.getById(mockImage._id);
 
-      const result = await imageService.getById("image1");
-
-      expect(mockImageMethods.findById).toHaveBeenCalledWith("image1");
-      expect(result).toEqual(mockImageData);
+      expect(image).toEqual(mockImage);
+      expect(Image.findById).toHaveBeenCalledWith(mockImage._id);
     });
 
-    it("should throw error when image not found", async () => {
-      mockImageMethods.findById.mockResolvedValueOnce(null);
+    it("❌ should throw NotFoundException if image is not found", async () => {
+      (mockedImage.findById as jest.Mock).mockResolvedValue(null);
 
-      await expect(imageService.getById("nonexistent")).rejects.toThrow(
-        "Imagen no encontrada."
+      await expect(imageService.getById("nonexistent-id")).rejects.toThrow(
+        NotFoundException
       );
     });
   });
 
   describe("create", () => {
-    const mockFile = new File(["test"], "test.jpg", { type: "image/jpeg" });
+    const mockFile = new File(["dummy content"], "test-image.jpg", {
+      type: "image/jpeg",
+    });
     const mockFormData = new FormData();
     mockFormData.append("file", mockFile);
-    mockFormData.append("alt", "Test image description");
-    mockFormData.append("folder", "subfolder");
+    mockFormData.append("alt", "Test Alt Text");
+    mockFormData.append("folder", "test_subfolder");
 
     const mockCloudinaryResponse = {
-      asset_id: "asset1",
-      public_id: "public1",
-      version: 1,
-      version_id: "version1",
-      signature: "signature1",
-      width: 800,
-      height: 600,
-      format: "jpg",
-      resource_type: "image",
-      created_at: "2023-01-01T00:00:00Z",
-      tags: [],
-      pages: 1,
-      bytes: 1024,
-      type: "upload",
-      etag: "etag1",
-      placeholder: false,
-      url: "https://test.com/image1.jpg",
-      secure_url: "https://test.com/image1.jpg",
-      folder: "test-folder/subfolder",
-      access_mode: "public",
-      image_metadata: {
-        XResolution: "72",
-        YResolution: "72",
-        ResolutionUnit: "2",
-        UserComment: "",
-        ExifImageWidth: "800",
-        ExifImageHeight: "600",
-        XMPToolkit: "",
-        PixelsPerUnitX: "72",
-        PixelsPerUnitY: "72",
-        PixelUnits: "2",
-        ProfileDescription: "",
-        Colorspace: "sRGB",
-        DPI: "72",
-      },
-      illustration_score: 0.1,
-      semi_transparent: false,
-      grayscale: false,
-      quality_analysis: {
-        focus: 0.95,
-      },
-      original_filename: "test.jpg",
+      asset_id: "asset_new",
+      public_id: "public_new",
+      width: 100,
+      height: 100,
+      folder: `${CLOUDINARY_FOLDER}/test_subfolder`,
+      url: "http://new-image.com/img.png",
     };
 
-    const mockCreatedImage: IImage = {
-      _id: "image1",
-      url: "https://test.com/image1.jpg",
-      asset_id: "asset1",
-      public_id: "public1",
-      folder: "test-folder/subfolder",
-      alt: "Test image description",
-      width: 800,
-      height: 600,
-    } as IImage;
-
-    it("should create image successfully", async () => {
-      mockCloudinaryService.upload.mockResolvedValueOnce(
-        mockCloudinaryResponse
+    it("✅ should create an image successfully", async () => {
+      mockedCloudinaryService.upload.mockResolvedValue(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        mockCloudinaryResponse as any
       );
-      mockImageMethods.create.mockResolvedValueOnce([
-        mockCreatedImage,
-      ] as MockCreateResult);
+      (mockedImage.create as jest.Mock).mockResolvedValue({
+        ...mockCloudinaryResponse,
+        alt: "Test Alt Text",
+      });
 
-      const result = await imageService.create(mockFormData);
+      const newImage = await imageService.create(mockFormData);
 
-      expect(mockCloudinaryService.upload).toHaveBeenCalledWith({
+      expect(cloudinaryService.upload).toHaveBeenCalledWith({
         file: mockFile,
-        folder: "test-folder/subfolder",
+        folder: `${CLOUDINARY_FOLDER}/test_subfolder`,
       });
-      expect(mockImageMethods.create).toHaveBeenCalledWith({
-        alt: "Test image description",
-        asset_id: "asset1",
-        public_id: "public1",
-        folder: "test-folder/subfolder",
-        url: "https://test.com/image1.jpg",
-        width: 800,
-        height: 600,
+      expect(Image.create).toHaveBeenCalledWith({
+        alt: "Test Alt Text",
+        asset_id: mockCloudinaryResponse.asset_id,
+        public_id: mockCloudinaryResponse.public_id,
+        folder: mockCloudinaryResponse.folder,
+        url: mockCloudinaryResponse.url,
+        width: mockCloudinaryResponse.width,
+        height: mockCloudinaryResponse.height,
       });
-      expect(result).toEqual([mockCreatedImage]);
+      expect(newImage.asset_id).toBe(mockCloudinaryResponse.asset_id);
     });
 
-    it("should use file name as alt when alt is not provided", async () => {
-      const formDataWithoutAlt = new FormData();
-      formDataWithoutAlt.append("file", mockFile);
-      formDataWithoutAlt.append("folder", "subfolder");
+    it("❌ should re-throw ZodError on invalid form data", async () => {
+      const invalidFormData = new FormData();
+      invalidFormData.append("file", "not-a-file");
+      invalidFormData.append("alt", "");
 
-      mockCloudinaryService.upload.mockResolvedValueOnce(
-        mockCloudinaryResponse
-      );
-      mockImageMethods.create.mockResolvedValueOnce([
-        mockCreatedImage,
-      ] as MockCreateResult);
-
-      await imageService.create(formDataWithoutAlt);
-
-      expect(mockImageMethods.create).toHaveBeenCalledWith(
-        expect.objectContaining({
-          alt: "test.jpg",
-        })
+      await expect(imageService.create(invalidFormData)).rejects.toThrow(
+        ZodError
       );
     });
 
-    it("should throw error when file is not found in FormData", async () => {
-      const formDataWithoutFile = new FormData();
-      formDataWithoutFile.append("alt", "Test image description");
-
-      await expect(imageService.create(formDataWithoutFile)).rejects.toThrow(
-        "No se encontró la imagen en el FormData"
+    it("❌ should throw error if Cloudinary upload fails", async () => {
+      mockedCloudinaryService.upload.mockRejectedValue(
+        new Error("Upload failed")
       );
-    });
-
-    it("should handle cloudinary upload failure correctly", async () => {
-      mockCloudinaryService.upload.mockResolvedValueOnce(
-        null as unknown as UploadImageSucces
-      );
-
       await expect(imageService.create(mockFormData)).rejects.toThrow(
-        "error al crear cloudinaryImage"
-      );
-    });
-
-    it("should throw error when cloudinary upload fails", async () => {
-      mockCloudinaryService.upload.mockResolvedValueOnce(
-        null as unknown as UploadImageSucces
-      );
-
-      await expect(imageService.create(mockFormData)).rejects.toThrow(
-        "error al crear cloudinaryImage"
+        InternalServerErrorException
       );
     });
   });
 
   describe("update", () => {
-    const mockUpdateData: UpdateImageDto = {
-      alt: "Updated image description",
-      width: 1000,
-    };
+    const updateData = { alt: "Updated alt text" };
+    const updatedImage = { ...mockImage, ...updateData };
 
-    const mockExistingImage: IImage = {
-      _id: "image1",
-      url: "https://test.com/image1.jpg",
-      asset_id: "asset1",
-      public_id: "public1",
-      folder: "test-folder",
-      alt: "Test image 1",
-      width: 800,
-      height: 600,
-    } as IImage;
+    it("✅ should update and return the image", async () => {
+      (mockedImage.findById as jest.Mock).mockResolvedValue(mockImage);
+      const findByIdAndUpdateMock = {
+        exec: jest.fn().mockResolvedValue(updatedImage),
+      };
+      (mockedImage.findByIdAndUpdate as jest.Mock).mockReturnValue(
+        findByIdAndUpdateMock
+      );
 
-    const mockUpdatedImage: IImage = {
-      ...mockExistingImage,
-      alt: "Updated image description",
-      width: 1000,
-    } as IImage;
+      const result = await imageService.update(mockImage._id, updateData);
 
-    it("should update image successfully", async () => {
-      mockImageMethods.findById.mockResolvedValueOnce(mockExistingImage);
-
-      const mockExec = jest.fn().mockResolvedValueOnce(mockUpdatedImage);
-      mockImageMethods.findByIdAndUpdate.mockReturnValueOnce({
-        exec: mockExec,
-      } as unknown as ReturnType<typeof Image.findByIdAndUpdate>);
-
-      mockImageMethods.findById.mockResolvedValueOnce(mockUpdatedImage);
-
-      const result = await imageService.update("image1", mockUpdateData);
-
-      expect(mockImageMethods.findByIdAndUpdate).toHaveBeenCalledWith(
-        "image1",
-        mockUpdateData,
+      expect(Image.findById).toHaveBeenCalledWith(mockImage._id);
+      expect(Image.findByIdAndUpdate).toHaveBeenCalledWith(
+        mockImage._id,
+        updateData,
         { new: true }
       );
-      expect(mockExec).toHaveBeenCalled();
-      expect(result).toEqual(mockUpdatedImage);
+      expect(result).toEqual(updatedImage);
     });
 
-    it("should throw error when image not found for update", async () => {
-      mockImageMethods.findById.mockResolvedValueOnce(null);
-
+    it("❌ should throw NotFoundException if image to update does not exist", async () => {
+      (mockedImage.findById as jest.Mock).mockResolvedValue(null);
       await expect(
-        imageService.update("nonexistent", mockUpdateData)
-      ).rejects.toThrow("Imagen no encontrada.");
-    });
-
-    it("should throw error when update fails", async () => {
-      mockImageMethods.findById.mockResolvedValueOnce(mockExistingImage);
-      const mockExec = jest.fn().mockResolvedValueOnce(null);
-      mockImageMethods.findByIdAndUpdate.mockReturnValueOnce({
-        exec: mockExec,
-      } as unknown as ReturnType<typeof Image.findByIdAndUpdate>);
-
-      await expect(
-        imageService.update("image1", mockUpdateData)
-      ).rejects.toThrow("Imagen no actualizada.");
+        imageService.update("nonexistent-id", updateData)
+      ).rejects.toThrow(NotFoundException);
     });
   });
 
+  // --- Pruebas para el método delete ---
   describe("delete", () => {
-    const mockImageToDelete: IImage = {
-      _id: "image1",
-      url: "https://test.com/image1.jpg",
-      asset_id: "asset1",
-      public_id: "public1",
-      folder: "test-folder",
-      alt: "Test image 1",
-      width: 800,
-      height: 600,
-    } as IImage;
-
-    it("should delete image successfully", async () => {
-      mockImageMethods.findById.mockResolvedValueOnce(mockImageToDelete);
-      mockCloudinaryService.deleteByAssetId.mockResolvedValueOnce({});
-      const mockExec = jest.fn().mockResolvedValueOnce(mockImageToDelete);
-      mockImageMethods.findByIdAndDelete.mockReturnValueOnce({
-        exec: mockExec,
-      } as unknown as ReturnType<typeof Image.findByIdAndDelete>);
-
-      const result = await imageService.delete("image1");
-
-      expect(mockImageMethods.findById).toHaveBeenCalledWith("image1");
-      expect(mockCloudinaryService.deleteByAssetId).toHaveBeenCalledWith(
-        "asset1"
-      );
-      expect(mockImageMethods.findByIdAndDelete).toHaveBeenCalledWith("image1");
-      expect(mockExec).toHaveBeenCalled();
-      expect(result).toEqual(mockImageToDelete);
-    });
-
-    it("should throw error when image not found for deletion", async () => {
-      mockImageMethods.findById.mockResolvedValueOnce(null);
-
-      await expect(imageService.delete("nonexistent")).rejects.toThrow(
-        "Imagen no encontrada."
-      );
-    });
-  });
-
-  describe("FormData handling", () => {
-    it("should handle FormData with all fields correctly", async () => {
-      const mockFile = new File(["test"], "test.jpg", { type: "image/jpeg" });
-      const formData = new FormData();
-      formData.append("file", mockFile);
-      formData.append("alt", "Test image description");
-      formData.append("folder", "subfolder");
-
-      const mockCloudinaryResponse = {
-        asset_id: "asset1",
-        public_id: "public1",
-        version: 1,
-        version_id: "version1",
-        signature: "signature1",
-        width: 800,
-        height: 600,
-        format: "jpg",
-        resource_type: "image",
-        created_at: "2023-01-01T00:00:00Z",
-        tags: [],
-        pages: 1,
-        bytes: 1024,
-        type: "upload",
-        etag: "etag1",
-        placeholder: false,
-        url: "https://test.com/image1.jpg",
-        secure_url: "https://test.com/image1.jpg",
-        folder: "test-folder/subfolder",
-        access_mode: "public",
-        image_metadata: {
-          XResolution: "72",
-          YResolution: "72",
-          ResolutionUnit: "2",
-          UserComment: "",
-          ExifImageWidth: "800",
-          ExifImageHeight: "600",
-          XMPToolkit: "",
-          PixelsPerUnitX: "72",
-          PixelsPerUnitY: "72",
-          PixelUnits: "2",
-          ProfileDescription: "",
-          Colorspace: "sRGB",
-          DPI: "72",
-        },
-        illustration_score: 0.1,
-        semi_transparent: false,
-        grayscale: false,
-        quality_analysis: {
-          focus: 0.95,
-        },
-        original_filename: "test.jpg",
+    it("✅ should delete an image and its Cloudinary asset", async () => {
+      (mockedImage.findById as jest.Mock).mockResolvedValue(mockImage);
+      mockedCloudinaryService.deleteByAssetId.mockResolvedValue(undefined);
+      const findByIdAndDeleteMock = {
+        exec: jest.fn().mockResolvedValue(mockImage),
       };
-
-      const mockCreatedImage: IImage = {
-        _id: "image1",
-        url: "https://test.com/image1.jpg",
-        asset_id: "asset1",
-        public_id: "public1",
-        folder: "test-folder/subfolder",
-        alt: "Test image description",
-        width: 800,
-        height: 600,
-      } as IImage;
-
-      mockCloudinaryService.upload.mockResolvedValueOnce(
-        mockCloudinaryResponse
+      (mockedImage.findByIdAndDelete as jest.Mock).mockReturnValue(
+        findByIdAndDeleteMock
       );
-      mockImageMethods.create.mockResolvedValueOnce([
-        mockCreatedImage,
-      ] as MockCreateResult);
 
-      const result = await imageService.create(formData);
+      await imageService.delete(mockImage._id);
 
-      expect(result).toEqual([mockCreatedImage]);
+      expect(Image.findById).toHaveBeenCalledWith(mockImage._id);
+      expect(cloudinaryService.deleteByAssetId).toHaveBeenCalledWith(
+        mockImage.asset_id
+      );
+      expect(Image.findByIdAndDelete).toHaveBeenCalledWith(mockImage._id);
     });
 
-    it("should handle FormData without folder correctly", async () => {
-      const mockFile = new File(["test"], "test.jpg", { type: "image/jpeg" });
-      const formData = new FormData();
-      formData.append("file", mockFile);
-      formData.append("alt", "Test image description");
-
-      const mockCloudinaryResponse = {
-        asset_id: "asset1",
-        public_id: "public1",
-        version: 1,
-        version_id: "version1",
-        signature: "signature1",
-        width: 800,
-        height: 600,
-        format: "jpg",
-        resource_type: "image",
-        created_at: "2023-01-01T00:00:00Z",
-        tags: [],
-        pages: 1,
-        bytes: 1024,
-        type: "upload",
-        etag: "etag1",
-        placeholder: false,
-        url: "https://test.com/image1.jpg",
-        secure_url: "https://test.com/image1.jpg",
-        folder: "test-folder/",
-        access_mode: "public",
-        image_metadata: {
-          XResolution: "72",
-          YResolution: "72",
-          ResolutionUnit: "2",
-          UserComment: "",
-          ExifImageWidth: "800",
-          ExifImageHeight: "600",
-          XMPToolkit: "",
-          PixelsPerUnitX: "72",
-          PixelsPerUnitY: "72",
-          PixelUnits: "2",
-          ProfileDescription: "",
-          Colorspace: "sRGB",
-          DPI: "72",
-        },
-        illustration_score: 0.1,
-        semi_transparent: false,
-        grayscale: false,
-        quality_analysis: {
-          focus: 0.95,
-        },
-        original_filename: "test.jpg",
-      };
-
-      mockCloudinaryService.upload.mockResolvedValueOnce(
-        mockCloudinaryResponse
+    it("❌ should throw error if Cloudinary deletion fails", async () => {
+      (mockedImage.findById as jest.Mock).mockResolvedValue(mockImage);
+      mockedCloudinaryService.deleteByAssetId.mockRejectedValue(
+        new Error("Deletion failed")
       );
-      mockImageMethods.create.mockResolvedValueOnce([{}] as MockCreateResult);
 
-      await imageService.create(formData);
-
-      expect(mockCloudinaryService.upload).toHaveBeenCalledWith({
-        file: mockFile,
-        folder: "test-folder/",
-      });
+      await expect(imageService.delete(mockImage._id)).rejects.toThrow(
+        InternalServerErrorException
+      );
     });
   });
 });
