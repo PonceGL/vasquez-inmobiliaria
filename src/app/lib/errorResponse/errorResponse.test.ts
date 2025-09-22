@@ -2,8 +2,8 @@ import { z } from "zod";
 
 import { IS_DEV } from "@/app/constants/enviroment";
 
+import { NextResponse } from "../../../../__mocks__/next-server";
 import { HttpError } from "../httpErrors";
-import { NextResponse } from "./__mocks__/next-server";
 
 
 jest.mock("next/server", () => ({
