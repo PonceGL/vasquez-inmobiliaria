@@ -7,14 +7,13 @@ import { userService } from "./user.services";
 
 export async function GET(request: NextRequest) {
   try {
-    // const { payload } = await jwtVerify(token, secret);
-    const { payload } = await isAuthenticated(request);
+    // const { payload } = await isAuthenticated(request);
     // Opcional: podrías verificar si el usuario tiene el rol necesario para crear
     // if (payload.role !== 'editor') {
     //   return NextResponse.json({ message: 'Forbidden' }, { status: 403 });
     // }
     console.log("====================================");
-    console.log(`User ${payload.sub} is creating an item.`);
+    // console.log(`User ${payload.sub} is creating an item.`);
     console.log("====================================");
 
     const users = await userService.getAll();
@@ -33,13 +32,13 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const { payload } = await isAuthenticated(request);
+    // const { payload } = await isAuthenticated(request);
     // Opcional: podrías verificar si el usuario tiene el rol necesario para crear
     // if (payload.role !== 'editor') {
     //   return NextResponse.json({ message: 'Forbidden' }, { status: 403 });
     // }
     console.log("====================================");
-    console.log(`User ${payload.sub} is creating an item.`);
+    // console.log(`User ${payload.sub} is creating an item.`);
     console.log("====================================");
     const body = await request.json();
     const newUser = await userService.create(body);

@@ -1,4 +1,5 @@
 import { Error as MongooseError } from "mongoose";
+import { ZodError } from "zod";
 
 import { IS_DEV } from "@/app/constants/enviroment";
 import { hashPassword } from "@/app/lib/crypt";
@@ -45,13 +46,9 @@ class UserService {
       }
       return user;
     } catch (error) {
-      if (error instanceof HttpError) {
-        throw error;
-      }
-      if (error instanceof MongooseError) {
-        throw new BadRequestError(IS_DEV ? error.message : undefined);
-      }
-      throw new InternalServerErrorException("El usuario no se encontró.");
+      throw this.handleServiceError(error, {
+        internal: "El usuario no se encontró.",
+      });
     }
   }
 
@@ -70,30 +67,32 @@ class UserService {
       // const { password, ...safeUser } = user.toObject();
       return user;
     } catch (error) {
-      if (error instanceof HttpError) {
-        throw error;
-      }
-      if (error instanceof MongooseError) {
-        throw new BadRequestError(IS_DEV ? error.message : undefined);
-      }
-      throw new InternalServerErrorException("El usuario no se encontró.");
+      throw this.handleServiceError(error, {
+        internal: "El usuario no se encontró.",
+      });
     }
   }
 
   public async create(userData: CreateUserDto) {
-    const validatedData = createUserDto.parse(userData);
-    await dbConnect();
-    const existingUser = await User.findOne({ email: validatedData.email });
-    if (existingUser) {
-      throw new BadRequestError("El correo electrónico ya está en uso.");
+    try {
+      const validatedData = createUserDto.parse(userData);
+      await dbConnect();
+      const existingUser = await User.findOne({ email: validatedData.email });
+      if (existingUser) {
+        throw new BadRequestError("El correo electrónico ya está en uso.");
+      }
+      const hashedPassword = await hashPassword(validatedData.password);
+      const newUser = await User.create({
+        ...validatedData,
+        password: hashedPassword,
+      });
+      const { _id } = newUser.toObject();
+      return await this.getById(_id as string);
+    } catch (error) {
+      throw this.handleServiceError(error, {
+        internal: "Usuario no creado.",
+      });
     }
-    const hashedPassword = await hashPassword(validatedData.password);
-    const newUser = await User.create({
-      ...validatedData,
-      password: hashedPassword,
-    });
-    const { _id } = newUser.toObject();
-    return await this.getById(_id as string);
   }
 
   public async update(id: string, userData: UpdateUserDto) {
@@ -111,12 +110,9 @@ class UserService {
       }
       return this.getById(id);
     } catch (error) {
-      if (error instanceof MongooseError) {
-        throw new BadRequestError(
-          IS_DEV ? error.message : "Usuario no actualizado."
-        );
-      }
-      throw new InternalServerErrorException("Usuario no actualizado.");
+      throw this.handleServiceError(error, {
+        internal: "Usuario no actualizado.",
+      });
     }
   }
 
@@ -127,16 +123,29 @@ class UserService {
       await User.findByIdAndDelete(id);
       return { message: "Propiedad eliminada correctamente." };
     } catch (error) {
-      if (error instanceof HttpError) {
-        throw error;
-      }
-      if (error instanceof MongooseError) {
-        throw new BadRequestError(
-          IS_DEV ? error.message : "Usuario no eliminado."
-        );
-      }
-      throw new InternalServerErrorException("Usuario no eliminado.");
+      throw this.handleServiceError(error, {
+        internal: "Usuario no eliminado.",
+      });
     }
+  }
+
+  private handleServiceError(
+    error: unknown,
+    customMessages?: { [key: string]: string }
+  ): Error {
+    if (error instanceof HttpError || error instanceof ZodError) {
+      return error;
+    }
+
+    if (error instanceof MongooseError) {
+      const message = customMessages?.mongoose || "Error en la base de datos.";
+      return new BadRequestError(IS_DEV ? error.message : message);
+    }
+
+    const message = customMessages?.internal || "Error interno.";
+    return new InternalServerErrorException(
+      IS_DEV ? (error as Error).message : message
+    );
   }
 }
 
