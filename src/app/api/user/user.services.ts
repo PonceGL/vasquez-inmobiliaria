@@ -4,6 +4,7 @@ import { IS_DEV } from "@/app/constants/enviroment";
 import { hashPassword } from "@/app/lib/crypt";
 import {
   BadRequestError,
+  HttpError,
   InternalServerErrorException,
   NotFoundException,
 } from "@/app/lib/httpErrors";
@@ -44,6 +45,9 @@ class UserService {
       }
       return user;
     } catch (error) {
+      if (error instanceof HttpError) {
+        throw error;
+      }
       if (error instanceof MongooseError) {
         throw new BadRequestError(IS_DEV ? error.message : undefined);
       }
@@ -54,10 +58,8 @@ class UserService {
   public async getByEmail(userData: FindUserByEmailDto) {
     try {
       const validatedData = findUserByEmailDto.parse(userData);
-      // TODO: this method should only get user by email, not validate password
       await dbConnect();
       const user = await User.findOne({ email: validatedData.email });
-      // const user = await User.findOne({ email }).select("+password");
       if (!user) {
         throw new NotFoundException("El usuario no se encontró.");
       }
@@ -68,6 +70,9 @@ class UserService {
       // const { password, ...safeUser } = user.toObject();
       return user;
     } catch (error) {
+      if (error instanceof HttpError) {
+        throw error;
+      }
       if (error instanceof MongooseError) {
         throw new BadRequestError(IS_DEV ? error.message : undefined);
       }
@@ -122,6 +127,9 @@ class UserService {
       await User.findByIdAndDelete(id);
       return { message: "Propiedad eliminada correctamente." };
     } catch (error) {
+      if (error instanceof HttpError) {
+        throw error;
+      }
       if (error instanceof MongooseError) {
         throw new BadRequestError(
           IS_DEV ? error.message : "Usuario no eliminado."
