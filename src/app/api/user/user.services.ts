@@ -11,6 +11,7 @@ import {
 } from "@/app/lib/httpErrors";
 import { dbConnect } from "@/app/lib/mongodb";
 
+import { LoginDto, loginSchema } from "../auth/login/dtos/login.dto";
 import {
   CreateUserDto,
   createUserDto,
@@ -18,7 +19,7 @@ import {
   findUserByEmailDto,
   UpdateUserDto,
   updateUserDto,
-} from "./dtos.user.dto";
+} from "./dtos/user.dto";
 import { IUser, User } from "./user.entity";
 
 class UserService {
@@ -57,6 +58,25 @@ class UserService {
       if (!user) {
         throw new NotFoundException("El usuario no se encontró.");
       }
+
+      return user;
+    } catch (error) {
+      throw this.handleServiceError(error, {
+        internal: "El usuario no se encontró.",
+      });
+    }
+  }
+
+  public async getForLogin(loginData: LoginDto, errorMessage?: string) {
+    try {
+      const validatedData = loginSchema.parse(loginData);
+      await dbConnect();
+      const user = await User.findOne({ email: validatedData.email }).select(
+        "+password"
+      );
+      if (!user) {
+        throw new BadRequestError(errorMessage || "Credenciales inválidas");
+      }
       // const isMatch = await comparePassword(plainPassword, user.password);
       // if (!isMatch) {
       //   throw new Error("Credenciales incorrectas");
@@ -93,7 +113,6 @@ class UserService {
   }
 
   public async update(id: string, userData: UpdateUserDto) {
-    
     try {
       const validatedData = updateUserDto.parse(userData);
       await this.getById(id);

@@ -16,7 +16,15 @@ export async function isAuthenticated(
     throw new InternalServerErrorException(
       IS_DEV ? "API_TOKEN is not defined in environment variables" : "Internal server error"
     );
-  const secret = new TextEncoder().encode();
+  const jwtSecretKey = process.env.SESSION_SECRET;
+  if (!jwtSecretKey) {
+    throw new InternalServerErrorException(
+      IS_DEV
+        ? "SESSION_SECRET is not defined in environment variables"
+        : "Internal server error"
+    );
+  }
+  const secret = new TextEncoder().encode(jwtSecretKey);
   const authHeader = request.headers.get("authorization");
 
   const token = authHeader?.split(" ")[1];

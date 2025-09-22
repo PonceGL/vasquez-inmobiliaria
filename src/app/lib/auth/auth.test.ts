@@ -71,6 +71,7 @@ describe("Función isAuthenticated", () => {
 
   it('debería lanzar AuthenticationError si el encabezado "authorization" está ausente', async () => {
     process.env.API_TOKEN = "mi-api-token-secreto";
+    process.env.SESSION_SECRET = "mi-session-secret-1234567890";
 
     const request = new MockNextRequest("https://test.com") as NextRequest;
 
@@ -82,6 +83,7 @@ describe("Función isAuthenticated", () => {
 
   it("debería lanzar AuthenticationError si el token no está en el encabezado (formato incorrecto)", async () => {
     process.env.API_TOKEN = "mi-api-token-secreto";
+    process.env.SESSION_SECRET = "mi-session-secret-1234567890";
 
     const headers = new Headers();
     headers.set("authorization", "Bearer ");
@@ -97,6 +99,7 @@ describe("Función isAuthenticated", () => {
 
   it("debería lanzar el error de jwtVerify si el token es inválido", async () => {
     process.env.API_TOKEN = "mi-api-token-secreto";
+    process.env.SESSION_SECRET = "mi-session-secret-1234567890";
 
     const headers = new Headers();
     headers.set("authorization", "Bearer token-invalido");
@@ -112,6 +115,7 @@ describe("Función isAuthenticated", () => {
 
   it("debería devolver el payload si el token es válido y está presente", async () => {
     process.env.API_TOKEN = "mi-api-token-secreto";
+    process.env.SESSION_SECRET = "mi-session-secret-1234567890";
 
     const headers = new Headers();
     const validToken = "un-jwt-valido";
@@ -127,7 +131,7 @@ describe("Función isAuthenticated", () => {
 
     expect(result).toEqual({ payload: mockPayload });
 
-    const expectedSecret = new TextEncoder().encode();
+    const expectedSecret = new TextEncoder().encode(process.env.SESSION_SECRET);
     expect(mockedJwtVerify).toHaveBeenCalledWith(validToken, expectedSecret);
   });
 });

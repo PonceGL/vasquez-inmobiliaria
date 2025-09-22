@@ -2,19 +2,17 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { isAuthenticated } from "@/app/lib/auth";
 import { handleHttpError } from "@/app/lib/errorResponse";
+import { AuthorizationError } from "@/app/lib/httpErrors";
+import { USER_ROLES } from "@/app/types/users";
 
 import { userService } from "./user.services";
 
 export async function GET(request: NextRequest) {
   try {
-    // const { payload } = await isAuthenticated(request);
-    // Opcional: podrías verificar si el usuario tiene el rol necesario para crear
-    // if (payload.role !== 'editor') {
-    //   return NextResponse.json({ message: 'Forbidden' }, { status: 403 });
-    // }
-    console.log("====================================");
-    // console.log(`User ${payload.sub} is creating an item.`);
-    console.log("====================================");
+    const { payload } = await isAuthenticated(request);
+    if (payload.role !== USER_ROLES.ADMIN) {
+      throw new AuthorizationError("Unauthorized");
+    }
 
     const users = await userService.getAll();
     return NextResponse.json(
@@ -32,14 +30,6 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    // const { payload } = await isAuthenticated(request);
-    // Opcional: podrías verificar si el usuario tiene el rol necesario para crear
-    // if (payload.role !== 'editor') {
-    //   return NextResponse.json({ message: 'Forbidden' }, { status: 403 });
-    // }
-    console.log("====================================");
-    // console.log(`User ${payload.sub} is creating an item.`);
-    console.log("====================================");
     const body = await request.json();
     const newUser = await userService.create(body);
     return NextResponse.json(

@@ -1,5 +1,7 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { ZodError } from "zod";
+
+import { isAuthenticated } from "@/app/lib/auth";
 
 import { imageService } from "../image.services";
 
@@ -35,8 +37,9 @@ export async function GET(request: Request, { params }: Params) {
   }
 }
 
-export async function PATCH(request: Request, { params }: Params) {
+export async function PATCH(request: NextRequest, { params }: Params) {
   try {
+    await isAuthenticated(request);
     const body = await request.json();
     const updatedProperty = await imageService.update(params.id, body);
     return NextResponse.json(
@@ -64,8 +67,9 @@ export async function PATCH(request: Request, { params }: Params) {
   }
 }
 
-export async function DELETE(request: Request, { params }: Params) {
+export async function DELETE(request: NextRequest, { params }: Params) {
   try {
+    await isAuthenticated(request);
     const updatedProperty = await imageService.delete(params.id);
     return NextResponse.json(
       {

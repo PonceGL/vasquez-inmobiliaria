@@ -1,9 +1,11 @@
-import { NextResponse } from "next/server";
-import { ZodError } from "zod";
+import { NextRequest, NextResponse } from "next/server";
+
+import { isAuthenticated } from "@/app/lib/auth";
+import { handleHttpError } from "@/app/lib/errorResponse";
 
 import { imageService } from "./image.services";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
     const images = await imageService.getAll();
     return NextResponse.json(
@@ -15,26 +17,13 @@ export async function GET() {
       { status: 200 }
     );
   } catch (error) {
-    if (error instanceof ZodError) {
-      return NextResponse.json(
-        {
-          message: "Datos invalidos para obtener las imagenes",
-          errors: error?.issues,
-          data: null,
-        },
-        { status: 400 }
-      );
-    }
-
-    return NextResponse.json(
-      { success: false, message: (error as Error).message, data: null },
-      { status: 500 }
-    );
+    return handleHttpError(error);
   }
 }
 
-export async function POST(request: Request) {
+export async function POST(request: NextRequest) {
   try {
+    await isAuthenticated(request);
     const formData = await request.formData();
     const createdImage = await imageService.create(formData);
 
@@ -47,9 +36,6 @@ export async function POST(request: Request) {
       { status: 201 }
     );
   } catch (error) {
-    return NextResponse.json(
-      { message: (error as Error).message },
-      { status: 500 }
-    );
+    return handleHttpError(error);
   }
 }
