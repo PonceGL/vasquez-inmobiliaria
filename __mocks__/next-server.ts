@@ -25,3 +25,14 @@ export class NextResponse {
     return this.responseData;
   }
 }
+
+export class NextRequest {
+  headers: Headers;
+  url: string;
+
+  constructor(input: string | URL, init?: RequestInit) {
+    this.url = typeof input === "string" ? input : input.toString();
+    // Crea una instancia de Headers a partir de la configuración `init`
+    this.headers = new Headers(init?.headers);
+  }
+}

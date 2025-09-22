@@ -1,7 +1,8 @@
 const jose = {
+jwtVerify: jest.fn(),
   errors: {
     JWSInvalid: class JWSInvalid extends Error {
-      constructor(message) {
+      constructor(message: string) {
         super(message);
         this.name = 'JWSInvalid';
       }

@@ -5,7 +5,6 @@ import { IS_DEV } from "@/app/constants/enviroment";
 import { NextResponse } from "../../../../__mocks__/next-server";
 import { HttpError } from "../httpErrors";
 
-
 jest.mock("next/server", () => ({
   NextResponse: NextResponse
 }));
