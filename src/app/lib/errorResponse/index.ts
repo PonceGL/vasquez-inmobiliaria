@@ -41,7 +41,7 @@ export function handleHttpError(error: unknown) {
     return NextResponse.json(
       {
         success: false,
-        message: (error as Error).message ?? "Error desconocido",
+        message: (error as Error).message || "Error desconocido",
         data: null,
       },
       { status: 500 }

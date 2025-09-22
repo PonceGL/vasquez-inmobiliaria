@@ -32,7 +32,7 @@ const config = {
 
   // Ignora las transformaciones para node_modules, excepto para los paquetes que son ESM puros
   transformIgnorePatterns: [
-    '/node_modules/',
+    '/node_modules/(?!(jose)/).*/',
     '^.+\\.module\\.(css|sass|scss)$',
   ],
 }
