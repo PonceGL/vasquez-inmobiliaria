@@ -6,13 +6,14 @@ import { handleHttpError } from "@/app/lib/errorResponse";
 import { userService } from "../user.services";
 
 interface Params {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 export async function GET(request: NextRequest, { params }: Params) {
   try {
+    const { id } = await params;
     await isAuthenticated(request);
-    const users = await userService.getById(params.id);
+    const users = await userService.getById(id);
     return NextResponse.json(
       {
         success: true,
@@ -28,9 +29,10 @@ export async function GET(request: NextRequest, { params }: Params) {
 
 export async function PATCH(request: NextRequest, { params }: Params) {
   try {
+    const { id } = await params;
     await isAuthenticated(request);
     const body = await request.json();
-    const user = await userService.update(params.id, body);
+    const user = await userService.update(id, body);
     return NextResponse.json(
       {
         success: true,
@@ -46,8 +48,9 @@ export async function PATCH(request: NextRequest, { params }: Params) {
 
 export async function DELETE(request: NextRequest, { params }: Params) {
   try {
+    const { id } = await params;
     await isAuthenticated(request);
-    const users = await userService.delete(params.id);
+    const users = await userService.delete(id);
     return NextResponse.json(
       {
         success: true,
