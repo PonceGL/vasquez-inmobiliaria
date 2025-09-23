@@ -4,10 +4,7 @@
 import { jwtVerify } from "jose";
 
 import { comparePassword, hashPassword } from "@/app/lib/crypt";
-import {
-  AuthenticationError,
-  InternalServerErrorException,
-} from "@/app/lib/httpErrors";
+import { AuthenticationError } from "@/app/lib/httpErrors";
 import { sendMailService } from "@/app/lib/sendMail";
 
 import { userService } from "../user/user.services";
@@ -65,12 +62,16 @@ describe("LoginService", () => {
       expect(sendMailService.send).toHaveBeenCalled();
     });
 
-    it("should not reveal if the user does not exist and throw an internal error", async () => {
+    it("should not reveal if the user does not exist and should return the generic message", async () => {
       const originalError = new Error("Usuario no encontrado");
       (userService.getByEmail as jest.Mock).mockRejectedValue(originalError);
-      await expect(
-        loginService.forgotPassword({ email: "nouser@example.com" })
-      ).rejects.toThrow(InternalServerErrorException);
+      const result = await loginService.forgotPassword({
+        email: "nouser@example.com",
+      });
+      expect(result).toEqual({
+        message:
+          "Si existe una cuenta con este correo, se ha enviado un enlace para restablecer la contraseña.",
+      });
       expect(sendMailService.send).not.toHaveBeenCalled();
     });
   });

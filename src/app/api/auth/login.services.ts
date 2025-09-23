@@ -70,13 +70,19 @@ class LoginService {
 
   /**
    * Envía un correo electrónico para restablecer la contraseña del usuario.
+   *
+   * - Si el email existe, se envía un enlace de recuperación.
+   * - Si el email no existe, se retorna el mismo mensaje genérico (no revela información).
+   * - En modo desarrollo, el mensaje de error se incluye en la respuesta para depuración.
+   *
    * @param {ForgotPasswordDto} data - Datos para solicitar el restablecimiento (email).
-   * @returns {Promise<{ message: string }>} Mensaje indicando el resultado de la operación.
-   * @throws {HttpError|ZodError|InternalServerErrorException} Si ocurre un error en el proceso.
+   * @returns {Promise<{ message: string }>} Mensaje genérico indicando que se envió el enlace si el correo existe.
    */
   public async forgotPassword(
     data: ForgotPasswordDto
   ): Promise<{ message: string }> {
+    const defaultMessage =
+      "Si existe una cuenta con este correo, se ha enviado un enlace para restablecer la contraseña.";
     try {
       const validatedData = forgotPasswordSchema.parse(data);
       await dbConnect();
@@ -99,11 +105,14 @@ class LoginService {
       });
 
       return {
-        message:
-          "Si existe una cuenta con este correo, se ha enviado un enlace para restablecer la contraseña.",
+        message: defaultMessage,
       };
     } catch (error) {
-      throw this.handleServiceError(error);
+      return {
+        message: IS_DEV
+          ? `Mensaje solo DEV: ${(error as Error).message}`
+          : defaultMessage,
+      };
     }
   }
 
