@@ -5,7 +5,7 @@ import { handleHttpError } from "@/app/lib/errorResponse";
 
 import { imageService } from "./image.services";
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const images = await imageService.getAll();
     return NextResponse.json(
