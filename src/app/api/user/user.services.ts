@@ -67,7 +67,7 @@ class UserService {
     }
   }
 
-  public async getForLogin(loginData: LoginDto, errorMessage?: string) {
+  public async getForLogin(loginData: LoginDto) {
     try {
       const validatedData = loginSchema.parse(loginData);
       await dbConnect();
@@ -75,13 +75,8 @@ class UserService {
         "+password"
       );
       if (!user) {
-        throw new BadRequestError(errorMessage || "Credenciales inválidas");
+        throw new BadRequestError("Credenciales inválidas");
       }
-      // const isMatch = await comparePassword(plainPassword, user.password);
-      // if (!isMatch) {
-      //   throw new Error("Credenciales incorrectas");
-      // }
-      // const { password, ...safeUser } = user.toObject();
       return user;
     } catch (error) {
       throw this.handleServiceError(error, {
