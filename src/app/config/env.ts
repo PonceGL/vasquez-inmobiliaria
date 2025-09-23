@@ -8,10 +8,6 @@ const envSchema = z.object({
   SESSION_SECRET: z.string().min(10),
   API_TOKEN: z.string().min(10),
 
-  POSTGRES_USER: z.string().min(1),
-  POSTGRES_PASSWORD: z.string().min(1),
-  POSTGRES_DB: z.string().min(1),
-
   GENERIC_TIMEZONE: z.string().min(1),
   TZ: z.string().min(1),
 
@@ -23,8 +19,6 @@ const envSchema = z.object({
   SMTP_HOST: z.string().min(1),
   SMTP_USER: z.string().email(),
   SMTP_PASSWORD: z.string().min(1),
-
-  GEMINI_API_KEY: z.string().min(10),
 
   CLOUDINARY_CLOUD_NAME: z.string().min(3),
   CLOUDINARY_API_KEY: z.string().min(3),

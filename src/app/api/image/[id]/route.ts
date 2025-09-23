@@ -6,12 +6,13 @@ import { isAuthenticated } from "@/app/lib/auth";
 import { imageService } from "../image.services";
 
 interface Params {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
-export async function GET(request: Request, { params }: Params) {
+export async function GET(request: NextRequest, { params }: Params) {
   try {
-    const images = await imageService.getById(params.id);
+    const { id } = await params;
+    const images = await imageService.getById(id);
     return NextResponse.json(
       {
         success: true,
@@ -39,9 +40,10 @@ export async function GET(request: Request, { params }: Params) {
 
 export async function PATCH(request: NextRequest, { params }: Params) {
   try {
+    const { id } = await params;
     await isAuthenticated(request);
     const body = await request.json();
-    const updatedProperty = await imageService.update(params.id, body);
+    const updatedProperty = await imageService.update(id, body);
     return NextResponse.json(
       {
         success: true,
@@ -69,8 +71,9 @@ export async function PATCH(request: NextRequest, { params }: Params) {
 
 export async function DELETE(request: NextRequest, { params }: Params) {
   try {
+    const { id } = await params;
     await isAuthenticated(request);
-    const updatedProperty = await imageService.delete(params.id);
+    const updatedProperty = await imageService.delete(id);
     return NextResponse.json(
       {
         success: true,
