@@ -49,10 +49,8 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           issue-number: ${{ github.event.pull_request.number }}
           body: |
-            ### ✨ Resumen de Cobertura de Pruebas ✨
-            El coverage actual es de **${{ steps.coverage.outputs.coverage_percentage }}%**
+            # ✨ Resumen de Cobertura de Pruebas ✨
+            ### El coverage actual es de **${{ steps.coverage.outputs.coverage_percentage }}%**
             _Requisito mínimo: 80%_
-
-            # El identificador único para que la acción pueda encontrar y actualizar este comentario
           comment-id: ${{ github.run_id }}-${{ github.job }}
           edit-mode: replace
