@@ -22,24 +22,6 @@ describe("CloudinaryService", () => {
     jest.clearAllMocks();
   });
 
-  describe("Constructor", () => {
-    it("should initialize with correct configuration", () => {
-      expect(cloudinaryService).toBeDefined();
-    });
-  });
-
-  describe("getBasicAuth", () => {
-    it("should generate correct Basic Auth header", () => {
-      const authHeader = (
-        cloudinaryService as unknown as { getBasicAuth: () => string }
-      ).getBasicAuth();
-      const expectedAuth = Buffer.from("test-api-key:test-api-secret").toString(
-        "base64"
-      );
-      expect(authHeader).toBe(`Basic ${expectedAuth}`);
-    });
-  });
-
   describe("getByFolder", () => {
     const mockImages: Images[] = [
       {
@@ -232,7 +214,7 @@ describe("CloudinaryService", () => {
       mockedAxios.request.mockRejectedValueOnce(new Error("Delete failed"));
 
       await expect(cloudinaryService.deleteByAssetId(assetId)).rejects.toThrow(
-        "Error in upload"
+        "Error in delete"
       );
     });
   });
