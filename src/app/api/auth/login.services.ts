@@ -108,11 +108,14 @@ class LoginService {
         message: defaultMessage,
       };
     } catch (error) {
-      return {
-        message: IS_DEV
-          ? `Mensaje solo DEV: ${(error as Error).message}`
-          : defaultMessage,
-      };
+      if (error instanceof HttpError && error.statusCode === 404) {
+        return {
+          message: IS_DEV
+            ? `Mensaje solo DEV: ${(error as Error).message}`
+            : defaultMessage,
+        };
+      }
+      throw this.handleServiceError(error);
     }
   }
 

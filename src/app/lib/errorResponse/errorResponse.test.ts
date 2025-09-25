@@ -6,23 +6,31 @@ import { NextResponse } from "../../../../__mocks__/next-server";
 import { HttpError } from "../httpErrors";
 
 jest.mock("next/server", () => ({
-  NextResponse: NextResponse
+  NextResponse: NextResponse,
 }));
 
 jest.mock("jose/errors", () => {
   class JWSInvalid extends Error {
     constructor(message: string) {
       super(message);
-      this.name = 'JWSInvalid';
+      this.name = "JWSInvalid";
       Object.setPrototypeOf(this, JWSInvalid.prototype);
     }
-
     static get [Symbol.hasInstance]() {
-      return (instance: Error) => instance?.name === 'JWSInvalid';
+      return (instance: Error) => instance?.name === "JWSInvalid";
     }
   }
-
-  return { JWSInvalid };
+  class JWTExpired extends Error {
+    constructor(message: string) {
+      super(message);
+      this.name = "JWTExpired";
+      Object.setPrototypeOf(this, JWTExpired.prototype);
+    }
+    static get [Symbol.hasInstance]() {
+      return (instance: Error) => instance?.name === "JWTExpired";
+    }
+  }
+  return { JWSInvalid, JWTExpired };
 });
 
 import { handleHttpError } from "./index";
@@ -34,7 +42,7 @@ describe("handleHttpError", () => {
 
     expect(response).toBeInstanceOf(NextResponse);
     expect(response.status).toBe(404);
-    
+
     const data = await response.json();
     expect(data).toEqual({
       success: false,
@@ -50,7 +58,7 @@ describe("handleHttpError", () => {
 
     expect(response).toBeInstanceOf(NextResponse);
     expect(response.status).toBe(401);
-    
+
     const data = await response.json();
     expect(data).toEqual({
       success: false,
@@ -64,15 +72,15 @@ describe("handleHttpError", () => {
       name: z.string(),
       age: z.number(),
     });
-    
+
     try {
       schema.parse({ name: 123, age: "invalid" });
     } catch (error) {
       const response = handleHttpError(error);
-      
+
       expect(response).toBeInstanceOf(NextResponse);
       expect(response.status).toBe(400);
-      
+
       const data = await response.json();
       expect(data).toEqual({
         success: false,
@@ -93,7 +101,7 @@ describe("handleHttpError", () => {
 
     expect(response).toBeInstanceOf(NextResponse);
     expect(response.status).toBe(500);
-    
+
     const data = await response.json();
     expect(data).toEqual({
       success: false,
@@ -108,7 +116,7 @@ describe("handleHttpError", () => {
 
     expect(response).toBeInstanceOf(NextResponse);
     expect(response.status).toBe(500);
-    
+
     const data = await response.json();
     expect(data).toEqual({
       success: false,

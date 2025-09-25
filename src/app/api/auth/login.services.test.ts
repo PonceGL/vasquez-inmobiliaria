@@ -4,7 +4,7 @@
 import { jwtVerify } from "jose";
 
 import { comparePassword, hashPassword } from "@/app/lib/crypt";
-import { AuthenticationError } from "@/app/lib/httpErrors";
+import { AuthenticationError, NotFoundException } from "@/app/lib/httpErrors";
 import { sendMailService } from "@/app/lib/sendMail";
 
 import { userService } from "../user/user.services";
@@ -63,7 +63,7 @@ describe("LoginService", () => {
     });
 
     it("should not reveal if the user does not exist and should return the generic message", async () => {
-      const originalError = new Error("Usuario no encontrado");
+      const originalError = new NotFoundException("El usuario no se encontró.");
       (userService.getByEmail as jest.Mock).mockRejectedValue(originalError);
       const result = await loginService.forgotPassword({
         email: "nouser@example.com",

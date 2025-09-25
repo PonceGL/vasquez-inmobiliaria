@@ -5,6 +5,20 @@ const jose = {
       constructor(message: string) {
         super(message);
         this.name = "JWSInvalid";
+        Object.setPrototypeOf(this, JWSInvalid.prototype);
+      }
+      static get [Symbol.hasInstance]() {
+        return (instance: Error) => instance?.name === "JWSInvalid";
+      }
+    },
+    JWTExpired: class JWTExpired extends Error {
+      constructor(message: string) {
+        super(message);
+        this.name = "JWTExpired";
+        Object.setPrototypeOf(this, JWTExpired.prototype);
+      }
+      static get [Symbol.hasInstance]() {
+        return (instance: Error) => instance?.name === "JWTExpired";
       }
     },
   },
@@ -16,4 +30,8 @@ const jose = {
   })),
 };
 
-module.exports = jose;
+export const {
+  jwtVerify,
+  errors: { JWSInvalid, JWTExpired },
+  SignJWT,
+} = jose;
