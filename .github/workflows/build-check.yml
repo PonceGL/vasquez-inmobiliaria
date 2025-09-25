@@ -22,11 +22,21 @@ jobs:
 
       - name: Install dependencies
         run: yarn install
+      
+      - name: 🕵️‍♂️ Run Diagnostics in CI Environment
+        run: |
+          echo "--- 1. Checking versions ---"
+          echo "Node version: $(node -v)"
+          echo "Yarn version: $(yarn -v)"
+          
+          echo "\n--- 2. Searching for problematic import ---"
+          grep -r "from ['\"]next/document['\"]" . || true
+          echo "\n--- 3. Listing all files (for context) ---"
+          ls -R
 
       - name: Run Next.js build
         run: yarn build
         env:
-          NODE_ENV: ${{ secrets.NODE_ENV }}
           SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
           API_TOKEN: ${{ secrets.API_TOKEN }}
           GENERIC_TIMEZONE: ${{ secrets.GENERIC_TIMEZONE }}
