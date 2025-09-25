@@ -1,4 +1,4 @@
-name: ✅ Build Check
+name: ✅ Next Build
 
 on:
   pull_request:
