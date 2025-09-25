@@ -1,0 +1,51 @@
+name: ✅ Build Check
+
+on:
+  pull_request:
+    branches:
+      - main
+      - 'feature/update-next'
+
+jobs:
+  check-build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Run Next.js build
+        run: yarn build
+        env:
+          NODE_ENV: ${{ secrets.NODE_ENV }}
+          SESSION_SECRET: ${{ secrets.SESSION_SECRET }}
+          API_TOKEN: ${{ secrets.API_TOKEN }}
+          GENERIC_TIMEZONE: ${{ secrets.GENERIC_TIMEZONE }}
+          TZ: ${{ secrets.TZ }}
+          MONGO_ROOT_USER: ${{ secrets.MONGO_ROOT_USER }}
+          MONGO_ROOT_PASSWORD: ${{ secrets.MONGO_ROOT_PASSWORD }}
+          MONGO_ROOT_DATABASE_NAME: ${{ secrets.MONGO_ROOT_DATABASE_NAME }}
+          MONGODB_URI: ${{ secrets.MONGODB_URI }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          CLOUDINARY_CLOUD_NAME: ${{ secrets.CLOUDINARY_CLOUD_NAME }}
+          CLOUDINARY_API_KEY: ${{ secrets.CLOUDINARY_API_KEY }}
+          CLOUDINARY_API_SECRET: ${{ secrets.CLOUDINARY_API_SECRET }}
+          CLOUDINARY_URL: ${{ secrets.CLOUDINARY_URL }}
+          CLOUDINARY_FOLDER: ${{ secrets.CLOUDINARY_FOLDER }}
+          CLOUDINARY_PRESET: ${{ secrets.CLOUDINARY_PRESET }}
+          NEXT_PUBLIC_GA_ID: ${{ secrets.NEXT_PUBLIC_GA_ID }}
+          NEXT_PUBLIC_APP_URL: ${{ secrets.NEXT_PUBLIC_APP_URL }}
+          N8N_POSTGRES_USER: ${{ secrets.N8N_POSTGRES_USER }}
+          N8N_POSTGRES_PASSWORD: ${{ secrets.N8N_POSTGRES_PASSWORD }}
+          N8N_POSTGRES_DB: ${{ secrets.N8N_POSTGRES_DB }}
