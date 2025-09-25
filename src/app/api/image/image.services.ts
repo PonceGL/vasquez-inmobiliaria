@@ -1,25 +1,24 @@
 import { MongooseError } from "mongoose";
 import { ZodError } from "zod";
 
-import { CLOUDINARY_FOLDER } from "@/app/constants/cloudinary";
-import { IS_DEV } from "@/app/constants/enviroment";
-import { cloudinaryService } from "@/app/lib/cloudinary/cloudinary.service";
-import {
-  BadRequestError,
-  HttpError,
-  InternalServerErrorException,
-  NotFoundException,
-} from "@/app/lib/httpErrors";
-import { dbConnect } from "@/app/lib/mongodb";
-
 import {
   CreateImageDto,
   createImageDto,
   createImageFromFormDataDto,
   UpdateImageDto,
   updateImageDto,
-} from "./dtos/image.dto";
-import { IImage, Image } from "./image.entity";
+} from "@/app/api/image/dtos/image.dto";
+import { IImage, Image } from "@/app/api/image/image.entity";
+import { CLOUDINARY_FOLDER } from "@/constants/cloudinary";
+import { IS_DEV } from "@/constants/enviroment";
+import { cloudinaryService } from "@/lib/cloudinary/cloudinary.service";
+import {
+  BadRequestError,
+  HttpError,
+  InternalServerErrorException,
+  NotFoundException,
+} from "@/lib/httpErrors";
+import { dbConnect } from "@/lib/mongodb";
 
 class ImageService {
   public async getAll(): Promise<IImage[]> {

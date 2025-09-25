@@ -2,9 +2,8 @@ import { JWSInvalid, JWTExpired } from "jose/errors";
 import { NextResponse } from "next/server";
 import { ZodError } from "zod";
 
-import { IS_DEV } from "@/app/constants/enviroment";
-
-import { HttpError } from "../httpErrors";
+import { IS_DEV } from "@/constants/enviroment";
+import { HttpError } from "@/lib/httpErrors";
 
 export function handleHttpError(error: unknown) {
   if (error instanceof HttpError) {

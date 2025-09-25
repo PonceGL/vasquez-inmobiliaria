@@ -3,17 +3,16 @@
  */
 import { jwtVerify } from "jose";
 
-import { comparePassword, hashPassword } from "@/app/lib/crypt";
-import { AuthenticationError, NotFoundException } from "@/app/lib/httpErrors";
-import { sendMailService } from "@/app/lib/sendMail";
+import { loginService } from "@/app/api/auth/login.services";
+import { userService } from "@/app/api/user/user.services";
+import { comparePassword, hashPassword } from "@/lib/crypt";
+import { AuthenticationError, NotFoundException } from "@/lib/httpErrors";
+import { sendMailService } from "@/lib/sendMail";
 
-import { userService } from "../user/user.services";
-import { loginService } from "./login.services";
-
-jest.mock("../user/user.services");
-jest.mock("../../lib/sendMail");
-jest.mock("../../lib/crypt");
-jest.mock("../../lib/mongodb", () => ({
+jest.mock("@/app/api/user/user.services");
+jest.mock("@/lib/sendMail");
+jest.mock("@/lib/crypt");
+jest.mock("@/lib/mongodb", () => ({
   dbConnect: jest.fn().mockResolvedValue(true),
 }));
 

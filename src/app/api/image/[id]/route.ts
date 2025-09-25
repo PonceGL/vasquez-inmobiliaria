@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ZodError } from "zod";
 
-import { isAuthenticated } from "@/app/lib/auth";
-
-import { imageService } from "../image.services";
+import { imageService } from "@/app/api/image/image.services";
+import { isAuthenticated } from "@/lib/auth";
 
 interface Params {
   params: Promise<{ id: string }>;

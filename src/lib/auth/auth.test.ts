@@ -1,10 +1,10 @@
+import { mockEnv } from "@mocks/env";
+import { NextRequest as MockNextRequest } from "@mocks/next-server"
 import { jwtVerify } from "jose";
 import { NextRequest } from "next/server";
 import { TextEncoder } from "util";
 
-import { NextRequest as MockNextRequest } from "../../../../__mocks__/next-server";
-import { mockEnv } from "../../../../jest.setup";
-import { isAuthenticated } from ".";
+import { isAuthenticated } from "@/lib/auth";
 
 jest.mock("next/server", () => ({
   __esModule: true,

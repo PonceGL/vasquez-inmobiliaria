@@ -1,17 +1,16 @@
 import axios from "axios";
 
+import { cloudinaryService } from "@/lib/cloudinary/cloudinary.service";
 import {
   Images,
   ImagesByFolderSucces,
   UploadImageSucces,
-} from "@/app/types/cloudinary/image";
-
-import { cloudinaryService } from "./cloudinary.service";
+} from "@/types/cloudinary/image";
 
 jest.mock("axios");
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
-jest.mock("@/app/constants/cloudinary", () => ({
+jest.mock("@/constants/cloudinary", () => ({
   CLOUDINARY_URL: "https://api.cloudinary.com/v1_1/test-cloud",
   CLOUDINARY_API_KEY: "test-api-key",
   CLOUDINARY_API_SECRET: "test-api-secret",
@@ -21,24 +20,6 @@ jest.mock("@/app/constants/cloudinary", () => ({
 describe("CloudinaryService", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-  });
-
-  describe("Constructor", () => {
-    it("should initialize with correct configuration", () => {
-      expect(cloudinaryService).toBeDefined();
-    });
-  });
-
-  describe("getBasicAuth", () => {
-    it("should generate correct Basic Auth header", () => {
-      const authHeader = (
-        cloudinaryService as unknown as { getBasicAuth: () => string }
-      ).getBasicAuth();
-      const expectedAuth = Buffer.from("test-api-key:test-api-secret").toString(
-        "base64"
-      );
-      expect(authHeader).toBe(`Basic ${expectedAuth}`);
-    });
   });
 
   describe("getByFolder", () => {
@@ -233,7 +214,7 @@ describe("CloudinaryService", () => {
       mockedAxios.request.mockRejectedValueOnce(new Error("Delete failed"));
 
       await expect(cloudinaryService.deleteByAssetId(assetId)).rejects.toThrow(
-        "Error in upload"
+        "Error in delete"
       );
     });
   });

@@ -5,28 +5,22 @@ import {
   CLOUDINARY_API_SECRET,
   CLOUDINARY_PRESET,
   CLOUDINARY_URL,
-} from "@/app/constants/cloudinary";
+} from "@/constants/cloudinary";
 import {
   Images,
   ImagesByFolderSucces,
   ImagesUpload,
   UploadImageSucces,
-} from "@/app/types/cloudinary/image";
+} from "@/types/cloudinary/image";
 
 class CloudinaryService {
-  private URL: string;
-  private username: string;
-  private password: string;
+  private static URL: string = CLOUDINARY_URL;
+  private static username: string = CLOUDINARY_API_KEY;
+  private static password: string = CLOUDINARY_API_SECRET;
 
-  constructor() {
-    this.URL = CLOUDINARY_URL;
-    this.username = CLOUDINARY_API_KEY || "";
-    this.password = CLOUDINARY_API_SECRET || "";
-  }
-
-  private getBasicAuth() {
+  private static getBasicAuth() {
     const credentials = Buffer.from(
-      `${this.username}:${this.password}`
+      `${CloudinaryService.username}:${CloudinaryService.password}`
     ).toString("base64");
     return `Basic ${credentials}`;
   }
@@ -34,9 +28,9 @@ class CloudinaryService {
   public async getByFolder(folder: string): Promise<Images[]> {
     const config = {
       method: "get",
-      url: `${this.URL}/resources/image?prefix=${folder}&type=upload`,
+      url: `${CloudinaryService.URL}/resources/image?prefix=${folder}&type=upload`,
       headers: {
-        Authorization: this.getBasicAuth(),
+        Authorization: CloudinaryService.getBasicAuth(),
       },
     };
 
@@ -54,9 +48,6 @@ class CloudinaryService {
   }
 
   public async upload({ file, folder }: ImagesUpload) {
-    if (!CLOUDINARY_PRESET) {
-      throw new Error("CLOUDINARY_PRESET no esta disponible");
-    }
     const data = new FormData();
     data.append("upload_preset", CLOUDINARY_PRESET);
     data.append("folder", folder);
@@ -64,9 +55,9 @@ class CloudinaryService {
 
     const config = {
       method: "post",
-      url: `${this.URL}/image/upload`,
+      url: `${CloudinaryService.URL}/image/upload`,
       headers: {
-        Authorization: this.getBasicAuth(),
+        Authorization: CloudinaryService.getBasicAuth(),
       },
       data: data,
     };
@@ -86,9 +77,9 @@ class CloudinaryService {
 
     const config = {
       method: "delete",
-      url: `${this.URL}/resources`,
+      url: `${CloudinaryService.URL}/resources`,
       headers: {
-        Authorization: this.getBasicAuth(),
+        Authorization: CloudinaryService.getBasicAuth(),
       },
       data: data,
     };
@@ -98,9 +89,10 @@ class CloudinaryService {
       return response.data;
     } catch (error) {
       console.log(error);
-      throw new Error("Error in upload"); // TODO: handle
+      throw new Error("Error in delete"); // TODO: handle
     }
   }
 }
 
 export const cloudinaryService = new CloudinaryService();
+

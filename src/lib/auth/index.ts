@@ -1,9 +1,8 @@
 import { JWTPayload, jwtVerify } from "jose";
 import { NextRequest } from "next/server";
 
-import { env } from "@/app/config/env";
-
-import { AuthenticationError } from "../httpErrors";
+import { env } from "@/config/env";
+import { AuthenticationError } from "@/lib/httpErrors";
 
 export async function isAuthenticated(
   request: NextRequest

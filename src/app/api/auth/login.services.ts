@@ -2,32 +2,31 @@ import { JWTPayload, jwtVerify, SignJWT } from "jose";
 import { MongooseError } from "mongoose";
 import { ZodError } from "zod";
 
-import { env } from "@/app/config/env";
+import {
+  ForgotPasswordDto,
+  forgotPasswordSchema,
+} from "@/app/api/auth/dtos/forgotPassword.dto";
+import { LoginDto, loginSchema } from "@/app/api/auth/dtos/login.dto";
+import {
+  ResetPasswordDto,
+  resetPasswordSchema,
+} from "@/app/api/auth/dtos/resetPassword.dto";
+import { userService } from "@/app/api/user/user.services";
+import { env } from "@/config/env";
 import {
   ACCESS_TOKEN_EXPIRATION,
   JWT_ALGORITHM,
   RESET_TOKEN_EXPIRATION,
-} from "@/app/constants/auth";
-import { IS_DEV } from "@/app/constants/enviroment";
-import { comparePassword, hashPassword } from "@/app/lib/crypt";
+} from "@/constants/auth";
+import { IS_DEV } from "@/constants/enviroment";
+import { comparePassword, hashPassword } from "@/lib/crypt";
 import {
   AuthenticationError,
   HttpError,
   InternalServerErrorException,
-} from "@/app/lib/httpErrors";
-import { dbConnect } from "@/app/lib/mongodb";
-import { sendMailService } from "@/app/lib/sendMail";
-
-import { userService } from "../user/user.services";
-import {
-  ForgotPasswordDto,
-  forgotPasswordSchema,
-} from "./dtos/forgotPassword.dto";
-import { LoginDto, loginSchema } from "./dtos/login.dto";
-import {
-  ResetPasswordDto,
-  resetPasswordSchema,
-} from "./dtos/resetPassword.dto";
+} from "@/lib/httpErrors";
+import { dbConnect } from "@/lib/mongodb";
+import { sendMailService } from "@/lib/sendMail";
 
 class LoginService {
   /**

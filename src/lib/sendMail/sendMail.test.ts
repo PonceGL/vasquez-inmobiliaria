@@ -4,7 +4,7 @@
 
 import nodemailer from "nodemailer";
 
-import { SendMailService } from "./index";
+import { SendMailService } from "@/lib/sendMail";
 
 jest.mock("nodemailer");
 

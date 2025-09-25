@@ -4,22 +4,21 @@
 
 import { ZodError } from "zod";
 
-import { CLOUDINARY_FOLDER } from "@/app/constants/cloudinary";
-import { cloudinaryService } from "@/app/lib/cloudinary/cloudinary.service";
+import { Image } from "@/app/api/image/image.entity";
+import { imageService } from "@/app/api/image/image.services";
+import { CLOUDINARY_FOLDER } from "@/constants/cloudinary";
+import { cloudinaryService } from "@/lib/cloudinary/cloudinary.service";
 import {
   InternalServerErrorException,
   NotFoundException,
-} from "@/app/lib/httpErrors";
-import { dbConnect } from "@/app/lib/mongodb";
+} from "@/lib/httpErrors";
+import { dbConnect } from "@/lib/mongodb";
 
-import { Image } from "./image.entity";
-import { imageService } from "./image.services";
-
-jest.mock("@/app/lib/mongodb", () => ({
+jest.mock("@/lib/mongodb", () => ({
   dbConnect: jest.fn(),
 }));
 
-jest.mock("./image.entity", () => ({
+jest.mock("@/app/api/image/image.entity", () => ({
   Image: {
     find: jest.fn(),
     findById: jest.fn(),
@@ -29,14 +28,14 @@ jest.mock("./image.entity", () => ({
   },
 }));
 
-jest.mock("@/app/lib/cloudinary/cloudinary.service", () => ({
+jest.mock("@/lib/cloudinary/cloudinary.service", () => ({
   cloudinaryService: {
     upload: jest.fn(),
     deleteByAssetId: jest.fn(),
   },
 }));
 
-jest.mock("@/app/constants/cloudinary", () => ({
+jest.mock("@/constants/cloudinary", () => ({
   CLOUDINARY_FOLDER: "test_folder",
 }));
 
