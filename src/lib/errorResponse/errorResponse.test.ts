@@ -1,12 +1,11 @@
+import { NextResponse as MockNextResponse } from "@mocks/next-server"
 import { z } from "zod";
 
-import { IS_DEV } from "@/app/constants/enviroment";
-
-import { NextResponse } from "../../../../__mocks__/next-server";
-import { HttpError } from "../httpErrors";
+import { IS_DEV } from "@/constants/enviroment";
+import { HttpError } from "@/lib/httpErrors";
 
 jest.mock("next/server", () => ({
-  NextResponse: NextResponse,
+  NextResponse: MockNextResponse,
 }));
 
 jest.mock("jose/errors", () => {
@@ -33,14 +32,14 @@ jest.mock("jose/errors", () => {
   return { JWSInvalid, JWTExpired };
 });
 
-import { handleHttpError } from "./index";
+import { handleHttpError } from "@/lib/errorResponse";
 
 describe("handleHttpError", () => {
   it("should handle HttpError correctly", async () => {
     const httpError = new HttpError(404, "Not Found");
     const response = handleHttpError(httpError);
 
-    expect(response).toBeInstanceOf(NextResponse);
+    expect(response).toBeInstanceOf(MockNextResponse);
     expect(response.status).toBe(404);
 
     const data = await response.json();
@@ -56,7 +55,7 @@ describe("handleHttpError", () => {
     const jwsError = new JWSInvalid("Invalid JWT");
     const response = handleHttpError(jwsError);
 
-    expect(response).toBeInstanceOf(NextResponse);
+    expect(response).toBeInstanceOf(MockNextResponse);
     expect(response.status).toBe(401);
 
     const data = await response.json();
@@ -78,7 +77,7 @@ describe("handleHttpError", () => {
     } catch (error) {
       const response = handleHttpError(error);
 
-      expect(response).toBeInstanceOf(NextResponse);
+      expect(response).toBeInstanceOf(MockNextResponse);
       expect(response.status).toBe(400);
 
       const data = await response.json();
@@ -99,7 +98,7 @@ describe("handleHttpError", () => {
     const error = new Error("Unknown error occurred");
     const response = handleHttpError(error);
 
-    expect(response).toBeInstanceOf(NextResponse);
+    expect(response).toBeInstanceOf(MockNextResponse);
     expect(response.status).toBe(500);
 
     const data = await response.json();
@@ -114,7 +113,7 @@ describe("handleHttpError", () => {
     const error = new Error();
     const response = handleHttpError(error);
 
-    expect(response).toBeInstanceOf(NextResponse);
+    expect(response).toBeInstanceOf(MockNextResponse);
     expect(response.status).toBe(500);
 
     const data = await response.json();

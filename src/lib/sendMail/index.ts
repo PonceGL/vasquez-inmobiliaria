@@ -1,8 +1,8 @@
 import nodemailer, { Transporter } from "nodemailer";
 
-import { env } from "@/app/config/env";
-import { IS_DEV } from "@/app/constants/enviroment";
-import { MailAdapter, SendMail } from "@/app/types/mailer";
+import { env } from "@/config/env";
+import { IS_DEV } from "@/constants/enviroment";
+import { MailAdapter, SendMail } from "@/types/mailer";
 
 class SendMailService implements MailAdapter {
   private transporter: Transporter;

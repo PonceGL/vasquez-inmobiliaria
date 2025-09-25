@@ -1,17 +1,16 @@
 import axios from "axios";
 
+import { cloudinaryService } from "@/lib/cloudinary/cloudinary.service";
 import {
   Images,
   ImagesByFolderSucces,
   UploadImageSucces,
-} from "@/app/types/cloudinary/image";
-
-import { cloudinaryService } from "./cloudinary.service";
+} from "@/types/cloudinary/image";
 
 jest.mock("axios");
 const mockedAxios = axios as jest.Mocked<typeof axios>;
 
-jest.mock("@/app/constants/cloudinary", () => ({
+jest.mock("@/constants/cloudinary", () => ({
   CLOUDINARY_URL: "https://api.cloudinary.com/v1_1/test-cloud",
   CLOUDINARY_API_KEY: "test-api-key",
   CLOUDINARY_API_SECRET: "test-api-secret",

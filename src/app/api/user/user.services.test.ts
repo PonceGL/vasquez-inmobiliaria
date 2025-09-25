@@ -5,22 +5,21 @@
 
 import { Error as MongooseError } from "mongoose";
 
-import { hashPassword } from "@/app/lib/crypt";
+import { User } from "@/app/api/user/user.entity";
+import { userService } from "@/app/api/user/user.services";
+import { hashPassword } from "@/lib/crypt";
 import {
   BadRequestError,
   InternalServerErrorException,
   NotFoundException,
-} from "@/app/lib/httpErrors";
-import { dbConnect } from "@/app/lib/mongodb";
+} from "@/lib/httpErrors";
+import { dbConnect } from "@/lib/mongodb";
 
-import { User } from "./user.entity";
-import { userService } from "./user.services";
-
-jest.mock("@/app/lib/mongodb", () => ({
+jest.mock("@/lib/mongodb", () => ({
   dbConnect: jest.fn(),
 }));
 
-jest.mock("./user.entity", () => ({
+jest.mock("@/app/api/user/user.entity", () => ({
   User: {
     find: jest.fn(),
     findById: jest.fn(),
@@ -31,11 +30,11 @@ jest.mock("./user.entity", () => ({
   },
 }));
 
-jest.mock("@/app/lib/crypt", () => ({
+jest.mock("@/lib/crypt", () => ({
   hashPassword: jest.fn(),
 }));
 
-jest.mock("@/app/constants/enviroment", () => ({
+jest.mock("@/constants/enviroment", () => ({
   IS_DEV: process.env.NODE_ENV === "development",
 }));
 

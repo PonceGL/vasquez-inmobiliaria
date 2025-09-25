@@ -1,11 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { isAuthenticated } from "@/app/lib/auth";
-import { handleHttpError } from "@/app/lib/errorResponse";
-import { AuthorizationError } from "@/app/lib/httpErrors";
-import { USER_ROLES } from "@/app/types/users";
-
-import { userService } from "./user.services";
+import { userService } from "@/app/api/user/user.services";
+import { isAuthenticated } from "@/lib/auth";
+import { handleHttpError } from "@/lib/errorResponse";
+import { AuthorizationError } from "@/lib/httpErrors";
+import { USER_ROLES } from "@/types/users";
 
 export async function GET(request: NextRequest) {
   try {

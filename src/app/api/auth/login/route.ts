@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import { handleHttpError } from '@/app/lib/errorResponse';
-
-import { loginService } from "../login.services";
+import { loginService } from "@/app/api/auth/login.services";
+import { handleHttpError } from "@/lib/errorResponse";
 
 export async function POST(request: NextRequest) {
   try {

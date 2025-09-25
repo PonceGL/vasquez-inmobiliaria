@@ -1,3 +1,3 @@
 import "@testing-library/jest-dom";
 
-export * from "./__mocks__/env";
+export * from "@mocks/env";

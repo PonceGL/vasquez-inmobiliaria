@@ -1,17 +1,7 @@
 import { Error as MongooseError } from "mongoose";
 import { ZodError } from "zod";
 
-import { IS_DEV } from "@/app/constants/enviroment";
-import { hashPassword } from "@/app/lib/crypt";
-import {
-  BadRequestError,
-  HttpError,
-  InternalServerErrorException,
-  NotFoundException,
-} from "@/app/lib/httpErrors";
-import { dbConnect } from "@/app/lib/mongodb";
-
-import { LoginDto, loginSchema } from "../auth/dtos/login.dto";
+import { LoginDto, loginSchema } from "@/app/api/auth/dtos/login.dto";
 import {
   CreateUserDto,
   createUserDto,
@@ -19,8 +9,17 @@ import {
   findUserByEmailDto,
   UpdateUserDto,
   updateUserDto,
-} from "./dtos/user.dto";
-import { IUser, User } from "./user.entity";
+} from "@/app/api/user/dtos/user.dto";
+import { IUser, User } from "@/app/api/user/user.entity";
+import { IS_DEV } from "@/constants/enviroment";
+import { hashPassword } from "@/lib/crypt";
+import {
+  BadRequestError,
+  HttpError,
+  InternalServerErrorException,
+  NotFoundException,
+} from "@/lib/httpErrors";
+import { dbConnect } from "@/lib/mongodb";
 
 class UserService {
   public async getAll(): Promise<IUser[]> {

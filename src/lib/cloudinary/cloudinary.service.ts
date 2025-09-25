@@ -5,13 +5,13 @@ import {
   CLOUDINARY_API_SECRET,
   CLOUDINARY_PRESET,
   CLOUDINARY_URL,
-} from "@/app/constants/cloudinary";
+} from "@/constants/cloudinary";
 import {
   Images,
   ImagesByFolderSucces,
   ImagesUpload,
   UploadImageSucces,
-} from "@/app/types/cloudinary/image";
+} from "@/types/cloudinary/image";
 
 class CloudinaryService {
   private URL: string;
