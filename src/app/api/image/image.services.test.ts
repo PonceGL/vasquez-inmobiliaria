@@ -183,7 +183,7 @@ describe("ImageService", () => {
       expect(Image.findByIdAndUpdate).toHaveBeenCalledWith(
         mockImage._id,
         updateData,
-        { new: true }
+        { new: true, runValidators: true }
       );
       expect(result).toEqual(updatedImage);
     });

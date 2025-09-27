@@ -242,7 +242,7 @@ describe("UserService", () => {
 
       expect(User.findById).toHaveBeenCalledWith(mockUser._id);
       expect(User.findByIdAndDelete).toHaveBeenCalledWith(mockUser._id);
-      expect(result).toEqual({ message: "Propiedad eliminada correctamente." });
+      expect(result).toEqual({ message: "Usuario eliminado correctamente." });
     });
 
     it("❌ should throw NotFoundException if user to delete does not exist", async () => {

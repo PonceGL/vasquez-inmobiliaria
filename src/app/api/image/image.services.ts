@@ -38,12 +38,12 @@ class ImageService {
       await dbConnect();
       const image = await Image.findById(id);
       if (!image) {
-        throw new NotFoundException("Imagen no encontrada.");
+        throw new NotFoundException("Imagen no encontrada."); // El servicio de propiedades depende de este mensaje, TODO: cambiar por constante
       }
       return image;
     } catch (error) {
       throw this.handleServiceError(error, {
-        internal: "La imagen no se encontró.",
+        internal: "La imagen no se encontró.", // El servicio de propiedades depende de este mensaje, TODO: cambiar por constante
       });
     }
   }
@@ -107,6 +107,7 @@ class ImageService {
       await dbConnect();
       const updatedImage = await Image.findByIdAndUpdate(id, validatedData, {
         new: true,
+        runValidators: true,
       }).exec();
 
       if (!updatedImage) {

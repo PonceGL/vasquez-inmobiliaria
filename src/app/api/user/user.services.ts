@@ -39,12 +39,12 @@ class UserService {
       await dbConnect();
       const user = await User.findById(id);
       if (!user) {
-        throw new NotFoundException("El usuario no se encontró.");
+        throw new NotFoundException("El usuario no se encontró."); // El servicio de propiedades depende de este mensaje, TODO: cambiar por constante
       }
       return user;
     } catch (error) {
       throw this.handleServiceError(error, {
-        internal: "El usuario no se encontró.",
+        internal: "El usuario no se encontró.", // El servicio de propiedades depende de este mensaje, TODO: cambiar por constante
       });
     }
   }
@@ -132,7 +132,7 @@ class UserService {
       await this.getById(id);
       await dbConnect();
       await User.findByIdAndDelete(id);
-      return { message: "Propiedad eliminada correctamente." };
+      return { message: "Usuario eliminado correctamente." };
     } catch (error) {
       throw this.handleServiceError(error, {
         internal: "Usuario no eliminado.",

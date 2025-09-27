@@ -27,14 +27,15 @@ export function handleHttpError(error: unknown) {
     );
   }
   if (error instanceof ZodError) {
+    const issues = error.issues.map((issue) => ({
+      [issue.path.map((p) => p.toString()).join(".")]: issue.message,
+    }));
+
     return NextResponse.json(
       {
         success: false,
-        message: IS_DEV
-          ? error.issues.map((issue) => issue.message).join(", ") ??
-            error.message
-          : "Datos invalidos",
-        data: null,
+        message: "Datos invalidos",
+        data: IS_DEV ? issues : null,
       },
       { status: 400 }
     );
