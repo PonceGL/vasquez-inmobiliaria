@@ -16,7 +16,7 @@ export const basePropertyDto = z
       state: z.string().min(1, "El estado es obligatorio."),
       zipCode: z.string().optional(),
     }),
-    mainImage: z.string("La URL de la imagen principal no es válida."),
+    mainImage: z.string("El ID de la imagen principal no es válida."),
     images: z.array(z.string()),
     agent: z.string(),
   })

@@ -1,3 +1,4 @@
+import { MongoServerError } from "mongodb";
 import { MongooseError, Query } from "mongoose";
 import slugify from "slugify";
 import { ZodError } from "zod";
@@ -14,8 +15,10 @@ import { PROPERTY_POPULATABLE_FIELDS } from "@/constants/property";
 import {
   BadRequestError,
   HttpError,
+  ImageNotFoundException,
   InternalServerErrorException,
   NotFoundException,
+  UserNotFoundException,
 } from "@/lib/httpErrors";
 import { dbConnect } from "@/lib/mongodb";
 import { PROPERTY_POPULATE_FIELDS } from "@/types/property";
@@ -193,22 +196,16 @@ class PropertyService {
         await imageService.getById(data.mainImage);
       }
       if (data?.images && data?.images?.length > 0) {
-        for (const imageId of data.images) {
-          await imageService.getById(imageId);
-        }
+        await Promise.all(
+          data.images.map((imageId) => imageService.getById(imageId))
+        );
       }
     } catch (error) {
-      if (error instanceof Error) {
-        const errorByAgentNotFound = error?.message.includes(
-          "El usuario no se encontró."
-        );
-        const errorByImageNotFound = error?.message.includes(
-          "Imagen no encontrada."
-        );
-        if (errorByAgentNotFound)
-          throw new BadRequestError("El agente especificado no existe.");
-        if (errorByImageNotFound)
-          throw new BadRequestError("La imagen especificada no existe.");
+      if (error instanceof UserNotFoundException) {
+        throw new NotFoundException(error.message.replace("usuario", "agente"));
+      }
+      if (error instanceof ImageNotFoundException) {
+        throw new NotFoundException(error.message);
       }
       throw this.handleServiceError(error, {
         internal: "Uno de los elementos relacionados no existe.",
@@ -271,6 +268,14 @@ class PropertyService {
   ): Error {
     if (error instanceof HttpError || error instanceof ZodError) {
       return error;
+    }
+
+    if (error instanceof MongoServerError) {
+      const message =
+        `code: ${error?.code},  ${
+          IS_DEV ? JSON.stringify(error.keyValue) : "."
+        }` || `code: ${error?.code}, key duplicada`;
+      return new BadRequestError(message);
     }
 
     if (error instanceof MongooseError) {

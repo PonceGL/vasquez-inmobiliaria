@@ -14,7 +14,11 @@ import {
 import { IProperty, Property } from "@/app/api/property/models/property.entity";
 import { propertyService } from "@/app/api/property/property.service";
 import { userService } from "@/app/api/user/user.services";
-import { BadRequestError, NotFoundException } from "@/lib/httpErrors";
+import {
+  BadRequestError,
+  NotFoundException,
+  UserNotFoundException,
+} from "@/lib/httpErrors";
 
 jest.mock("@/app/api/user/user.services");
 jest.mock("@/app/api/image/image.services");
@@ -171,20 +175,19 @@ describe("PropertyService", () => {
       parseSpy.mockRestore();
     });
 
-    it("should throw BadRequestError if agent does not exist", async () => {
+    it("should throw UserNotFoundException if agent does not exist", async () => {
       mockedUserService.getById.mockRejectedValue(
-        new Error("El usuario no se encontró.")
+        new UserNotFoundException("El usuario no se encontró.")
       );
 
       await expect(propertyService.create(mockHouseDto)).rejects.toThrow(
-        BadRequestError
+        NotFoundException
       );
     });
 
     it("should re-throw ZodError on invalid data", async () => {
       const invalidData = { ...mockHouseDto, title: "" };
 
-      // Mock the parse method to throw a ZodError
       const parseSpy = jest
         .spyOn(createPropertyDto, "parse")
         .mockImplementation(() => {
@@ -202,7 +205,6 @@ describe("PropertyService", () => {
           throw zodError;
         });
 
-      // Verificar que el mock se aplicó correctamente
       expect(parseSpy).toHaveBeenCalledTimes(0);
 
       try {
