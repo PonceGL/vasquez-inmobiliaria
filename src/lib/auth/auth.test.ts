@@ -5,6 +5,7 @@ import { NextRequest } from "next/server";
 import { TextEncoder } from "util";
 
 import { isAuthenticated } from "@/lib/auth";
+import { AuthenticationError } from "@/lib/httpErrors";
 
 jest.mock("next/server", () => ({
   __esModule: true,
@@ -35,7 +36,9 @@ describe("Función isAuthenticated", () => {
       headers,
     }) as NextRequest;
 
-    const verificationError = new Error("JWTExpired");
+    const verificationError = new AuthenticationError(
+      "Invalid authorization token."
+    );
     mockedJwtVerify.mockRejectedValue(verificationError);
 
     await expect(isAuthenticated(request)).rejects.toThrow(verificationError);

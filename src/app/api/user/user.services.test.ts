@@ -12,6 +12,7 @@ import {
   BadRequestError,
   InternalServerErrorException,
   NotFoundException,
+  UserNotFoundException,
 } from "@/lib/httpErrors";
 import { dbConnect } from "@/lib/mongodb";
 
@@ -111,12 +112,12 @@ describe("UserService", () => {
       expect(User.findById).toHaveBeenCalledWith(mockUser._id);
     });
 
-    it("❌ should throw NotFoundException if user is not found", async () => {
+    it("❌ should throw UserNotFoundException if user is not found", async () => {
       mockedDbConnect.mockResolvedValue(true as any);
       (mockedUser.findById as jest.Mock).mockResolvedValue(null);
 
       await expect(userService.getById("nonexistent-id")).rejects.toThrow(
-        NotFoundException
+        UserNotFoundException
       );
     });
   });
@@ -133,7 +134,7 @@ describe("UserService", () => {
       expect(User.findOne).toHaveBeenCalledWith({ email: mockUser.email });
     });
 
-    it("❌ should throw NotFoundException if email is not found", async () => {
+    it("❌ should throw UserNotFoundException if email is not found", async () => {
       mockedDbConnect.mockResolvedValue(true as any);
       (mockedUser.findOne as jest.Mock).mockResolvedValue(null);
 
@@ -224,12 +225,12 @@ describe("UserService", () => {
       expect(User.findById).toHaveBeenCalledTimes(2);
     });
 
-    it("❌ should throw NotFoundException if user to update does not exist", async () => {
+    it("❌ should throw UserNotFoundException if user to update does not exist", async () => {
       (mockedUser.findById as jest.Mock).mockResolvedValue(null);
 
       await expect(
         userService.update("nonexistent-id", updateData)
-      ).rejects.toThrow(NotFoundException);
+      ).rejects.toThrow(UserNotFoundException);
     });
   });
 
@@ -242,14 +243,14 @@ describe("UserService", () => {
 
       expect(User.findById).toHaveBeenCalledWith(mockUser._id);
       expect(User.findByIdAndDelete).toHaveBeenCalledWith(mockUser._id);
-      expect(result).toEqual({ message: "Propiedad eliminada correctamente." });
+      expect(result).toEqual({ message: "Usuario eliminado correctamente." });
     });
 
-    it("❌ should throw NotFoundException if user to delete does not exist", async () => {
+    it("❌ should throw UserNotFoundException if user to delete does not exist", async () => {
       (mockedUser.findById as jest.Mock).mockResolvedValue(null);
 
       await expect(userService.delete("nonexistent-id")).rejects.toThrow(
-        NotFoundException
+        UserNotFoundException
       );
       expect(User.findByIdAndDelete).not.toHaveBeenCalled();
     });

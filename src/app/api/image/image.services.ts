@@ -15,8 +15,8 @@ import { cloudinaryService } from "@/lib/cloudinary/cloudinary.service";
 import {
   BadRequestError,
   HttpError,
+  ImageNotFoundException,
   InternalServerErrorException,
-  NotFoundException,
 } from "@/lib/httpErrors";
 import { dbConnect } from "@/lib/mongodb";
 
@@ -38,7 +38,9 @@ class ImageService {
       await dbConnect();
       const image = await Image.findById(id);
       if (!image) {
-        throw new NotFoundException("Imagen no encontrada.");
+        throw new ImageNotFoundException(
+          `Imagen no encontrada${IS_DEV ? ` id: ${id}` : "."}`
+        );
       }
       return image;
     } catch (error) {
@@ -107,6 +109,7 @@ class ImageService {
       await dbConnect();
       const updatedImage = await Image.findByIdAndUpdate(id, validatedData, {
         new: true,
+        runValidators: true,
       }).exec();
 
       if (!updatedImage) {

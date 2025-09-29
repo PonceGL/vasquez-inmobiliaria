@@ -54,7 +54,8 @@ Reviza el archivo [Configuración de Variables de Entorno](/docs/git-crypt.md)
 
 ## Documentación de autenticación y recuperación de contraseña
 
-Consulta el flujo de inicio de sesión y recuperación de contraseña en [docs/auth-flujo.md](docs/auth-flujo.md).
+- ** Consulta el flujo de inicio de sesión y recuperación de contraseña ** en [docs/auth-flujo.md](docs/auth-flujo.md).
+- **[API de Gestión de Propiedades](/docs/property-api.md)** - Sistema completo de gestión de propiedades inmobiliarias con discriminadores
 - **[API de Gestión de Imágenes](/docs/api-images.md)** - Sistema completo de gestión de imágenes con Cloudinary
 - **[Sistema de Usuarios](/docs/users.md)** - Gestión de usuarios, roles y autenticación
 - **[Integración con Cloudinary](/docs/cloudinary.md)** - Configuración y estrategia de subida de archivos
@@ -87,6 +88,7 @@ yarn test         # Ejecutar tests
 
 - ✅ Autenticación con JWT
 - ✅ Gestión de propiedades inmobiliarias
+- ✅ **Gestión de Propiedades** - API REST completa para gestión de propiedades inmobiliarias
 - ✅ **Gestión de Imágenes** - API REST para subir, organizar y gestionar imágenes con Cloudinary
 - ✅ Google Analytics integrado
 - ✅ Panel de administración

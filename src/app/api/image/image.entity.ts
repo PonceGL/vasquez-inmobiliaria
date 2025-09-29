@@ -10,36 +10,41 @@ export interface IImage extends Document {
   height: number;
 }
 
-const ImageSchema = new mongoose.Schema<IImage>({
-  url: {
-    type: String,
-    required: true,
+const ImageSchema = new mongoose.Schema<IImage>(
+  {
+    url: {
+      type: String,
+      required: true,
+    },
+    asset_id: {
+      type: String,
+      required: true,
+    },
+    public_id: {
+      type: String,
+      required: true,
+    },
+    folder: {
+      type: String,
+      required: true,
+    },
+    alt: {
+      type: String,
+      required: true,
+    },
+    width: {
+      type: Number,
+      required: true,
+    },
+    height: {
+      type: Number,
+      required: true,
+    },
   },
-  asset_id: {
-    type: String,
-    required: true,
-  },
-  public_id: {
-    type: String,
-    required: true,
-  },
-  folder: {
-    type: String,
-    required: true,
-  },
-  alt: {
-    type: String,
-    required: true,
-  },
-  width: {
-    type: Number,
-    required: true,
-  },
-  height: {
-    type: Number,
-    required: true,
-  },
-});
+  {
+    timestamps: true,
+  }
+);
 
 export const Image: Model<IImage> =
   mongoose.models.Image || mongoose.model<IImage>("Image", ImageSchema);

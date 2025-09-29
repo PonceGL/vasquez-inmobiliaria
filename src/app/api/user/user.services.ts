@@ -1,3 +1,4 @@
+import { MongoServerError } from "mongodb";
 import { Error as MongooseError } from "mongoose";
 import { ZodError } from "zod";
 
@@ -18,6 +19,7 @@ import {
   HttpError,
   InternalServerErrorException,
   NotFoundException,
+  UserNotFoundException,
 } from "@/lib/httpErrors";
 import { dbConnect } from "@/lib/mongodb";
 
@@ -39,7 +41,9 @@ class UserService {
       await dbConnect();
       const user = await User.findById(id);
       if (!user) {
-        throw new NotFoundException("El usuario no se encontró.");
+        throw new UserNotFoundException(
+          `El usuario no se encontró${IS_DEV ? ` id: ${id}` : "."}`
+        );
       }
       return user;
     } catch (error) {
@@ -132,7 +136,7 @@ class UserService {
       await this.getById(id);
       await dbConnect();
       await User.findByIdAndDelete(id);
-      return { message: "Propiedad eliminada correctamente." };
+      return { message: "Usuario eliminado correctamente." };
     } catch (error) {
       throw this.handleServiceError(error, {
         internal: "Usuario no eliminado.",
@@ -146,6 +150,14 @@ class UserService {
   ): Error {
     if (error instanceof HttpError || error instanceof ZodError) {
       return error;
+    }
+
+    if (error instanceof MongoServerError) {
+      const message =
+        `code: ${error?.code},  ${
+          IS_DEV ? JSON.stringify(error.keyValue) : "."
+        }` || `code: ${error?.code}, key duplicada`;
+      return new BadRequestError(message);
     }
 
     if (error instanceof MongooseError) {

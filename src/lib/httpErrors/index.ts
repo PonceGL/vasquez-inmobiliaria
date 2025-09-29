@@ -20,6 +20,24 @@ export class NotFoundException extends HttpError {
     Object.setPrototypeOf(this, NotFoundException.prototype);
   }
 }
+/**
+ * Excepción Especifica, para controlar los errores de la imagen para errores 404 (No Encontrado).
+ */
+export class ImageNotFoundException extends HttpError {
+  constructor(message: string = 'Imagen no encontrada') {
+    super(404, message);
+    Object.setPrototypeOf(this, ImageNotFoundException.prototype);
+  }
+}
+/**
+ * Excepción Especifica, para controlar los errores de las usuarios para errores 404 (No Encontrado).
+ */
+export class UserNotFoundException extends HttpError {
+  constructor(message: string = 'Usuario no encontrado') {
+    super(404, message);
+    Object.setPrototypeOf(this, UserNotFoundException.prototype);
+  }
+}
 
 /**
  * Excepción para errores 500 (Error Interno del Servidor).

@@ -9,8 +9,8 @@ import { imageService } from "@/app/api/image/image.services";
 import { CLOUDINARY_FOLDER } from "@/constants/cloudinary";
 import { cloudinaryService } from "@/lib/cloudinary/cloudinary.service";
 import {
+  ImageNotFoundException,
   InternalServerErrorException,
-  NotFoundException,
 } from "@/lib/httpErrors";
 import { dbConnect } from "@/lib/mongodb";
 
@@ -89,11 +89,11 @@ describe("ImageService", () => {
       expect(Image.findById).toHaveBeenCalledWith(mockImage._id);
     });
 
-    it("❌ should throw NotFoundException if image is not found", async () => {
+    it("❌ should throw ImageNotFoundException if image is not found", async () => {
       (mockedImage.findById as jest.Mock).mockResolvedValue(null);
 
       await expect(imageService.getById("nonexistent-id")).rejects.toThrow(
-        NotFoundException
+        ImageNotFoundException
       );
     });
   });
@@ -183,16 +183,16 @@ describe("ImageService", () => {
       expect(Image.findByIdAndUpdate).toHaveBeenCalledWith(
         mockImage._id,
         updateData,
-        { new: true }
+        { new: true, runValidators: true }
       );
       expect(result).toEqual(updatedImage);
     });
 
-    it("❌ should throw NotFoundException if image to update does not exist", async () => {
+    it("❌ should throw ImageNotFoundException if image to update does not exist", async () => {
       (mockedImage.findById as jest.Mock).mockResolvedValue(null);
       await expect(
         imageService.update("nonexistent-id", updateData)
-      ).rejects.toThrow(NotFoundException);
+      ).rejects.toThrow(ImageNotFoundException);
     });
   });
 

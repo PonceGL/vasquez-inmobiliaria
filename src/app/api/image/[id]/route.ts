@@ -70,8 +70,8 @@ export async function PATCH(request: NextRequest, { params }: Params) {
 
 export async function DELETE(request: NextRequest, { params }: Params) {
   try {
-    const { id } = await params;
     await isAuthenticated(request);
+    const { id } = await params;
     const updatedProperty = await imageService.delete(id);
     return NextResponse.json(
       {
