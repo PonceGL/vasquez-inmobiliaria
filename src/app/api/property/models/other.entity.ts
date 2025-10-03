@@ -7,6 +7,11 @@ export interface IOtherProperty extends IProperty {
     key: string;
     value: string;
   }[];
+  frontageMeters?: number;
+  depthMeters?: number;
+  topography?: "plano" | "ascendente" | "descendente" | "irregular";
+  hasServices?: boolean;
+  plotSize?: number;
 }
 
 const otherSchema = new mongoose.Schema<IOtherProperty>({
@@ -19,7 +24,6 @@ const otherSchema = new mongoose.Schema<IOtherProperty>({
   ],
 });
 
-
 export const OtherProperty: Model<IOtherProperty> =
-  mongoose.models.OtherProperty ||
+  Property.discriminators?.Otro ||
   Property.discriminator<IOtherProperty>("Otro", otherSchema);

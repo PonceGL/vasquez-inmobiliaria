@@ -1,0 +1,102 @@
+export const mockDataLand = {
+  propertyType: "terreno" as const,
+  title: "Terreno Residencial en Lomas de Angelópolis III",
+  description:
+    "Excelente oportunidad de inversión. Terreno plano de 200 metros cuadrados ubicado en uno de los clústers más exclusivos de la zona. Ideal para construir la casa de tus sueños. Cuenta con todos los servicios a pie de calle y seguridad 24 horas.",
+  price: {
+    value: 1250000,
+    currency: "MXN",
+  },
+  transactionType: "venta" as const,
+  location: {
+    coordinates: [-98.275, 19.0185],
+    address: "Blvd. de las Cascadas 789, Parque Querétaro, Cascatta",
+    city: "San Andrés Cholula",
+    state: "Puebla",
+    zipCode: "72830",
+  },
+  mainImage: "68d700497e5a6e478f0984d8",
+  images: [
+    "68d700527e5a6e478f0984da",
+    "68d7005b7e5a6e478f0984dc",
+    "68d700657e5a6e478f0984de",
+  ],
+  plotSize: 200,
+  frontageMeters: 10,
+  depthMeters: 20,
+  topography: "plano" as const,
+  hasServices: true,
+  agent: "68d6feed7e5a6e478f0984be",
+  status: "active" as const,
+};
+
+export const mockCreatedLand = {
+  title: "Terreno Residencial en Lomas de Angelópolis III",
+  slug: "terreno-residencial-en-lomas-de-angelopolis-iii",
+  description:
+    "Excelente oportunidad de inversión. Terreno plano de 200 metros cuadrados ubicado en uno de los clústers más exclusivos de la zona. Ideal para construir la casa de tus sueños. Cuenta con todos los servicios a pie de calle y seguridad 24 horas.",
+  price: {
+    value: 1250000,
+    currency: "MXN",
+  },
+  propertyType: "terreno" as const,
+  transactionType: "venta" as const,
+  location: {
+    coordinates: [-98.275, 19.0185],
+    address: "Blvd. de las Cascadas 789, Parque Querétaro, Cascatta",
+    city: "San Andrés Cholula",
+    state: "Puebla",
+    zipCode: "72830",
+    type: "Point",
+  },
+  mainImage: "68d700497e5a6e478f0984d8",
+  images: [
+    "68d700527e5a6e478f0984da",
+    "68d7005b7e5a6e478f0984dc",
+    "68d700657e5a6e478f0984de",
+  ],
+  status: "active" as const,
+  agent: "68d6feed7e5a6e478f0984be",
+  draft: true,
+  hidePrice: false,
+  _id: "68df165fe993e05c55a40cfc",
+  __t: "Terreno",
+  frontageMeters: 10,
+  depthMeters: 20,
+  topography: "plano" as const,
+  hasServices: true,
+  plotSize: 200,
+  createdAt: "2025-10-03T00:18:39.343Z",
+  updatedAt: "2025-10-03T00:18:39.343Z",
+};
+
+export const mockCreateLandDTO = {
+  title: "Terreno Residencial en Lomas de Angelópolis III",
+  description:
+    "Excelente oportunidad de inversión. Terreno plano de 200 metros cuadrados ubicado en uno de los clústers más exclusivos de la zona. Ideal para construir la casa de tus sueños. Cuenta con todos los servicios a pie de calle y seguridad 24 horas.",
+  price: { value: 1250000, currency: "MXN" },
+  transactionType: "venta",
+  location: {
+    coordinates: [-98.275, 19.0185],
+    address: "Blvd. de las Cascadas 789, Parque Querétaro, Cascatta",
+    city: "San Andrés Cholula",
+    state: "Puebla",
+    zipCode: "72830",
+  },
+  mainImage: "68d700497e5a6e478f0984d8",
+  images: [
+    "68d700527e5a6e478f0984da",
+    "68d7005b7e5a6e478f0984dc",
+    "68d700657e5a6e478f0984de",
+  ],
+  agent: "68d6feed7e5a6e478f0984be",
+  status: "active",
+  draft: true,
+  hidePrice: false,
+  propertyType: "terreno",
+  frontageMeters: 10,
+  depthMeters: 20,
+  topography: "plano",
+  hasServices: true,
+  plotSize: 200,
+};

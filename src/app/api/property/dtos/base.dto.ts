@@ -8,7 +8,7 @@ export const basePropertyDto = z
       value: z.number().positive("El precio debe ser positivo."),
       currency: z.string().default("MXN"),
     }),
-    transactionType: z.enum(["Venta", "Renta"]),
+    transactionType: z.enum(["venta", "renta"]),
     location: z.object({
       coordinates: z.tuple([z.number(), z.number()]), // [longitud, latitud]
       address: z.string().min(1, "La dirección es obligatoria."),
@@ -19,6 +19,9 @@ export const basePropertyDto = z
     mainImage: z.string("El ID de la imagen principal no es válida."),
     images: z.array(z.string()),
     agent: z.string(),
+    status: z.enum(["active", "process", "sold"]),
+    draft: z.boolean().default(true),
+    hidePrice: z.boolean().default(false),
   })
   .strict();
 
