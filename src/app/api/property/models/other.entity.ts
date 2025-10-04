@@ -25,5 +25,5 @@ const otherSchema = new mongoose.Schema<IOtherProperty>({
 });
 
 export const OtherProperty: Model<IOtherProperty> =
-  Property.discriminators?.Otro ||
-  Property.discriminator<IOtherProperty>("Otro", otherSchema);
+  Property.discriminators?.Other ||
+  Property.discriminator<IOtherProperty>("Other", otherSchema);

@@ -15,14 +15,20 @@ const ImageSchema = new mongoose.Schema<IImage>(
     url: {
       type: String,
       required: true,
+      unique: true, // <--- MUY IMPORTANTE
+      index: true,
     },
     asset_id: {
       type: String,
       required: true,
+      unique: true, // <--- MUY IMPORTANTE
+      index: true,
     },
     public_id: {
       type: String,
       required: true,
+      unique: true, // <--- MUY IMPORTANTE
+      index: true,
     },
     folder: {
       type: String,
@@ -30,7 +36,8 @@ const ImageSchema = new mongoose.Schema<IImage>(
     },
     alt: {
       type: String,
-      required: true,
+      required: [true, "La descripción es obligatoria."],
+      trim: true,
     },
     width: {
       type: Number,
