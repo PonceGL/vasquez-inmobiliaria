@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { ZodError } from "zod";
 
 import { imageService } from "@/app/api/image/image.services";
 import { isAuthenticated } from "@/lib/auth";
+import { handleHttpError } from "@/lib/errorResponse";
 
 interface Params {
   params: Promise<{ id: string }>;
@@ -21,19 +21,7 @@ export async function GET(request: NextRequest, { params }: Params) {
       { status: 200 }
     );
   } catch (error) {
-    if (error instanceof ZodError) {
-      return NextResponse.json(
-        {
-          message: "Datos invalidos para obtener las imagenes",
-          errors: error?.issues,
-        },
-        { status: 400 }
-      );
-    }
-
-    const errorMessage = (error as Error).message;
-    const status = errorMessage === "Imagen no encontrada." ? 404 : 400;
-    return NextResponse.json({ message: errorMessage }, { status });
+    return handleHttpError(error);
   }
 }
 
@@ -52,19 +40,7 @@ export async function PATCH(request: NextRequest, { params }: Params) {
       { status: 202 }
     );
   } catch (error) {
-    if (error instanceof ZodError) {
-      return NextResponse.json(
-        {
-          message: "Datos invalidos para actualizar la imagen",
-          errors: error?.issues,
-        },
-        { status: 304 }
-      );
-    }
-
-    const errorMessage = (error as Error).message;
-    const status = errorMessage === "Imagen no encontrada." ? 404 : 400;
-    return NextResponse.json({ message: errorMessage }, { status });
+    return handleHttpError(error);
   }
 }
 
@@ -82,18 +58,6 @@ export async function DELETE(request: NextRequest, { params }: Params) {
       { status: 202 }
     );
   } catch (error) {
-    if (error instanceof ZodError) {
-      return NextResponse.json(
-        {
-          message: "Datos invalidos para eliminar la imagen",
-          errors: error?.issues,
-        },
-        { status: 400 }
-      );
-    }
-
-    const errorMessage = (error as Error).message;
-    const status = errorMessage === "Imagen no encontrada." ? 404 : 400;
-    return NextResponse.json({ message: errorMessage }, { status });
+    return handleHttpError(error);
   }
 }

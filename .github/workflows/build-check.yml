@@ -1,10 +1,10 @@
-name: ✅ Next Build
+name: Next Build
 
 on:
   pull_request:
     branches:
       - main
-      - 'feature/update-next'
+      - 'develop'
 
 jobs:
   check-build:

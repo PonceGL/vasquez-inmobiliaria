@@ -3,23 +3,24 @@ import mongoose, { Model } from "mongoose";
 import { IProperty, Property } from "@/app/api/property/models/property.entity";
 
 export interface ILand extends IProperty {
-  landSqMeters: number;
   frontageMeters?: number;
   depthMeters?: number;
-  topography?: "Plano" | "Ascendente" | "Descendente" | "Irregular";
+  topography?: "plano" | "ascendente" | "descendente" | "irregular";
   hasServices: boolean;
+  plotSize: number;
 }
 
 const landSchema = new mongoose.Schema<ILand>({
-  landSqMeters: { type: Number, required: true },
   frontageMeters: { type: Number },
   depthMeters: { type: Number },
   topography: {
     type: String,
-    enum: ["Plano", "Ascendente", "Descendente", "Irregular"],
+    enum: ["plano", "ascendente", "descendente", "irregular"],
   },
   hasServices: { type: Boolean, default: false },
+  plotSize: { type: Number, default: 0 },
 });
 
 export const Land: Model<ILand> =
-  mongoose.models.Land || Property.discriminator<ILand>("Terreno", landSchema);
+  Property.discriminators?.Terreno ||
+  Property.discriminator<ILand>("Terreno", landSchema);

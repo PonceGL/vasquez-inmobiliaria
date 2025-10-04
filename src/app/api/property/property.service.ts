@@ -9,6 +9,9 @@ import {
   UpdatePropertyDTO,
   updatePropertySchema,
 } from "@/app/api/property/dtos/property.dto";
+import { House } from "@/app/api/property/models/house.entity";
+import { Land } from "@/app/api/property/models/land.entity";
+import { OtherProperty } from "@/app/api/property/models/other.entity";
 import { IProperty, Property } from "@/app/api/property/models/property.entity";
 import { IS_DEV } from "@/constants/enviroment";
 import { PROPERTY_POPULATABLE_FIELDS } from "@/constants/property";
@@ -40,6 +43,7 @@ class PropertyService {
       );
 
       const properties = await finalQuery
+        .select("-__t")
         .select("-__v")
         .lean<IProperty[]>()
         .exec();
@@ -65,7 +69,11 @@ class PropertyService {
         populateFields
       );
 
-      const property = await finalQuery.select("-__v").lean<IProperty>().exec();
+      const property = await finalQuery
+        .select("-__t")
+        .select("-__v")
+        .lean<IProperty>()
+        .exec();
 
       if (!property) {
         throw new NotFoundException("Propiedad no encontrada.");
@@ -93,7 +101,11 @@ class PropertyService {
         populateFields
       );
 
-      const property = await finalQuery.select("-__v").lean<IProperty>().exec();
+      const property = await finalQuery
+        .select("-__t")
+        .select("-__v")
+        .lean<IProperty>()
+        .exec();
       if (!property) {
         throw new NotFoundException("Propiedad no encontrada con ese slug.");
       }
@@ -105,17 +117,35 @@ class PropertyService {
     }
   }
 
-  public async create(propertyData: CreatePropertyDto): Promise<IProperty> {
+  public async create(propertyData: CreatePropertyDto) {
     try {
       const validatedData = createPropertyDto.parse(propertyData);
       await this.validateRelatedEntities(validatedData);
       await dbConnect();
-      const newProperty = await Property.create({
+      const dataToSave = {
         ...validatedData,
         slug: this.generateSlug(validatedData.title),
-      });
-      if (!newProperty) {
-        throw new InternalServerErrorException("Propiedad no creada.");
+      };
+
+      let newProperty: IProperty | null = null;
+
+      switch (validatedData.propertyType) {
+        case "casa":
+          newProperty = await House.create(dataToSave);
+          break;
+
+        case "terreno":
+          newProperty = await Land.create(dataToSave);
+          break;
+
+        case "otro":
+          newProperty = await OtherProperty.create(dataToSave);
+          break;
+
+        default:
+          throw new BadRequestError(
+            `Tipo de propiedad no soportado: ${propertyData.propertyType}`
+          );
       }
 
       return newProperty.toObject({
@@ -146,22 +176,19 @@ class PropertyService {
         validatedData.location = newLocation;
       }
 
-      const updatedProperty = await Property.findByIdAndUpdate(
-        id,
-        validatedData,
-        {
-          new: true,
-          runValidators: true,
-        }
-      )
-        .select("-__v")
-        .lean<IProperty>()
-        .exec();
+      const propertyToUpdate = await Property.findById(id);
 
-      if (!updatedProperty) {
-        throw new InternalServerErrorException("Propiedad no actualizada.");
+      if (!propertyToUpdate) {
+        throw new NotFoundException("Propiedad no encontrada.");
       }
-      return updatedProperty;
+      propertyToUpdate.set(validatedData);
+
+      const updatedProperty = await propertyToUpdate.save();
+
+      return updatedProperty.toObject({
+        virtuals: false,
+        versionKey: false,
+      });
     } catch (error) {
       throw this.handleServiceError(error, {
         internal: "Error al actualizar la propiedad.",

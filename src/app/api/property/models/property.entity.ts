@@ -14,7 +14,7 @@ export interface IProperty extends Document {
     value: number;
     currency: string;
   };
-  transactionType: "Venta" | "Renta";
+  transactionType: "venta" | "renta";
   location: {
     type: "Point";
     coordinates: [number, number]; // [longitud, latitud]
@@ -26,7 +26,12 @@ export interface IProperty extends Document {
   mainImage: Types.ObjectId | IImage;
   images: Types.ObjectId[] | IImage[];
   agent: Types.ObjectId | IUser;
-  propertyType: "Casa" | "Terreno" | "Otro";
+  propertyType: "casa" | "terreno" | "otro";
+  status: "active" | "process" | "sold";
+  draft: boolean;
+  hidePrice: boolean;
+  // subdivision: Types.ObjectId | Subdivision;
+  // interested: Types.ObjectId[] | Contact[];
 }
 
 const basePropertySchema = new mongoose.Schema(
@@ -56,9 +61,14 @@ const basePropertySchema = new mongoose.Schema(
       },
       currency: { type: String, default: "MXN" },
     },
+    propertyType: {
+      type: String,
+      enum: ["casa", "terreno", "otro"],
+      required: true,
+    },
     transactionType: {
       type: String,
-      enum: ["Venta", "Renta"],
+      enum: ["venta", "renta"],
       required: true,
     },
     location: {
@@ -89,15 +99,25 @@ const basePropertySchema = new mongoose.Schema(
         ref: "Image",
       },
     ],
+    status: {
+      type: String,
+      enum: ["active", "process", "sold"],
+      required: true,
+    },
     agent: {
       type: Types.ObjectId,
       ref: "User",
       required: true,
     },
-    propertyType: {
-      type: String,
-      enum: ["Casa", "Terreno", "Otro"],
+    draft: {
+      type: Boolean,
       required: true,
+      default: true,
+    },
+    hidePrice: {
+      type: Boolean,
+      required: true,
+      default: false,
     },
   },
   {

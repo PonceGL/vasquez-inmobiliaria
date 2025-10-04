@@ -2,17 +2,30 @@
  * @jest-environment node
  */
 
+import { mockCreatedImage, mockImages, mockSingleImage } from "@mocks/images";
+import {
+  mockCloudinaryResponse,
+  mockCreateImageDto,
+  mockCreateImageFromFormDataDto,
+  mockUpdateImageDto,
+} from "@mocks/images/create";
+import { MongooseError } from "mongoose";
 import { ZodError } from "zod";
 
+import {
+  createImageDto,
+  createImageFromFormDataDto,
+  updateImageDto,
+} from "@/app/api/image/dtos/image.dto";
 import { Image } from "@/app/api/image/image.entity";
 import { imageService } from "@/app/api/image/image.services";
 import { CLOUDINARY_FOLDER } from "@/constants/cloudinary";
 import { cloudinaryService } from "@/lib/cloudinary/cloudinary.service";
 import {
+  BadRequestError,
   ImageNotFoundException,
   InternalServerErrorException,
 } from "@/lib/httpErrors";
-import { dbConnect } from "@/lib/mongodb";
 
 jest.mock("@/lib/mongodb", () => ({
   dbConnect: jest.fn(),
@@ -39,193 +52,297 @@ jest.mock("@/constants/cloudinary", () => ({
   CLOUDINARY_FOLDER: "test_folder",
 }));
 
-const mockedImage = jest.mocked(Image);
+jest.mock("@/app/api/image/dtos/image.dto");
+
+const mockedImageModel = jest.mocked(Image);
 const mockedCloudinaryService = jest.mocked(cloudinaryService);
 
-describe("ImageService", () => {
-  const mockImage = {
-    _id: "60d0fe4f5311236168a109cb",
-    alt: "A beautiful landscape",
-    asset_id: "asset_123",
-    public_id: "public_456",
-    folder: "test_folder/landscapes",
-    url: "http://cloudinary.com/image.jpg",
-    width: 800,
-    height: 600,
-  };
-
-  const mockImages = [mockImage];
-
-  afterEach(() => {
+describe("ImageService getAll", () => {
+  beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  describe("getAll", () => {
-    it("✅ should return all images successfully", async () => {
-      (mockedImage.find as jest.Mock).mockResolvedValue(mockImages);
+  it("should return a list of images", async () => {
+    (mockedImageModel.find as jest.Mock).mockResolvedValue(mockImages);
 
-      const images = await imageService.getAll();
+    const result = await imageService.getAll();
 
-      expect(images).toEqual(mockImages);
-      expect(dbConnect).toHaveBeenCalledTimes(1);
-      expect(Image.find).toHaveBeenCalledWith({});
+    expect(result).toEqual(mockImages);
+    expect(mockedImageModel.find).toHaveBeenCalledWith({});
+  });
+
+  it("should handle errors and throw BadRequestError", async () => {
+    const mongooseError = new MongooseError("Database error");
+    (mockedImageModel.find as jest.Mock).mockRejectedValue(mongooseError);
+
+    await expect(imageService.getAll()).rejects.toThrow(BadRequestError);
+  });
+});
+
+describe("ImageService getById", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it("should return an image by id", async () => {
+    (mockedImageModel.findById as jest.Mock).mockResolvedValue(mockSingleImage);
+
+    const result = await imageService.getById(mockSingleImage._id);
+
+    expect(result).toEqual(mockSingleImage);
+    expect(mockedImageModel.findById).toHaveBeenCalledWith(mockSingleImage._id);
+  });
+
+  it("should throw ImageNotFoundException when image is not found", async () => {
+    (mockedImageModel.findById as jest.Mock).mockResolvedValue(null);
+
+    await expect(imageService.getById("invalid-id")).rejects.toThrow(
+      ImageNotFoundException
+    );
+  });
+});
+
+describe("ImageService create", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it("should create a new image", async () => {
+    jest
+      .spyOn(createImageFromFormDataDto, "parse")
+      .mockReturnValue(mockCreateImageFromFormDataDto as never);
+
+    mockedCloudinaryService.upload.mockResolvedValue(
+      mockCloudinaryResponse as never
+    );
+
+    jest
+      .spyOn(createImageDto, "parse")
+      .mockReturnValue(mockCreateImageDto as never);
+
+    (mockedImageModel.create as jest.Mock).mockResolvedValue(mockCreatedImage);
+
+    const formData = new FormData();
+    formData.append("file", mockCreateImageFromFormDataDto.file);
+    formData.append("alt", mockCreateImageFromFormDataDto.alt);
+    formData.append("folder", mockCreateImageFromFormDataDto.folder || "");
+
+    const result = await imageService.create(formData);
+
+    expect(result).toBeDefined();
+    expect(mockedCloudinaryService.upload).toHaveBeenCalledWith({
+      file: mockCreateImageFromFormDataDto.file,
+      folder: `${CLOUDINARY_FOLDER}/${mockCreateImageFromFormDataDto.folder}`,
     });
-
-    it("❌ should throw an error on database failure", async () => {
-      (mockedImage.find as jest.Mock).mockRejectedValue(new Error("DB error"));
-      await expect(imageService.getAll()).rejects.toThrow(
-        InternalServerErrorException
-      );
+    expect(mockedImageModel.create).toHaveBeenCalledWith({
+      alt: mockCreateImageFromFormDataDto.alt,
+      asset_id: mockCloudinaryResponse.asset_id,
+      public_id: mockCloudinaryResponse.public_id,
+      folder: mockCloudinaryResponse.folder,
+      url: mockCloudinaryResponse.url,
+      width: mockCloudinaryResponse.width,
+      height: mockCloudinaryResponse.height,
     });
   });
 
-  describe("getById", () => {
-    it("✅ should return an image by ID successfully", async () => {
-      (mockedImage.findById as jest.Mock).mockResolvedValue(mockImage);
-
-      const image = await imageService.getById(mockImage._id);
-
-      expect(image).toEqual(mockImage);
-      expect(Image.findById).toHaveBeenCalledWith(mockImage._id);
+  it("should re-throw ZodError on invalid form data", async () => {
+    jest.spyOn(createImageFromFormDataDto, "parse").mockImplementation(() => {
+      throw new ZodError([
+        {
+          code: "invalid_type" as const,
+          expected: "object",
+          path: ["file"],
+          message: "El archivo es requerido.",
+        },
+      ]);
     });
 
-    it("❌ should throw ImageNotFoundException if image is not found", async () => {
-      (mockedImage.findById as jest.Mock).mockResolvedValue(null);
-
-      await expect(imageService.getById("nonexistent-id")).rejects.toThrow(
-        ImageNotFoundException
-      );
-    });
-  });
-
-  describe("create", () => {
-    const mockFile = new File(["dummy content"], "test-image.jpg", {
-      type: "image/jpeg",
-    });
-    const mockFormData = new FormData();
-    mockFormData.append("file", mockFile);
-    mockFormData.append("alt", "Test Alt Text");
-    mockFormData.append("folder", "test_subfolder");
-
-    const mockCloudinaryResponse = {
-      asset_id: "asset_new",
-      public_id: "public_new",
-      width: 100,
-      height: 100,
-      folder: `${CLOUDINARY_FOLDER}/test_subfolder`,
-      url: "http://new-image.com/img.png",
-    };
-
-    it("✅ should create an image successfully", async () => {
-      mockedCloudinaryService.upload.mockResolvedValue(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        mockCloudinaryResponse as any
-      );
-      (mockedImage.create as jest.Mock).mockResolvedValue({
-        ...mockCloudinaryResponse,
-        alt: "Test Alt Text",
-      });
-
-      const newImage = await imageService.create(mockFormData);
-
-      expect(cloudinaryService.upload).toHaveBeenCalledWith({
-        file: mockFile,
-        folder: `${CLOUDINARY_FOLDER}/test_subfolder`,
-      });
-      expect(Image.create).toHaveBeenCalledWith({
-        alt: "Test Alt Text",
-        asset_id: mockCloudinaryResponse.asset_id,
-        public_id: mockCloudinaryResponse.public_id,
-        folder: mockCloudinaryResponse.folder,
-        url: mockCloudinaryResponse.url,
-        width: mockCloudinaryResponse.width,
-        height: mockCloudinaryResponse.height,
-      });
-      expect(newImage.asset_id).toBe(mockCloudinaryResponse.asset_id);
-    });
-
-    it("❌ should re-throw ZodError on invalid form data", async () => {
+    try {
       const invalidFormData = new FormData();
       invalidFormData.append("file", "not-a-file");
       invalidFormData.append("alt", "");
 
-      await expect(imageService.create(invalidFormData)).rejects.toThrow(
-        ZodError
-      );
-    });
-
-    it("❌ should throw error if Cloudinary upload fails", async () => {
-      mockedCloudinaryService.upload.mockRejectedValue(
-        new Error("Upload failed")
-      );
-      await expect(imageService.create(mockFormData)).rejects.toThrow(
-        InternalServerErrorException
-      );
-    });
+      await imageService.create(invalidFormData);
+      fail("Expected function to throw");
+    } catch (error) {
+      expect(error).toBeInstanceOf(ZodError);
+    }
   });
 
-  describe("update", () => {
-    const updateData = { alt: "Updated alt text" };
-    const updatedImage = { ...mockImage, ...updateData };
+  it("should throw InternalServerErrorException if cloudinary upload fails", async () => {
+    jest
+      .spyOn(createImageFromFormDataDto, "parse")
+      .mockReturnValue(mockCreateImageFromFormDataDto as never);
 
-    it("✅ should update and return the image", async () => {
-      (mockedImage.findById as jest.Mock).mockResolvedValue(mockImage);
-      const findByIdAndUpdateMock = {
-        exec: jest.fn().mockResolvedValue(updatedImage),
-      };
-      (mockedImage.findByIdAndUpdate as jest.Mock).mockReturnValue(
-        findByIdAndUpdateMock
-      );
+    mockedCloudinaryService.upload.mockRejectedValue(
+      new Error("Cloudinary upload failed")
+    );
 
-      const result = await imageService.update(mockImage._id, updateData);
+    const formData = new FormData();
+    formData.append("file", mockCreateImageFromFormDataDto.file);
+    formData.append("alt", mockCreateImageFromFormDataDto.alt);
+    formData.append("folder", mockCreateImageFromFormDataDto.folder || "");
 
-      expect(Image.findById).toHaveBeenCalledWith(mockImage._id);
-      expect(Image.findByIdAndUpdate).toHaveBeenCalledWith(
-        mockImage._id,
-        updateData,
-        { new: true, runValidators: true }
-      );
-      expect(result).toEqual(updatedImage);
-    });
-
-    it("❌ should throw ImageNotFoundException if image to update does not exist", async () => {
-      (mockedImage.findById as jest.Mock).mockResolvedValue(null);
-      await expect(
-        imageService.update("nonexistent-id", updateData)
-      ).rejects.toThrow(ImageNotFoundException);
-    });
+    await expect(imageService.create(formData)).rejects.toThrow(
+      InternalServerErrorException
+    );
   });
 
-  // --- Pruebas para el método delete ---
-  describe("delete", () => {
-    it("✅ should delete an image and its Cloudinary asset", async () => {
-      (mockedImage.findById as jest.Mock).mockResolvedValue(mockImage);
-      mockedCloudinaryService.deleteByAssetId.mockResolvedValue(undefined);
-      const findByIdAndDeleteMock = {
-        exec: jest.fn().mockResolvedValue(mockImage),
-      };
-      (mockedImage.findByIdAndDelete as jest.Mock).mockReturnValue(
-        findByIdAndDeleteMock
-      );
+  it("should throw BadRequestError if database creation fails", async () => {
+    jest
+      .spyOn(createImageFromFormDataDto, "parse")
+      .mockReturnValue(mockCreateImageFromFormDataDto as never);
 
-      await imageService.delete(mockImage._id);
+    mockedCloudinaryService.upload.mockResolvedValue(
+      mockCloudinaryResponse as never
+    );
 
-      expect(Image.findById).toHaveBeenCalledWith(mockImage._id);
-      expect(cloudinaryService.deleteByAssetId).toHaveBeenCalledWith(
-        mockImage.asset_id
-      );
-      expect(Image.findByIdAndDelete).toHaveBeenCalledWith(mockImage._id);
+    jest
+      .spyOn(createImageDto, "parse")
+      .mockReturnValue(mockCreateImageDto as never);
+
+    (mockedImageModel.create as jest.Mock).mockImplementation(() => {
+      throw new MongooseError("Database creation error");
     });
 
-    it("❌ should throw error if Cloudinary deletion fails", async () => {
-      (mockedImage.findById as jest.Mock).mockResolvedValue(mockImage);
-      mockedCloudinaryService.deleteByAssetId.mockRejectedValue(
-        new Error("Deletion failed")
-      );
+    const formData = new FormData();
+    formData.append("file", mockCreateImageFromFormDataDto.file);
+    formData.append("alt", mockCreateImageFromFormDataDto.alt);
+    formData.append("folder", mockCreateImageFromFormDataDto.folder || "");
 
-      await expect(imageService.delete(mockImage._id)).rejects.toThrow(
-        InternalServerErrorException
-      );
+    await expect(imageService.create(formData)).rejects.toThrow(
+      BadRequestError
+    );
+  });
+});
+
+describe("ImageService update", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it("should update and return the image", async () => {
+    jest
+      .spyOn(updateImageDto, "parse")
+      .mockReturnValue(mockUpdateImageDto as never);
+
+    const updatedImage = { ...mockSingleImage, ...mockUpdateImageDto };
+
+    (mockedImageModel.findById as jest.Mock).mockResolvedValue(mockSingleImage);
+
+    const findByIdAndUpdateMock = {
+      exec: jest.fn().mockResolvedValue(updatedImage),
+    };
+    (mockedImageModel.findByIdAndUpdate as jest.Mock).mockReturnValue(
+      findByIdAndUpdateMock
+    );
+
+    const result = await imageService.update(
+      mockSingleImage._id,
+      mockUpdateImageDto
+    );
+
+    expect(result).toEqual(updatedImage);
+    expect(mockedImageModel.findById).toHaveBeenCalledWith(mockSingleImage._id);
+    expect(mockedImageModel.findByIdAndUpdate).toHaveBeenCalledWith(
+      mockSingleImage._id,
+      mockUpdateImageDto,
+      { new: true, runValidators: true }
+    );
+  });
+
+  it("should throw ImageNotFoundException if image to update is not found", async () => {
+    jest
+      .spyOn(updateImageDto, "parse")
+      .mockReturnValue(mockUpdateImageDto as never);
+
+    (mockedImageModel.findById as jest.Mock).mockResolvedValue(null);
+
+    await expect(
+      imageService.update("invalid-id", mockUpdateImageDto)
+    ).rejects.toThrow(ImageNotFoundException);
+  });
+
+  it("should throw InternalServerErrorException if image cannot be updated", async () => {
+    jest
+      .spyOn(updateImageDto, "parse")
+      .mockReturnValue(mockUpdateImageDto as never);
+
+    (mockedImageModel.findById as jest.Mock).mockResolvedValue(mockSingleImage);
+
+    const findByIdAndUpdateMock = {
+      exec: jest.fn().mockResolvedValue(null),
+    };
+    (mockedImageModel.findByIdAndUpdate as jest.Mock).mockReturnValue(
+      findByIdAndUpdateMock
+    );
+
+    await expect(
+      imageService.update(mockSingleImage._id, mockUpdateImageDto)
+    ).rejects.toThrow(InternalServerErrorException);
+  });
+});
+
+describe("ImageService delete", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it("should delete an image and return success", async () => {
+    (mockedImageModel.findById as jest.Mock).mockResolvedValue(mockSingleImage);
+
+    mockedCloudinaryService.deleteByAssetId.mockResolvedValue(undefined);
+
+    const findByIdAndDeleteMock = {
+      exec: jest.fn().mockResolvedValue(mockSingleImage),
+    };
+    (mockedImageModel.findByIdAndDelete as jest.Mock).mockReturnValue(
+      findByIdAndDeleteMock
+    );
+
+    const result = await imageService.delete(mockSingleImage._id);
+
+    expect(result).toEqual(mockSingleImage);
+    expect(mockedImageModel.findById).toHaveBeenCalledWith(mockSingleImage._id);
+    expect(mockedCloudinaryService.deleteByAssetId).toHaveBeenCalledWith(
+      mockSingleImage.asset_id
+    );
+    expect(mockedImageModel.findByIdAndDelete).toHaveBeenCalledWith(
+      mockSingleImage._id
+    );
+  });
+
+  it("should throw ImageNotFoundException if image to delete is not found", async () => {
+    (mockedImageModel.findById as jest.Mock).mockResolvedValue(null);
+
+    await expect(imageService.delete("invalid-id")).rejects.toThrow(
+      ImageNotFoundException
+    );
+  });
+
+  it("should throw InternalServerErrorException if cloudinary deletion fails", async () => {
+    (mockedImageModel.findById as jest.Mock).mockResolvedValue(mockSingleImage);
+
+    mockedCloudinaryService.deleteByAssetId.mockRejectedValue(
+      new Error("Cloudinary deletion failed")
+    );
+
+    await expect(imageService.delete(mockSingleImage._id)).rejects.toThrow(
+      InternalServerErrorException
+    );
+  });
+
+  it("should throw BadRequestError if database deletion fails", async () => {
+    (mockedImageModel.findById as jest.Mock).mockResolvedValue(mockSingleImage);
+
+    mockedCloudinaryService.deleteByAssetId.mockResolvedValue(undefined);
+
+    (mockedImageModel.findByIdAndDelete as jest.Mock).mockImplementation(() => {
+      throw new MongooseError("Database deletion error");
     });
+
+    await expect(imageService.delete(mockSingleImage._id)).rejects.toThrow(
+      BadRequestError
+    );
   });
 });

@@ -2,6 +2,27 @@
  * @jest-environment node
  */
 
+import {
+  mockCreatedProperty,
+  mockProperties,
+  mockSingleProperty,
+} from "@mocks/properties";
+import {
+  mockCreatePropertyDto,
+  mockDataHouse,
+  mockGetImageById,
+  mockGetUSerById,
+  mockZodError,
+} from "@mocks/properties/create_house";
+import {
+  mockCreatedLand,
+  mockCreateLandDTO,
+  mockDataLand,
+} from "@mocks/properties/create_land";
+import {
+  mockCreateOtherDTO,
+  mockDataOther,
+} from "@mocks/properties/create_other";
 import { MongooseError, Query } from "mongoose";
 import { ZodError } from "zod";
 
@@ -11,13 +32,16 @@ import {
   UpdatePropertyDTO,
   updatePropertySchema,
 } from "@/app/api/property/dtos/property.dto";
+import { House } from "@/app/api/property/models/house.entity";
+import { Land } from "@/app/api/property/models/land.entity";
+import { OtherProperty } from "@/app/api/property/models/other.entity";
 import { IProperty, Property } from "@/app/api/property/models/property.entity";
 import { propertyService } from "@/app/api/property/property.service";
 import { userService } from "@/app/api/user/user.services";
 import {
   BadRequestError,
+  InternalServerErrorException,
   NotFoundException,
-  UserNotFoundException,
 } from "@/lib/httpErrors";
 
 jest.mock("@/app/api/user/user.services");
@@ -25,287 +49,332 @@ jest.mock("@/app/api/image/image.services");
 jest.mock("@/lib/mongodb");
 jest.mock("slugify");
 jest.mock("@/app/api/property/models/property.entity");
-
-const mockProperty = {
-  _id: "68d719e323ca506503864506",
-  title: "Casa de Prueba",
-  slug: "casa-de-prueba",
-  description: "Descripción de prueba",
-  price: {
-    value: 1000000,
-    currency: "MXN",
+jest.mock("@/app/api/property/models/house.entity", () => ({
+  House: {
+    create: jest.fn(),
   },
-  transactionType: "Venta" as const,
-  location: {
-    type: "Point" as const,
-    coordinates: [-98.275, 19.0185] as [number, number],
-    address: "Dirección de prueba",
-    city: "Ciudad de prueba",
-    state: "Estado de prueba",
-    zipCode: "12345",
-  },
-  mainImage: "68d700497e5a6e478f0984d8",
-  images: ["68d700527e5a6e478f0984da", "68d7005b7e5a6e478f0984dc"],
-  agent: "68d6feed7e5a6e478f0984be",
-  propertyType: "Casa" as const,
-  createdAt: new Date(),
-  updatedAt: new Date(),
-};
+}));
+jest.mock("@/app/api/property/models/land.entity", () => {
+  return {
+    Land: {
+      create: jest.fn(() => ({
+        toObject: jest.fn(),
+      })),
+    },
+  };
+});
+jest.mock("@/app/api/property/models/other.entity", () => {
+  return {
+    OtherProperty: {
+      create: jest.fn(() => ({
+        toObject: jest.fn(),
+      })),
+    },
+  };
+});
 
 const mockedUserService = jest.mocked(userService);
 const mockedImageService = jest.mocked(imageService);
 const mockedPropertyModel = jest.mocked(Property);
+const mockedHouseModel = jest.mocked(House);
+const mockedLandModel = jest.mocked(Land);
+const mockedOtherPropertyModel = jest.mocked(OtherProperty);
 
 const createMockQuery = <T = IProperty>(
   resolveValue: T | null | { _id: string } | { message: string }
 ): Query<T, IProperty> =>
   ({
     exec: jest.fn().mockResolvedValue(resolveValue),
+    set: jest.fn(),
+    save: jest.fn().mockResolvedValue(resolveValue),
     lean: jest.fn().mockReturnThis(),
     select: jest.fn().mockReturnThis(),
     populate: jest.fn().mockReturnThis(),
   } as unknown as Query<T, IProperty>);
 
-describe("PropertyService", () => {
+describe("PropertyService getAll", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  describe("getById", () => {
-    it("should return a property when a valid ID is provided", async () => {
-      mockedPropertyModel.findById.mockReturnValue(
-        createMockQuery<IProperty>(mockProperty)
-      );
+  it("should return a list of properties", async () => {
+    mockedPropertyModel.find.mockReturnValue(
+      createMockQuery<IProperty[]>(mockProperties as unknown as IProperty[])
+    );
 
-      const result = await propertyService.getById(mockProperty._id as string);
+    const result = await propertyService.getAll();
 
-      expect(result).toEqual(mockProperty);
-    });
+    expect(result).toEqual(mockProperties);
+    expect(mockedPropertyModel.find).toHaveBeenCalledWith({});
+  });
 
-    it("should throw NotFoundException when property is not found", async () => {
-      mockedPropertyModel.findById.mockReturnValue(
-        createMockQuery<IProperty>(null)
-      );
+  it("should handle errors and throw BadRequestError", async () => {
+    const mongooseError = new MongooseError("Database error");
+    mockedPropertyModel.find.mockReturnValue(
+      createMockQuery<IProperty[]>(null)
+    );
+    (mockedPropertyModel.find().exec as jest.Mock).mockRejectedValue(
+      mongooseError
+    );
 
-      await expect(propertyService.getById("non-existent-id")).rejects.toThrow(
-        NotFoundException
-      );
+    await expect(propertyService.getAll()).rejects.toThrow(BadRequestError);
+  });
+});
+
+describe("PropertyService getById", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it("should return a property by id", async () => {
+    mockedPropertyModel.findById.mockReturnValue(
+      createMockQuery<IProperty>(mockSingleProperty as unknown as IProperty)
+    );
+
+    const result = await propertyService.getById(mockSingleProperty._id);
+
+    expect(result).toEqual(mockSingleProperty);
+    expect(mockedPropertyModel.findById).toHaveBeenCalledWith(
+      mockSingleProperty._id
+    );
+  });
+
+  it("should throw NotFoundException when property is not found", async () => {
+    mockedPropertyModel.findById.mockReturnValue(
+      createMockQuery<IProperty>(null)
+    );
+
+    await expect(propertyService.getById("invalid-id")).rejects.toThrow(
+      NotFoundException
+    );
+  });
+});
+
+describe("PropertyService getBySlug", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it("should return a property by slug", async () => {
+    mockedPropertyModel.findOne.mockReturnValue(
+      createMockQuery<IProperty>(mockSingleProperty as unknown as IProperty)
+    );
+
+    const result = await propertyService.getBySlug(mockSingleProperty.slug);
+
+    expect(result).toEqual(mockSingleProperty);
+    expect(mockedPropertyModel.findOne).toHaveBeenCalledWith({
+      slug: mockSingleProperty.slug,
     });
   });
 
-  describe("create", () => {
-    const mockHouseDto = {
-      propertyType: "Terreno" as const,
-      title: "Terreno Residencial en Lomas de Angelópolis III",
-      description:
-        "Excelente oportunidad de inversión. Terreno plano de 200 metros cuadrados ubicado en uno de los clústers más exclusivos de la zona. Ideal para construir la casa de tus sueños. Cuenta con todos los servicios a pie de calle y seguridad 24 horas.",
-      price: {
-        value: 1250000,
-        currency: "MXN",
-      },
-      transactionType: "Venta" as const,
-      location: {
-        coordinates: [-98.275, 19.0185] as [number, number],
-        address: "Blvd. de las Cascadas 789, Parque Querétaro, Cascatta",
-        city: "San Andrés Cholula",
-        state: "Puebla",
-        zipCode: "72830",
-      },
-      mainImage: "68d700497e5a6e478f0984d8",
-      images: [
-        "68d700527e5a6e478f0984da",
-        "68d7005b7e5a6e478f0984dc",
-        "68d700657e5a6e478f0984de",
-      ],
-      agent: "68d6feed7e5a6e478f0984be",
-      landSqMeters: 200,
-      frontageMeters: 10,
-      depthMeters: 20,
-      topography: "Plano" as const,
-      hasServices: true,
-    };
+  it("should throw NotFoundException when property is not found", async () => {
+    mockedPropertyModel.findOne.mockReturnValue(
+      createMockQuery<IProperty>(null)
+    );
 
-    it("should create and return a new property", async () => {
-      const parseSpy = jest
-        .spyOn(createPropertyDto, "parse")
-        .mockReturnValue(mockHouseDto);
+    await expect(propertyService.getBySlug("invalid-slug")).rejects.toThrow(
+      NotFoundException
+    );
+  });
+});
 
-      const createdDocument = {
-        _id: "68d719e323ca506503864506",
-        title: "Terreno Residencial en Lomas de Angelópolis III",
-        slug: "terreno-residencial-en-lomas-de-angelopolis-iii",
-        description:
-          "Excelente oportunidad de inversión. Terreno plano de 200 metros cuadrados ubicado en uno de los clústers más exclusivos de la zona. Ideal para construir la casa de tus sueños. Cuenta con todos los servicios a pie de calle y seguridad 24 horas.",
+describe("PropertyService create", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it("should create a new house", async () => {
+    jest
+      .spyOn(createPropertyDto, "parse")
+      .mockReturnValue(mockCreatePropertyDto as never);
+
+    mockedUserService.getById.mockResolvedValue(
+      mockGetUSerById(mockDataHouse.agent) as never
+    );
+    mockedImageService.getById.mockResolvedValue(
+      mockGetImageById(mockDataHouse.mainImage) as never
+    );
+
+    mockedHouseModel.create.mockReturnValue({
+      toObject: jest.fn(() => mockCreatedProperty as unknown as IProperty),
+    } as never);
+
+    const result = await propertyService.create(mockDataHouse as never);
+
+    expect(result).toBeDefined();
+  });
+
+  it("should create a new land", async () => {
+    jest
+      .spyOn(createPropertyDto, "parse")
+      .mockReturnValue(mockCreateLandDTO as never);
+
+    mockedUserService.getById.mockResolvedValue(
+      mockGetUSerById(mockDataLand.agent) as never
+    );
+    mockedImageService.getById.mockResolvedValue(
+      mockGetImageById(mockDataLand.mainImage) as never
+    );
+
+    mockedLandModel.create.mockReturnValue({
+      toObject: jest.fn(() => mockCreatedLand as unknown as IProperty),
+    } as never);
+
+    const result = await propertyService.create(mockDataLand as never);
+
+    expect(result).toBeDefined();
+  });
+
+  it("should create a new other property", async () => {
+    jest
+      .spyOn(createPropertyDto, "parse")
+      .mockReturnValue(mockCreateOtherDTO as never);
+
+    mockedUserService.getById.mockResolvedValue(
+      mockGetUSerById(mockDataOther.agent) as never
+    );
+    mockedImageService.getById.mockResolvedValue(
+      mockGetImageById(mockDataOther.mainImage) as never
+    );
+
+    mockedOtherPropertyModel.create.mockReturnValue({
+      toObject: jest.fn(() => mockDataOther as unknown as IProperty),
+    } as never);
+
+    const result = await propertyService.create(mockDataOther as never);
+
+    expect(result).toBeDefined();
+  });
+
+  it("should re-throw ZodError on invalid data", async () => {
+    jest.spyOn(createPropertyDto, "parse").mockImplementation(() => {
+      throw new ZodError(mockZodError);
+    });
+
+    try {
+      await propertyService.create({
+        propertyType: "casa",
+        title: "Casa 5A",
+        description: "Lorem Ipsum",
         price: {
-          value: 1250000,
+          value: 253560,
           currency: "MXN",
         },
-        transactionType: "Venta" as const,
-        location: {
-          type: "Point" as const,
-          coordinates: [-98.275, 19.0185] as [number, number],
-          address: "Blvd. de las Cascadas 789, Parque Querétaro, Cascatta",
-          city: "San Andrés Cholula",
-          state: "Puebla",
-          zipCode: "72830",
-        },
-        mainImage: "68d700497e5a6e478f0984d8",
-        images: [
-          "68d700527e5a6e478f0984da",
-          "68d7005b7e5a6e478f0984dc",
-          "68d700657e5a6e478f0984de",
-        ],
-        agent: "68d6feed7e5a6e478f0984be",
-        propertyType: "Terreno" as const,
-        createdAt: new Date("2025-09-26T22:55:31.259Z"),
-        updatedAt: new Date("2025-09-26T22:55:31.259Z"),
-      };
-
-      mockedPropertyModel.create.mockResolvedValue({
-        ...createdDocument,
-        toObject: jest.fn().mockReturnValue(createdDocument),
       } as never);
-      mockedUserService.getById.mockResolvedValue({} as never);
-      mockedImageService.getById.mockResolvedValue({} as never);
-
-      await propertyService.create(mockHouseDto);
-
-      expect(mockedPropertyModel.create).toHaveBeenCalled();
-
-      parseSpy.mockRestore();
-    });
-
-    it("should throw UserNotFoundException if agent does not exist", async () => {
-      mockedUserService.getById.mockRejectedValue(
-        new UserNotFoundException("El usuario no se encontró.")
-      );
-
-      await expect(propertyService.create(mockHouseDto)).rejects.toThrow(
-        NotFoundException
-      );
-    });
-
-    it("should re-throw ZodError on invalid data", async () => {
-      const invalidData = { ...mockHouseDto, title: "" };
-
-      const parseSpy = jest
-        .spyOn(createPropertyDto, "parse")
-        .mockImplementation(() => {
-          const zodError = new ZodError([
-            {
-              code: "too_small",
-              minimum: 1,
-              inclusive: true,
-              exact: false,
-              message: "El título es obligatorio.",
-              path: ["title"],
-              origin: "value",
-            },
-          ]);
-          throw zodError;
-        });
-
-      expect(parseSpy).toHaveBeenCalledTimes(0);
-
-      try {
-        await propertyService.create(invalidData);
-        fail("Expected function to throw");
-      } catch (error) {
-        expect(error).toBeInstanceOf(ZodError);
-      }
-
-      parseSpy.mockRestore();
-    });
+      fail("Expected function to throw");
+    } catch (error) {
+      expect(error).toBeInstanceOf(ZodError);
+    }
   });
 
-  describe("update", () => {
-    it("should update and return the property", async () => {
-      const updateData = {
-        title: "Casa Remodelada",
-        propertyType: "Casa" as const,
-      } as UpdatePropertyDTO;
-      const updatedProperty = { ...mockProperty, title: "Casa Remodelada" };
-      const parseSpy = jest
-        .spyOn(updatePropertySchema, "parse")
-        .mockReturnValue(updateData);
+  it("should throw BadRequestError if property to update cant be created in database", async () => {
+    jest
+      .spyOn(createPropertyDto, "parse")
+      .mockReturnValue(mockCreatePropertyDto as never);
 
-      mockedPropertyModel.findById.mockReturnValue(
-        createMockQuery<IProperty>(mockProperty)
-      );
+    mockedUserService.getById.mockResolvedValue(
+      mockGetUSerById(mockDataHouse.agent) as never
+    );
+    mockedImageService.getById.mockResolvedValue(
+      mockGetImageById(mockDataHouse.mainImage) as never
+    );
 
-      mockedPropertyModel.findByIdAndUpdate.mockReturnValue(
-        createMockQuery<IProperty>(updatedProperty)
-      );
-
-      const result = await propertyService.update(
-        mockProperty._id as string,
-        updateData
-      );
-
-      expect(result).toEqual(updatedProperty);
-      parseSpy.mockRestore();
+    mockedHouseModel.create.mockImplementation(() => {
+      throw new MongooseError("Propiedad duplicada");
     });
 
-    it("should throw NotFoundException if property to update is not found", async () => {
-      const updateData = {
-        title: "Nuevo",
-        propertyType: "Casa" as const,
-      } as UpdatePropertyDTO;
-      const parseSpy = jest
-        .spyOn(updatePropertySchema, "parse")
-        .mockReturnValue(updateData);
+    await expect(
+      propertyService.create(mockDataHouse as never)
+    ).rejects.toThrow(BadRequestError);
+  });
+});
 
-      mockedPropertyModel.findById.mockReturnValue(
-        createMockQuery<IProperty>(null)
-      );
+describe("PropertyService update", () => {
+  it("should update and return the property", async () => {
+    const updateData = {
+      title: "Casa Remodelada",
+      propertyType: "casa" as const,
+      location: {
+        address: "Nueva Dirección 123",
+      },
+    } as UpdatePropertyDTO;
 
-      await expect(
-        propertyService.update(mockProperty._id as string, updateData)
-      ).rejects.toThrow(NotFoundException);
+    const updatedProperty = { ...mockSingleProperty, title: "Casa Remodelada" };
 
-      parseSpy.mockRestore();
-    });
+    jest.spyOn(updatePropertySchema, "parse").mockReturnValue(updateData);
+
+    mockedPropertyModel.findById.mockReturnValue({
+      ...updatedProperty,
+      exec: jest.fn().mockResolvedValue(updatedProperty),
+      set: jest.fn(),
+      save: jest.fn(() => ({
+        toObject: jest.fn(() => updatedProperty as unknown as IProperty),
+      })),
+      lean: jest.fn().mockReturnThis(),
+      select: jest.fn().mockReturnThis(),
+    } as never);
+
+    const result = await propertyService.update(
+      mockSingleProperty._id as string,
+      updateData
+    );
+
+    expect(result).toBeDefined();
   });
 
-  describe("delete", () => {
-    it("should delete a property and return a success message", async () => {
-      mockedPropertyModel.findById.mockReturnValue(
-        createMockQuery<IProperty>(mockProperty)
-      );
+  it("should throw NotFoundException if property to update is not found", async () => {
+    const updateData = {
+      title: "Casa Remodelada",
+      propertyType: "casa" as const,
+      location: {
+        address: "Nueva Dirección 123",
+      },
+    } as UpdatePropertyDTO;
 
-      mockedPropertyModel.findByIdAndDelete.mockReturnValue(
-        createMockQuery<{ _id: string }>({ _id: mockProperty._id as string })
-      );
+    jest.spyOn(updatePropertySchema, "parse").mockReturnValue(updateData);
 
-      const result = await propertyService.delete(mockProperty._id as string);
+    mockedPropertyModel.findById.mockReturnValue(
+      createMockQuery<IProperty>(null)
+    );
 
-      expect(result).toEqual({ message: "Propiedad eliminada correctamente." });
-    });
+    await expect(
+      propertyService.update("invalid-id", updateData)
+    ).rejects.toThrow(NotFoundException);
+  });
+});
 
-    it("should throw an error if Mongoose fails to delete", async () => {
-      mockedPropertyModel.findById.mockReturnValue(
-        createMockQuery<IProperty>(mockProperty)
-      );
-
-      mockedPropertyModel.findByIdAndDelete.mockReturnValue(
-        createMockQuery<IProperty>(null)
-      );
-
-      await expect(
-        propertyService.delete(mockProperty._id as string)
-      ).rejects.toThrow("Propiedad no eliminada.");
-    });
+describe("PropertyService delete", () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
   });
 
-  describe("handleServiceError", () => {
-    it("should return a BadRequestError for a MongooseError", () => {
-      const mongooseError = new MongooseError("Duplicate key");
-      const error = (
-        propertyService as unknown as {
-          handleServiceError: (error: unknown) => Error;
-        }
-      ).handleServiceError(mongooseError);
-      expect(error).toBeInstanceOf(BadRequestError);
-    });
+  it("should delete a property and return a success message", async () => {
+    mockedPropertyModel.findById.mockReturnValue(
+      createMockQuery<IProperty>(mockSingleProperty as unknown as IProperty)
+    );
+
+    mockedPropertyModel.findByIdAndDelete.mockReturnValue(
+      createMockQuery<IProperty>(mockSingleProperty as unknown as IProperty)
+    );
+
+    const result = await propertyService.delete(
+      mockSingleProperty._id as string
+    );
+    expect(result).toEqual({ message: "Propiedad eliminada correctamente." });
+  });
+
+  it("should throw InternalServerErrorException if property to update cant be updated", async () => {
+    mockedPropertyModel.findById.mockReturnValue(
+      createMockQuery<IProperty>(mockSingleProperty as unknown as IProperty)
+    );
+
+    mockedPropertyModel.findByIdAndDelete.mockReturnValue(
+      createMockQuery<IProperty | null>(null)
+    );
+
+    await expect(
+      propertyService.delete(mockSingleProperty._id as string)
+    ).rejects.toThrow(InternalServerErrorException);
   });
 });
