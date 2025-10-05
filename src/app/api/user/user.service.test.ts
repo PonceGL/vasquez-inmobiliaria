@@ -6,7 +6,7 @@
 import { Error as MongooseError } from "mongoose";
 
 import { User } from "@/app/api/user/user.entity";
-import { userService } from "@/app/api/user/user.services";
+import { userService } from "@/app/api/user/user.service";
 import { hashPassword } from "@/lib/crypt";
 import {
   BadRequestError,

@@ -34,8 +34,8 @@ import {
   ResetPasswordDto,
   resetPasswordSchema,
 } from "@/app/api/auth/dtos/resetPassword.dto";
-import { loginService } from "@/app/api/auth/login.services";
-import { userService } from "@/app/api/user/user.services";
+import { loginService } from "@/app/api/auth/login.service";
+import { userService } from "@/app/api/user/user.service";
 import { comparePassword, hashPassword } from "@/lib/crypt";
 import {
   AuthenticationError,
@@ -44,7 +44,7 @@ import {
 } from "@/lib/httpErrors";
 import { sendMailService } from "@/lib/sendMail";
 
-jest.mock("@/app/api/user/user.services");
+jest.mock("@/app/api/user/user.service");
 jest.mock("@/lib/sendMail");
 jest.mock("@/lib/crypt");
 jest.mock("@/lib/mongodb", () => ({

@@ -19,7 +19,7 @@ import {
   updateImageDto,
 } from "@/app/api/image/dtos/image.dto";
 import { IImage, Image } from "@/app/api/image/image.entity";
-import { imageService } from "@/app/api/image/image.services";
+import { imageService } from "@/app/api/image/image.service";
 import { CLOUDINARY_FOLDER } from "@/constants/cloudinary";
 import { cloudinaryService } from "@/lib/cloudinary/cloudinary.service";
 import {

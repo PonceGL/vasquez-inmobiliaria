@@ -3,6 +3,7 @@ import { MongooseError, Query } from "mongoose";
 import slugify from "slugify";
 import { ZodError } from "zod";
 
+import { imageService } from "@/app/api/image/image.service";
 import {
   CreatePropertyDto,
   createPropertyDto,
@@ -13,6 +14,7 @@ import { House } from "@/app/api/property/models/house.entity";
 import { Land } from "@/app/api/property/models/land.entity";
 import { OtherProperty } from "@/app/api/property/models/other.entity";
 import { IProperty, Property } from "@/app/api/property/models/property.entity";
+import { userService } from "@/app/api/user/user.service";
 import { IS_DEV } from "@/constants/enviroment";
 import { PROPERTY_POPULATABLE_FIELDS } from "@/constants/property";
 import {
@@ -25,9 +27,6 @@ import {
 } from "@/lib/httpErrors";
 import { dbConnect } from "@/lib/mongodb";
 import { PROPERTY_POPULATE_FIELDS } from "@/types/property";
-
-import { imageService } from "../image/image.services";
-import { userService } from "../user/user.services";
 
 class PropertyService {
   public async getAll(
