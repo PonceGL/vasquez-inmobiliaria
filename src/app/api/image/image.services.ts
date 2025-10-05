@@ -5,6 +5,7 @@ import {
   CreateImageDto,
   createImageDto,
   createImageFromFormDataDto,
+  createManyImagesDto,
   UpdateImageDto,
   updateImageDto,
 } from "@/app/api/image/dtos/image.dto";
@@ -19,12 +20,13 @@ import {
   InternalServerErrorException,
 } from "@/lib/httpErrors";
 import { dbConnect } from "@/lib/mongodb";
+import { UploadImageSucces } from "@/types/cloudinary/image";
 
 class ImageService {
   public async getAll(): Promise<IImage[]> {
     try {
       await dbConnect();
-      const images = await Image.find({});
+      const images = await Image.find({}).select("-__v");
       return images;
     } catch (error) {
       throw this.handleServiceError(error, {
@@ -36,7 +38,7 @@ class ImageService {
   public async getById(id: string): Promise<IImage> {
     try {
       await dbConnect();
-      const image = await Image.findById(id);
+      const image = await Image.findById(id).select("-__v");
       if (!image) {
         throw new ImageNotFoundException(
           `Imagen no encontrada${IS_DEV ? ` id: ${id}` : "."}`
@@ -60,26 +62,13 @@ class ImageService {
 
       const { file, alt, folder: folderToSave } = validatedData;
 
-      if (!CLOUDINARY_FOLDER) {
-        throw new InternalServerErrorException(
-          IS_DEV
-            ? "CLOUDINARY_FOLDER is not defined in environment variables"
-            : "Internal server error"
-        );
-      }
-      const cloudinaryImage = await cloudinaryService.upload({
+      const { cloudinaryImage } = await this.uploadToCloudinary(
         file,
-        folder: `${CLOUDINARY_FOLDER}/${folderToSave ?? ""}`,
-      });
-
-      if (!cloudinaryImage) {
-        throw new InternalServerErrorException(
-          "error al crear cloudinary Image"
-        );
-      }
+        folderToSave
+      );
 
       const imageData: CreateImageDto = {
-        alt,
+        alt: alt.trim(),
         asset_id: cloudinaryImage.asset_id,
         public_id: cloudinaryImage.public_id,
         folder: cloudinaryImage.folder,
@@ -89,10 +78,60 @@ class ImageService {
       };
 
       createImageDto.parse(imageData);
-
-      await dbConnect();
-      const newImage = await Image.create(imageData);
+      const newImage = await this.saveImageToDB(imageData);
       return newImage;
+    } catch (error) {
+      throw this.handleServiceError(error, {
+        internal: "Error al crear la imagen.",
+      });
+    }
+  }
+
+  public async createMany(formData: FormData): Promise<IImage[]> {
+    try {
+      const dataToValidate = {
+        files: formData.getAll("files"),
+        alts: formData.getAll("alts"),
+        folder: formData.get("folder"),
+      };
+
+      const validatedData = createManyImagesDto.parse(dataToValidate);
+
+      const { files, alts, folder } = validatedData;
+
+      const filesToProcess = files.map((file, index) => ({
+        file,
+        alt: alts[index],
+      }));
+
+      const newImages = await Promise.all(
+        filesToProcess.map(async ({ file, alt }) => {
+          const { cloudinaryImage } = await this.uploadToCloudinary(
+            file,
+            folder
+          );
+          if (!cloudinaryImage) {
+            throw new InternalServerErrorException(
+              "error al crear cloudinary Image"
+            );
+          }
+          return await this.saveImageToDB({
+            alt: alt.trim(),
+            asset_id: cloudinaryImage.asset_id,
+            public_id: cloudinaryImage.public_id,
+            folder: cloudinaryImage.folder,
+            url: cloudinaryImage.url,
+            width: cloudinaryImage.width,
+            height: cloudinaryImage.height,
+          });
+        })
+      );
+
+      if (newImages.length === 0) {
+        throw new InternalServerErrorException("No se crearon las imágenes.");
+      }
+
+      return newImages;
     } catch (error) {
       throw this.handleServiceError(error, {
         internal: "Error al crear la imagen.",
@@ -135,6 +174,29 @@ class ImageService {
         internal: "Error al eliminar la imagen.",
       });
     }
+  }
+
+  private async uploadToCloudinary(
+    file: File,
+    folder?: string
+  ): Promise<{ cloudinaryImage: UploadImageSucces }> {
+    const cloudinaryImage = await cloudinaryService.upload({
+      file,
+      folder: `${CLOUDINARY_FOLDER}/${folder ?? ""}`,
+    });
+
+    if (!cloudinaryImage) {
+      throw new InternalServerErrorException("error al crear cloudinary Image");
+    }
+    return { cloudinaryImage };
+  }
+
+  private async saveImageToDB(imageData: CreateImageDto): Promise<IImage> {
+    createImageDto.parse(imageData);
+
+    await dbConnect();
+    const newImage = await Image.create(imageData);
+    return newImage;
   }
 
   private handleServiceError(

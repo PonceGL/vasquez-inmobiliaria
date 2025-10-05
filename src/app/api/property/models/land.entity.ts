@@ -22,5 +22,5 @@ const landSchema = new mongoose.Schema<ILand>({
 });
 
 export const Land: Model<ILand> =
-  Property.discriminators?.Terreno ||
-  Property.discriminator<ILand>("Terreno", landSchema);
+  Property.discriminators?.Land ||
+  Property.discriminator<ILand>("Land", landSchema);

@@ -27,5 +27,5 @@ const houseSchema = new mongoose.Schema<IHouse>({
 });
 
 export const House: Model<IHouse> =
-  Property.discriminators?.Casa ||
-  Property.discriminator<IHouse>("Casa", houseSchema);
+  Property.discriminators?.House ||
+  Property.discriminator<IHouse>("House", houseSchema);
