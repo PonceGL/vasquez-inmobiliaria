@@ -11,7 +11,7 @@ import {
   ResetPasswordDto,
   resetPasswordSchema,
 } from "@/app/api/auth/dtos/resetPassword.dto";
-import { userService } from "@/app/api/user/user.services";
+import { userService } from "@/app/api/user/user.service";
 import { env } from "@/config/env";
 import {
   ACCESS_TOKEN_EXPIRATION,

@@ -1,17 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { imageService } from "@/app/api/image/image.service";
+import { addressService } from "@/app/api/contact/address/address.service";
 import { isAuthenticated } from "@/lib/auth";
 import { handleHttpError } from "@/lib/errorResponse";
 
 export async function GET() {
   try {
-    const images = await imageService.getAll();
+    const addresses = await addressService.getAll();
     return NextResponse.json(
       {
         success: true,
-        message: "Images successfully obtained",
-        data: images,
+        message: "Addresses successfully obtained",
+        data: addresses,
       },
       { status: 200 }
     );
@@ -23,14 +23,13 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     await isAuthenticated(request);
-    const formData = await request.formData();
-    const createdImage = await imageService.create(formData);
-
+    const body = await request.json();
+    const newAddress = await addressService.create(body);
     return NextResponse.json(
       {
         success: true,
-        message: "Imagen creada exitosamente",
-        data: createdImage,
+        message: "Address successfully created",
+        data: newAddress,
       },
       { status: 201 }
     );

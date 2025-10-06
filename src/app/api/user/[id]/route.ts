@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { userService } from "@/app/api/user/user.services";
+import { userService } from "@/app/api/user/user.service";
 import { isAuthenticated } from "@/lib/auth";
 import { handleHttpError } from "@/lib/errorResponse";
 
@@ -10,8 +10,8 @@ interface Params {
 
 export async function GET(request: NextRequest, { params }: Params) {
   try {
-    const { id } = await params;
     await isAuthenticated(request);
+    const { id } = await params;
     const users = await userService.getById(id);
     return NextResponse.json(
       {
@@ -28,8 +28,8 @@ export async function GET(request: NextRequest, { params }: Params) {
 
 export async function PATCH(request: NextRequest, { params }: Params) {
   try {
-    const { id } = await params;
     await isAuthenticated(request);
+    const { id } = await params;
     const body = await request.json();
     const user = await userService.update(id, body);
     return NextResponse.json(
@@ -47,8 +47,8 @@ export async function PATCH(request: NextRequest, { params }: Params) {
 
 export async function DELETE(request: NextRequest, { params }: Params) {
   try {
-    const { id } = await params;
     await isAuthenticated(request);
+    const { id } = await params;
     const users = await userService.delete(id);
     return NextResponse.json(
       {

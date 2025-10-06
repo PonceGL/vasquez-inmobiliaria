@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { userService } from "@/app/api/user/user.services";
+import { userService } from "@/app/api/user/user.service";
 import { isAuthenticated } from "@/lib/auth";
 import { handleHttpError } from "@/lib/errorResponse";
 

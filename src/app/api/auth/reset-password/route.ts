@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import { handleHttpError } from "@/lib/errorResponse";
 
-import { loginService } from '../login.services';
+import { loginService } from "../login.service";
 
 export async function POST(request: NextRequest) {
    try {

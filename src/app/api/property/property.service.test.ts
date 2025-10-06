@@ -26,7 +26,7 @@ import {
 import { MongooseError, Query } from "mongoose";
 import { ZodError } from "zod";
 
-import { imageService } from "@/app/api/image/image.services";
+import { imageService } from "@/app/api/image/image.service";
 import {
   createPropertyDto,
   UpdatePropertyDTO,
@@ -37,15 +37,15 @@ import { Land } from "@/app/api/property/models/land.entity";
 import { OtherProperty } from "@/app/api/property/models/other.entity";
 import { IProperty, Property } from "@/app/api/property/models/property.entity";
 import { propertyService } from "@/app/api/property/property.service";
-import { userService } from "@/app/api/user/user.services";
+import { userService } from "@/app/api/user/user.service";
 import {
   BadRequestError,
   InternalServerErrorException,
   NotFoundException,
 } from "@/lib/httpErrors";
 
-jest.mock("@/app/api/user/user.services");
-jest.mock("@/app/api/image/image.services");
+jest.mock("@/app/api/image/image.service");
+jest.mock("@/app/api/user/user.service");
 jest.mock("@/lib/mongodb");
 jest.mock("slugify");
 jest.mock("@/app/api/property/models/property.entity");

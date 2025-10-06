@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { imageService } from "@/app/api/image/image.service";
+import { addressService } from "@/app/api/contact/address/address.service";
 import { isAuthenticated } from "@/lib/auth";
 import { handleHttpError } from "@/lib/errorResponse";
 
@@ -10,13 +10,14 @@ interface Params {
 
 export async function GET(request: NextRequest, { params }: Params) {
   try {
+    await isAuthenticated(request);
     const { id } = await params;
-    const images = await imageService.getById(id);
+    const address = await addressService.getById(id);
     return NextResponse.json(
       {
         success: true,
-        message: "Images successfully obtained",
-        data: images,
+        message: "Address successfully obtained",
+        data: address,
       },
       { status: 200 }
     );
@@ -27,17 +28,17 @@ export async function GET(request: NextRequest, { params }: Params) {
 
 export async function PATCH(request: NextRequest, { params }: Params) {
   try {
-    const { id } = await params;
     await isAuthenticated(request);
+    const { id } = await params;
     const body = await request.json();
-    const updatedProperty = await imageService.update(id, body);
+    const address = await addressService.update(id, body);
     return NextResponse.json(
       {
         success: true,
-        message: "Images successfully updated",
-        data: updatedProperty,
+        message: "Address successfully updated",
+        data: address,
       },
-      { status: 202 }
+      { status: 200 }
     );
   } catch (error) {
     return handleHttpError(error);
@@ -46,16 +47,16 @@ export async function PATCH(request: NextRequest, { params }: Params) {
 
 export async function DELETE(request: NextRequest, { params }: Params) {
   try {
-    await isAuthenticated(request);
-    const { id } = await params;
-    const updatedProperty = await imageService.delete(id);
+      await isAuthenticated(request);
+      const { id } = await params;
+    const address = await addressService.delete(id);
     return NextResponse.json(
       {
         success: true,
-        message: "Images successfully deleted",
-        data: updatedProperty,
+        message: "Address successfully deleted",
+        data: address,
       },
-      { status: 202 }
+      { status: 200 }
     );
   } catch (error) {
     return handleHttpError(error);

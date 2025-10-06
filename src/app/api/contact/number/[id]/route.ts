@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { imageService } from "@/app/api/image/image.service";
+import { contactNumberService } from "@/app/api/contact/number/number.service";
 import { isAuthenticated } from "@/lib/auth";
 import { handleHttpError } from "@/lib/errorResponse";
 
@@ -10,13 +10,33 @@ interface Params {
 
 export async function GET(request: NextRequest, { params }: Params) {
   try {
-    const { id } = await params;
-    const images = await imageService.getById(id);
+      await isAuthenticated(request);
+      const { id } = await params;
+    const number = await contactNumberService.getById(id);
     return NextResponse.json(
       {
         success: true,
-        message: "Images successfully obtained",
-        data: images,
+        message: "Number successfully obtained",
+        data: number,
+      },
+      { status: 200 }
+    );
+  } catch (error) {
+    return handleHttpError(error);      
+  }
+}
+
+export async function PATCH(request: NextRequest, { params }: Params) {
+  try {
+      await isAuthenticated(request);
+      const { id } = await params;
+    const body = await request.json();
+    const number = await contactNumberService.update(id, body);
+    return NextResponse.json(
+      {
+        success: true,
+        message: "Number successfully updated",
+        data: number,
       },
       { status: 200 }
     );
@@ -25,37 +45,18 @@ export async function GET(request: NextRequest, { params }: Params) {
   }
 }
 
-export async function PATCH(request: NextRequest, { params }: Params) {
-  try {
-    const { id } = await params;
-    await isAuthenticated(request);
-    const body = await request.json();
-    const updatedProperty = await imageService.update(id, body);
-    return NextResponse.json(
-      {
-        success: true,
-        message: "Images successfully updated",
-        data: updatedProperty,
-      },
-      { status: 202 }
-    );
-  } catch (error) {
-    return handleHttpError(error);
-  }
-}
-
 export async function DELETE(request: NextRequest, { params }: Params) {
   try {
-    await isAuthenticated(request);
-    const { id } = await params;
-    const updatedProperty = await imageService.delete(id);
+      await isAuthenticated(request);
+      const { id } = await params;
+    const number = await contactNumberService.delete(id);
     return NextResponse.json(
       {
         success: true,
-        message: "Images successfully deleted",
-        data: updatedProperty,
+        message: "Number successfully deleted",
+        data: number,
       },
-      { status: 202 }
+      { status: 200 }
     );
   } catch (error) {
     return handleHttpError(error);

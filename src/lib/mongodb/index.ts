@@ -1,21 +1,19 @@
 import mongoose, { Mongoose } from "mongoose";
 
-if (!process.env.MONGODB_URI) {
-  throw new Error("Por favor, define la variable de entorno MONGODB_URI");
-}
+import { env } from "@/config/env";
 
-const MONGODB_URI = process.env.MONGODB_URI;
+const MONGODB_URI = env.MONGODB_URI;
 
-interface MongooseCache {
+interface CachedMongooseConnection {
   conn: Mongoose | null;
   promise: Promise<Mongoose> | null;
 }
 
 declare global {
-  var mongoose: MongooseCache;
+  var mongoose: CachedMongooseConnection;
 }
 
-let cached: MongooseCache = global.mongoose;
+let cached: CachedMongooseConnection = global.mongoose;
 
 if (!cached) {
   cached = global.mongoose = { conn: null, promise: null };
@@ -42,6 +40,7 @@ async function dbConnect(): Promise<Mongoose> {
     cached.conn = await cached.promise;
   } catch (e) {
     cached.promise = null;
+    console.error("Failed to connect to MongoDB:", e);
     throw e;
   }
 

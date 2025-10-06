@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { imageService } from "@/app/api/image/image.service";
+import { contactEmailService } from "@/app/api/contact/email/email.service";
 import { isAuthenticated } from "@/lib/auth";
 import { handleHttpError } from "@/lib/errorResponse";
 
@@ -10,13 +10,14 @@ interface Params {
 
 export async function GET(request: NextRequest, { params }: Params) {
   try {
+    await isAuthenticated(request);
     const { id } = await params;
-    const images = await imageService.getById(id);
+    const email = await contactEmailService.getById(id);
     return NextResponse.json(
       {
         success: true,
-        message: "Images successfully obtained",
-        data: images,
+        message: "Email successfully obtained",
+        data: email,
       },
       { status: 200 }
     );
@@ -27,17 +28,17 @@ export async function GET(request: NextRequest, { params }: Params) {
 
 export async function PATCH(request: NextRequest, { params }: Params) {
   try {
-    const { id } = await params;
     await isAuthenticated(request);
+    const { id } = await params;
     const body = await request.json();
-    const updatedProperty = await imageService.update(id, body);
+    const email = await contactEmailService.update(id, body);
     return NextResponse.json(
       {
         success: true,
-        message: "Images successfully updated",
-        data: updatedProperty,
+        message: "Email successfully updated",
+        data: email,
       },
-      { status: 202 }
+      { status: 200 }
     );
   } catch (error) {
     return handleHttpError(error);
@@ -46,16 +47,16 @@ export async function PATCH(request: NextRequest, { params }: Params) {
 
 export async function DELETE(request: NextRequest, { params }: Params) {
   try {
-    await isAuthenticated(request);
-    const { id } = await params;
-    const updatedProperty = await imageService.delete(id);
+      await isAuthenticated(request);
+      const { id } = await params;
+    const email = await contactEmailService.delete(id);
     return NextResponse.json(
       {
         success: true,
-        message: "Images successfully deleted",
-        data: updatedProperty,
+        message: "Email successfully deleted",
+        data: email,
       },
-      { status: 202 }
+      { status: 200 }
     );
   } catch (error) {
     return handleHttpError(error);

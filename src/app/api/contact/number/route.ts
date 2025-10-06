@@ -1,17 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { imageService } from "@/app/api/image/image.service";
+import { contactNumberService } from "@/app/api/contact/number/number.service";
 import { isAuthenticated } from "@/lib/auth";
 import { handleHttpError } from "@/lib/errorResponse";
 
 export async function GET() {
   try {
-    const images = await imageService.getAll();
+    const numbers = await contactNumberService.getAll();
     return NextResponse.json(
       {
         success: true,
-        message: "Images successfully obtained",
-        data: images,
+        message: "Contact info successfully obtained",
+        data: numbers,
       },
       { status: 200 }
     );
@@ -23,14 +23,13 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     await isAuthenticated(request);
-    const formData = await request.formData();
-    const createdImage = await imageService.create(formData);
-
+    const body = await request.json();
+    const newNumber = await contactNumberService.create(body);
     return NextResponse.json(
       {
         success: true,
-        message: "Imagen creada exitosamente",
-        data: createdImage,
+        message: "Number successfully created",
+        data: newNumber,
       },
       { status: 201 }
     );
