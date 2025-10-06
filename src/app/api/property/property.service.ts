@@ -292,15 +292,15 @@ class PropertyService {
     error: unknown,
     customMessages?: { [key: string]: string }
   ): Error {
+    const defaultMessage = customMessages?.internal || "Error interno.";
     if (error instanceof HttpError || error instanceof ZodError) {
       return error;
     }
 
     if (error instanceof MongoServerError) {
-      const message =
-        `code: ${error?.code},  ${
-          IS_DEV ? JSON.stringify(error.keyValue) : "."
-        }` || `code: ${error?.code}, key duplicada`;
+      const message = IS_DEV
+        ? `code: ${error?.code}, ${JSON.stringify(error.keyValue)}`
+        : defaultMessage;
       return new BadRequestError(message);
     }
 
@@ -309,9 +309,8 @@ class PropertyService {
       return new BadRequestError(IS_DEV ? error.message : message);
     }
 
-    const message = customMessages?.internal || "Error interno.";
     return new InternalServerErrorException(
-      IS_DEV ? (error as Error).message : message
+      IS_DEV ? (error as Error).message : defaultMessage
     );
   }
 }

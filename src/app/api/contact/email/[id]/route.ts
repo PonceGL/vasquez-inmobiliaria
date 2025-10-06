@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { userService } from "@/app/api/user/user.service";
+import { contactEmailService } from "@/app/api/contact/email/email.service";
 import { isAuthenticated } from "@/lib/auth";
 import { handleHttpError } from "@/lib/errorResponse";
 
@@ -12,12 +12,12 @@ export async function GET(request: NextRequest, { params }: Params) {
   try {
     await isAuthenticated(request);
     const { id } = await params;
-    const users = await userService.getById(id);
+    const email = await contactEmailService.getById(id);
     return NextResponse.json(
       {
         success: true,
-        message: "User successfully obtained",
-        data: users,
+        message: "Email successfully obtained",
+        data: email,
       },
       { status: 200 }
     );
@@ -31,12 +31,12 @@ export async function PATCH(request: NextRequest, { params }: Params) {
     await isAuthenticated(request);
     const { id } = await params;
     const body = await request.json();
-    const user = await userService.update(id, body);
+    const email = await contactEmailService.update(id, body);
     return NextResponse.json(
       {
         success: true,
-        message: "User successfully updated",
-        data: user,
+        message: "Email successfully updated",
+        data: email,
       },
       { status: 200 }
     );
@@ -47,14 +47,14 @@ export async function PATCH(request: NextRequest, { params }: Params) {
 
 export async function DELETE(request: NextRequest, { params }: Params) {
   try {
-    await isAuthenticated(request);
-    const { id } = await params;
-    const users = await userService.delete(id);
+      await isAuthenticated(request);
+      const { id } = await params;
+    const email = await contactEmailService.delete(id);
     return NextResponse.json(
       {
         success: true,
-        message: "User successfully deleted",
-        data: users,
+        message: "Email successfully deleted",
+        data: email,
       },
       { status: 200 }
     );
