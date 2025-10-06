@@ -14,6 +14,7 @@ import {
   BadRequestError,
   HttpError,
   InternalServerErrorException,
+  NotFoundException,
 } from "@/lib/httpErrors";
 import { dbConnect } from "@/lib/mongodb";
 
@@ -35,7 +36,7 @@ class ContactNumberService {
       await dbConnect();
       const number = await ContactNumber.findById(id);
       if (!number) {
-        throw new BadRequestError("Número de contacto no encontrado.");
+        throw new NotFoundException("Número de contacto no encontrado.");
       }
       return number;
     } catch (error) {

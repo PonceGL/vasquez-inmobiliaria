@@ -14,6 +14,7 @@ import {
   BadRequestError,
   HttpError,
   InternalServerErrorException,
+  NotFoundException,
 } from "@/lib/httpErrors";
 import { dbConnect } from "@/lib/mongodb";
 
@@ -35,7 +36,7 @@ class ContactEmailService {
       await dbConnect();
       const email = await ContactEmail.findById(id);
       if (!email) {
-        throw new BadRequestError("Correo electrónico no encontrado.");
+        throw new NotFoundException("Correo electrónico no encontrado.");
       }
       return email;
     } catch (error) {

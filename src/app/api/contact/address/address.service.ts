@@ -1,7 +1,7 @@
 import { MongooseError } from "mongoose";
 import { ZodError } from "zod";
 
-import { Address } from "@/app/api/contact/address/address.entity";
+import { Address, IAddress } from "@/app/api/contact/address/address.entity";
 import {
   CreateAddressDto,
   createAddressDto,
@@ -13,11 +13,12 @@ import {
   BadRequestError,
   HttpError,
   InternalServerErrorException,
+  NotFoundException,
 } from "@/lib/httpErrors";
 import { dbConnect } from "@/lib/mongodb";
 
 class AddressService {
-  async getAll() {
+  async getAll(): Promise<IAddress[]> {
     try {
       await dbConnect();
       const addresses = await Address.find().select("-__v").lean();
@@ -34,7 +35,7 @@ class AddressService {
       await dbConnect();
       const address = await Address.findById(id);
       if (!address) {
-        throw new BadRequestError("Dirección no encontrada.");
+        throw new NotFoundException("Dirección no encontrada.");
       }
       return address;
     } catch (error) {
@@ -47,8 +48,10 @@ class AddressService {
   async create(addressData: CreateAddressDto) {
     try {
       const validatedData = createAddressDto.parse(addressData);
+
       await dbConnect();
       const newAddress = await Address.create(validatedData);
+
       return newAddress;
     } catch (error) {
       throw this.handleServiceError(error, {
@@ -60,6 +63,7 @@ class AddressService {
   async update(id: string, data: UpdateAddressDto) {
     try {
       const validatedData = updateAddressDto.parse(data);
+
       await this.getById(id);
       await dbConnect();
       const updatedAddress = await Address.findByIdAndUpdate(
@@ -70,6 +74,7 @@ class AddressService {
           runValidators: true,
         }
       ).exec();
+
       if (!updatedAddress) {
         throw new BadRequestError("Dirección no encontrada.");
       }
@@ -82,17 +87,17 @@ class AddressService {
   }
 
   async delete(id: string) {
-      try {
-        await this.getById(id);
-        await dbConnect();
-        await Address.findByIdAndDelete(id);
-        return { message: "Dirección eliminada correctamente." };
-      } catch (error) {
-        throw this.handleServiceError(error, {
-          internal: "Dirección no eliminada.",
-        });
-      }
+    try {
+      await this.getById(id);
+      await dbConnect();
+      await Address.findByIdAndDelete(id);
+      return { message: "Dirección eliminada correctamente." };
+    } catch (error) {
+      throw this.handleServiceError(error, {
+        internal: "Dirección no eliminada.",
+      });
     }
+  }
 
   private handleServiceError(
     error: unknown,
