@@ -6,12 +6,12 @@ import { handleHttpError } from "@/lib/errorResponse";
 
 export async function GET() {
   try {
-    const numbers = await contactEmailService.getAll();
+    const emails = await contactEmailService.getAll();
     return NextResponse.json(
       {
         success: true,
-        message: "Contact info successfully obtained",
-        data: numbers,
+        message: "Email successfully obtained",
+        data: emails,
       },
       { status: 200 }
     );
@@ -24,12 +24,12 @@ export async function POST(request: NextRequest) {
   try {
     await isAuthenticated(request);
     const body = await request.json();
-    const newNumber = await contactEmailService.create(body);
+    const newEmail = await contactEmailService.create(body);
     return NextResponse.json(
       {
         success: true,
-        message: "Number successfully created",
-        data: newNumber,
+        message: "Email successfully created",
+        data: newEmail,
       },
       { status: 201 }
     );

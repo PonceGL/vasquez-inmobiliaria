@@ -55,7 +55,7 @@ class AddressService {
       return newAddress;
     } catch (error) {
       throw this.handleServiceError(error, {
-        internal: "Error al crear el correo electrónico.",
+        internal: "Error al crear la dirección.",
       });
     }
   }

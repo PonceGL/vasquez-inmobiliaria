@@ -173,7 +173,7 @@ describe("ContactEmailService update", () => {
       .mockReturnValue(mockUpdateEmailDto as never);
 
     mockedEmailModel.findById.mockReturnValue(
-  createMockQuery(mockEmail as unknown as IContactEmail)
+      createMockQuery(mockEmail as unknown as IContactEmail)
     );
 
     mockedEmailModel.findByIdAndUpdate.mockReturnValue({
@@ -181,7 +181,7 @@ describe("ContactEmailService update", () => {
     } as never);
 
     const email = await contactEmailService.update(mockEmail._id, {
-      address: "new@email.com",
+      email: "new@email.com",
     } as never);
     expect(email).toBeDefined();
   });
@@ -195,7 +195,7 @@ describe("ContactEmailService update", () => {
 
     await expect(
       contactEmailService.update(mockEmail._id, {
-        address: "new@email.com",
+        email: "new@email.com",
       } as never)
     ).rejects.toThrow(NotFoundException);
   });
