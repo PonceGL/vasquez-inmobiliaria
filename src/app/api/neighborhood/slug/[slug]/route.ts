@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { propertyService } from "@/app/api/property/property.service";
+import { neighborhoodService } from "@/app/api/neighborhood/neighborhood.service";
 import { handleHttpError } from "@/lib/errorResponse";
 import { getPropertyPopulateFields } from "@/lib/queryParams";
-import { PROPERTY_POPULATE_FIELDS } from "@/types/property";
+import { NEIGHBORHOOD_POPULATE_FIELDS } from "@/types/neighborhood";
 
 interface Params {
   params: Promise<{ slug: string }>;
@@ -11,17 +11,17 @@ interface Params {
 
 export async function GET(request: NextRequest, { params }: Params) {
   try {
-    const populateFields = getPropertyPopulateFields<PROPERTY_POPULATE_FIELDS>(
-      "property",
+    const populateFields = getPropertyPopulateFields<NEIGHBORHOOD_POPULATE_FIELDS>(
+      "neighborhood",
       request
     );
     const { slug } = await params;
-    const property = await propertyService.getBySlug(slug, populateFields);
+    const neighborhood = await neighborhoodService.getBySlug(slug, populateFields);
     return NextResponse.json(
       {
         success: true,
-        message: "Property successfully obtained",
-        data: property,
+        message: "Neighborhood successfully obtained",
+        data: neighborhood,
       },
       { status: 200 }
     );

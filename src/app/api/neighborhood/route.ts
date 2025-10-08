@@ -1,23 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { propertyService } from "@/app/api/property/property.service";
+import { neighborhoodService } from "@/app/api/neighborhood/neighborhood.service";
 import { isAuthenticated } from "@/lib/auth";
 import { handleHttpError } from "@/lib/errorResponse";
 import { getPropertyPopulateFields } from "@/lib/queryParams";
-import { PROPERTY_POPULATE_FIELDS } from "@/types/property";
+import { NEIGHBORHOOD_POPULATE_FIELDS } from "@/types/neighborhood";
 
 export async function GET(request: NextRequest) {
   try {
-    const populateFields = getPropertyPopulateFields<PROPERTY_POPULATE_FIELDS>(
-      "property",
-      request
-    );
-    const properties = await propertyService.getAll(populateFields);
+    const populateFields = getPropertyPopulateFields<NEIGHBORHOOD_POPULATE_FIELDS>("neighborhood", request);
+    const neighborhoods = await neighborhoodService.getAll(populateFields);
     return NextResponse.json(
       {
         success: true,
-        message: "Properties successfully obtained",
-        data: properties,
+        message: "Neighborhoods successfully obtained",
+        data: neighborhoods,
       },
       { status: 200 }
     );
@@ -30,12 +27,12 @@ export async function POST(request: NextRequest) {
   try {
     await isAuthenticated(request);
     const body = await request.json();
-    const newProperty = await propertyService.create(body);
+    const newNeighborhood = await neighborhoodService.create(body);
     return NextResponse.json(
       {
         success: true,
-        message: "Property successfully created",
-        data: newProperty,
+        message: "Neighborhood successfully created",
+        data: newNeighborhood,
       },
       { status: 201 }
     );

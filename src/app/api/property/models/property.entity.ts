@@ -81,12 +81,31 @@ const basePropertySchema = new mongoose.Schema(
       },
       coordinates: {
         type: [Number], // [longitud, latitud]
-        required: true,
+        required: [true, "Las coordenadas son obligatorias."],
+        validate: {
+          validator: function (value: number[]) {
+            return value.length === 2;
+          },
+          message:
+            "Las coordenadas deben ser una matriz de dos números [longitud, latitud].",
+        },
       },
-      address: { type: String, required: true },
-      city: { type: String, required: true },
-      state: { type: String, required: true },
-      zipCode: { type: String },
+      address: {
+        type: String,
+        required: [true, "La dirección es obligatoria."],
+        trim: true,
+      },
+      city: {
+        type: String,
+        required: [true, "La ciudad es obligatoria."],
+        trim: true,
+      },
+      state: {
+        type: String,
+        required: [true, "El estado es obligatorio."],
+        trim: true,
+      },
+      zipCode: { type: String, trim: true },
     },
     mainImage: {
       type: Types.ObjectId,
