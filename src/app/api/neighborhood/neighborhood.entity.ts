@@ -1,6 +1,6 @@
 import "@/app/api/image/image.entity";
 import "@/app/api/user/user.entity";
-import "@/app/api/property/models/property.entity"
+import "@/app/api/property/models/property.entity";
 
 import mongoose, { Document, Model, Types } from "mongoose";
 
@@ -172,9 +172,9 @@ const neighborhoodSchema = new mongoose.Schema<INeighborhood>({
         "El rango de precios debe ser una matriz de dos números [min, max].",
     },
   },
-  features: [{ type: String, default: [] }],
-  services: [{ type: String, default: [] }],
-  benefits: [{ type: String, default: [] }],
+  features: { type: [String], default: [] },
+  services: { type: [String], default: [] },
+  benefits: { type: [String], default: [] },
   draft: {
     type: Boolean,
     required: true,

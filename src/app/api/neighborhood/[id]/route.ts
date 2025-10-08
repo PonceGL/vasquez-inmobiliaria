@@ -12,7 +12,11 @@ interface Params {
 
 export async function GET(request: NextRequest, { params }: Params) {
   try {
-    const populateFields = getPropertyPopulateFields<NEIGHBORHOOD_POPULATE_FIELDS>("neighborhood", request);
+    const populateFields =
+      getPropertyPopulateFields<NEIGHBORHOOD_POPULATE_FIELDS>(
+        "neighborhood",
+        request
+      );
     const { id } = await params;
     const neighborhood = await neighborhoodService.getById(id, populateFields);
     return NextResponse.json(
@@ -49,8 +53,8 @@ export async function PATCH(request: NextRequest, { params }: Params) {
 
 export async function DELETE(request: NextRequest, { params }: Params) {
   try {
-      await isAuthenticated(request);
-      const { id } = await params;
+    await isAuthenticated(request);
+    const { id } = await params;
     const neighborhood = await neighborhoodService.delete(id);
     return NextResponse.json(
       {
