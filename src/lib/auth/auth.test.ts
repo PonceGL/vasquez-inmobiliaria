@@ -4,6 +4,7 @@ import { jwtVerify } from "jose";
 import { NextRequest } from "next/server";
 import { TextEncoder } from "util";
 
+import { JWT_ALGORITHM } from "@/constants/auth";
 import { isAuthenticated } from "@/lib/auth";
 import { AuthenticationError } from "@/lib/httpErrors";
 
@@ -60,6 +61,8 @@ describe("Función isAuthenticated", () => {
     expect(result).toEqual({ payload: mockPayload });
 
     const expectedSecret = new TextEncoder().encode(mockEnv.SESSION_SECRET);
-    expect(mockedJwtVerify).toHaveBeenCalledWith(validToken, expectedSecret);
+    expect(mockedJwtVerify).toHaveBeenCalledWith(validToken, expectedSecret, {
+      algorithms: [JWT_ALGORITHM],
+    });
   });
 });

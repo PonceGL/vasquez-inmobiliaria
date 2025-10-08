@@ -2,7 +2,7 @@ import { MongoServerError } from "mongodb";
 import { Error as MongooseError } from "mongoose";
 import { ZodError } from "zod";
 
-import { LoginDto, loginSchema } from "@/app/api/auth/dtos/login.dto";
+import { LogInDto, logInSchema } from "@/app/api/auth/dtos/login.dto";
 import {
   CreateUserDto,
   createUserDto,
@@ -70,9 +70,9 @@ class UserService {
     }
   }
 
-  public async getForLogin(loginData: LoginDto) {
+  public async getForLogin(loginData: LogInDto) {
     try {
-      const validatedData = loginSchema.parse(loginData);
+      const validatedData = logInSchema.parse(loginData);
       await dbConnect();
       const user = await User.findOne({ email: validatedData.email }).select(
         "+password"

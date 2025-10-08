@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { userService } from "@/app/api/user/user.service";
+import { loginService } from "@/app/api/auth/login.service";
 import { isAuthenticated } from "@/lib/auth";
 import { handleHttpError } from "@/lib/errorResponse";
 import { AuthorizationError } from "@/lib/httpErrors";
@@ -13,12 +13,12 @@ export async function POST(request: NextRequest) {
       throw new AuthorizationError("Unauthorized");
     }
     const body = await request.json();
-    const user = await userService.getByEmail(body);
+    const token = await loginService.createSignIn(body);
     return NextResponse.json(
       {
         success: true,
-        message: "User successfully obtained",
-        data: user,
+        message: "Sign in successful",
+        data: token,
       },
       { status: 200 }
     );

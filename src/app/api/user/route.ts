@@ -29,6 +29,10 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
+    const { payload } = await isAuthenticated(request);
+    if (payload.role !== USER_ROLES.ADMIN) {
+      throw new AuthorizationError("Unauthorized");
+    }
     const body = await request.json();
     const newUser = await userService.create(body);
     return NextResponse.json(

@@ -3,6 +3,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { userService } from "@/app/api/user/user.service";
 import { isAuthenticated } from "@/lib/auth";
 import { handleHttpError } from "@/lib/errorResponse";
+import { AuthorizationError } from "@/lib/httpErrors";
+import { USER_ROLES } from "@/types/users";
 
 interface Params {
   params: Promise<{ id: string }>;
@@ -10,7 +12,10 @@ interface Params {
 
 export async function GET(request: NextRequest, { params }: Params) {
   try {
-    await isAuthenticated(request);
+    const { payload } = await isAuthenticated(request);
+    if (payload.role !== USER_ROLES.ADMIN) {
+      throw new AuthorizationError("Unauthorized");
+    }
     const { id } = await params;
     const users = await userService.getById(id);
     return NextResponse.json(
@@ -28,7 +33,10 @@ export async function GET(request: NextRequest, { params }: Params) {
 
 export async function PATCH(request: NextRequest, { params }: Params) {
   try {
-    await isAuthenticated(request);
+    const { payload } = await isAuthenticated(request);
+    if (payload.role !== USER_ROLES.ADMIN) {
+      throw new AuthorizationError("Unauthorized");
+    }
     const { id } = await params;
     const body = await request.json();
     const user = await userService.update(id, body);
@@ -47,7 +55,10 @@ export async function PATCH(request: NextRequest, { params }: Params) {
 
 export async function DELETE(request: NextRequest, { params }: Params) {
   try {
-    await isAuthenticated(request);
+    const { payload } = await isAuthenticated(request);
+    if (payload.role !== USER_ROLES.ADMIN) {
+      throw new AuthorizationError("Unauthorized");
+    }
     const { id } = await params;
     const users = await userService.delete(id);
     return NextResponse.json(
