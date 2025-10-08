@@ -55,12 +55,12 @@ Reviza el archivo [Configuración de Variables de Entorno](/docs/git-crypt.md)
 ## Documentación de autenticación y recuperación de contraseña
 
 - ** Consulta el flujo de inicio de sesión y recuperación de contraseña ** en [docs/auth-flujo.md](docs/auth-flujo.md).
-- **[API de Gestión de Propiedades](/docs/property-api.md)** - Sistema completo de gestión de propiedades inmobiliarias con discriminadores
-- **[API de Gestión de Imágenes](/docs/api-images.md)** - Sistema completo de gestión de imágenes con Cloudinary
-- **[Sistema de Usuarios](/docs/users.md)** - Gestión de usuarios, roles y autenticación
-- **[Integración con Cloudinary](/docs/cloudinary.md)** - Configuración y estrategia de subida de archivos
-- **[Autenticación y Manejo de Errores](/docs/authentication.md)** - Sistema de autenticación JWT y manejo centralizado de errores
-- **[Criptografía y Seguridad](/docs/encryption.md)** - Funciones de hash y encriptación de datos
+- **[API de Gestión de Propiedades](/docs/api-flows/property-api.md)** - Sistema completo de gestión de propiedades inmobiliarias con discriminadores
+- **[API de Gestión de Imágenes](/docs/api-flows/api-images.md)** - Sistema completo de gestión de imágenes con Cloudinary
+- **[Sistema de Usuarios](/docs/api-flows/api-users.md)** - Gestión de usuarios, roles y autenticación
+- **[Integración con Cloudinary](/docs/api-flows/cloudinary.md)** - Configuración y estrategia de subida de archivos
+- **[Autenticación y Manejo de Errores](/docs/api-flows/api-images.md)** - Sistema de autenticación JWT y manejo centralizado de errores
+- **[Criptografía y Seguridad](/docs/api-flows/encryption.md)** - Funciones de hash y encriptación de datos
 
 ## 🛠️ Scripts Disponibles
 
@@ -116,8 +116,8 @@ yarn test         # Ejecutar tests
 ### Error al subir imágenes
 
 - Verifica que las variables de entorno de Cloudinary estén configuradas correctamente
-- Consulta [API de Gestión de Imágenes](/docs/api-images.md) para configuración detallada
-- Revisa [Integración con Cloudinary](/docs/cloudinary.md) para setup del Upload Preset
+- Consulta [API de Gestión de Imágenes](/docs/api-flows/api-images.md) para configuración detallada
+- Revisa [Integración con Cloudinary](/docs/api-flows/cloudinary.md) para setup del Upload Preset
 
 ### ⚙️ Configuraciones y Estándares del Proyecto
 
