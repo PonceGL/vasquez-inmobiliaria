@@ -29,13 +29,14 @@ import {
   ForgotPasswordDto,
   forgotPasswordSchema,
 } from "@/app/api/auth/dtos/forgotPassword.dto";
-import { LoginDto, loginSchema } from "@/app/api/auth/dtos/login.dto";
+import { LogInDto, logInSchema } from "@/app/api/auth/dtos/login.dto";
 import {
   ResetPasswordDto,
   resetPasswordSchema,
 } from "@/app/api/auth/dtos/resetPassword.dto";
 import { loginService } from "@/app/api/auth/login.service";
 import { userService } from "@/app/api/user/user.service";
+import { JWT_ALGORITHM } from "@/constants/auth";
 import { comparePassword, hashPassword } from "@/lib/crypt";
 import {
   AuthenticationError,
@@ -47,9 +48,7 @@ import { sendMailService } from "@/lib/sendMail";
 jest.mock("@/app/api/user/user.service");
 jest.mock("@/lib/sendMail");
 jest.mock("@/lib/crypt");
-jest.mock("@/lib/mongodb", () => ({
-  dbConnect: jest.fn(),
-}));
+jest.mock("@/lib/mongodb");
 jest.mock("@/config/env", () => ({
   env: {
     SESSION_SECRET: "test-secret",
@@ -71,6 +70,9 @@ jest.mock("jose", () => ({
     setExpirationTime() {
       return this;
     }
+    setJti() {
+      return this;
+    }
     setIssuedAt() {
       return this;
     }
@@ -87,7 +89,7 @@ jest.mock("@/app/api/auth/dtos/forgotPassword.dto", () => ({
   },
 }));
 jest.mock("@/app/api/auth/dtos/login.dto", () => ({
-  loginSchema: {
+  logInSchema: {
     parse: jest.fn(),
   },
 }));
@@ -102,7 +104,7 @@ const mockedSendMailService = jest.mocked(sendMailService);
 const mockedComparePassword = jest.mocked(comparePassword);
 const mockedHashPassword = jest.mocked(hashPassword);
 const mockedJwtVerify = jest.mocked(jwtVerify);
-const mockedLoginSchema = jest.mocked(loginSchema);
+const mockedLoginSchema = jest.mocked(logInSchema);
 const mockedForgotPasswordSchema = jest.mocked(forgotPasswordSchema);
 const mockedResetPasswordSchema = jest.mocked(resetPasswordSchema);
 
@@ -147,7 +149,7 @@ describe("LoginService createLogin", () => {
       await loginService.createLogin({
         email: "",
         password: "",
-      } as LoginDto);
+      } as LogInDto);
       fail("Expected function to throw");
     } catch (error) {
       expect(error).toBeInstanceOf(ZodError);
@@ -271,7 +273,8 @@ describe("LoginService resetPassword", () => {
     expect(result).toEqual(mockSuccessMessage);
     expect(mockedJwtVerify).toHaveBeenCalledWith(
       mockResetPasswordDto.token,
-      expect.any(Uint8Array)
+      expect.any(Uint8Array),
+      { algorithms: [JWT_ALGORITHM] }
     );
     expect(mockedHashPassword).toHaveBeenCalledWith(
       mockResetPasswordDto.password

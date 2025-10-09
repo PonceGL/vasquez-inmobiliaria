@@ -1,3 +1,4 @@
+import { randomBytes } from "crypto";
 import { JWTPayload, jwtVerify, SignJWT } from "jose";
 import { MongooseError } from "mongoose";
 import { ZodError } from "zod";
@@ -6,7 +7,12 @@ import {
   ForgotPasswordDto,
   forgotPasswordSchema,
 } from "@/app/api/auth/dtos/forgotPassword.dto";
-import { LoginDto, loginSchema } from "@/app/api/auth/dtos/login.dto";
+import {
+  LogInDto,
+  logInSchema,
+  SignInDto,
+  signInSchema,
+} from "@/app/api/auth/dtos/login.dto";
 import {
   ResetPasswordDto,
   resetPasswordSchema,
@@ -27,18 +33,19 @@ import {
 } from "@/lib/httpErrors";
 import { dbConnect } from "@/lib/mongodb";
 import { sendMailService } from "@/lib/sendMail";
+import { USER_ROLES } from "@/types/users";
 
 class LoginService {
   /**
    * Crea un login para el usuario y retorna un token JWT si las credenciales son válidas.
-   * @param {LoginDto} loginData - Datos de inicio de sesión (email y contraseña).
+   * @param {LogInDto} loginData - Datos de inicio de sesión (email y contraseña).
    * @returns {Promise<{ token: string }>} Un objeto con el token JWT.
    * @throws {AuthenticationError} Si las credenciales son inválidas.
    * @throws {HttpError|ZodError|InternalServerErrorException} Si ocurre un error en el proceso.
    */
-  public async createLogin(loginData: LoginDto): Promise<{ token: string }> {
+  public async createLogin(loginData: LogInDto): Promise<{ token: string }> {
     try {
-      const validatedData = loginSchema.parse(loginData);
+      const validatedData = logInSchema.parse(loginData);
       await dbConnect();
       const user = await userService.getForLogin(validatedData);
 
@@ -62,6 +69,48 @@ class LoginService {
       );
 
       return { token };
+    } catch (error) {
+      throw this.handleServiceError(error);
+    }
+  }
+
+  public async createSignIn(signInData: SignInDto) {
+    try {
+      const validatedData = signInSchema.parse(signInData);
+      await this.createLogin({
+        email: validatedData.email,
+        password: validatedData.password,
+      });
+      const temporaryPassword = this.generateRandomPassword();
+      const newUser = await userService.create({
+        name: validatedData.newName,
+        email: validatedData.newEmail,
+        password: temporaryPassword,
+        role: USER_ROLES.COLLABORATOR,
+        verified: false,
+      });
+
+      const newUserToken = await this.createToken(
+        { sub: newUser.id, email: newUser.email },
+        ACCESS_TOKEN_EXPIRATION
+      );
+
+      const resetUrl = `${env.NEXT_PUBLIC_APP_URL}/reset-password?token=${newUserToken}`; // TODO: definir URL en constantes y crear página
+
+      // TODO: create a better html message
+      const htmlMessage = `
+      <h2>
+      Hola, has sido invitado a unirte a nuestra plataforma.
+      </h2>
+      <p>Crea una contraseña</p>
+      <p>Haz clic en el siguiente enlace para crear tu contraseña:</p>
+      <a href="${resetUrl}">Crear Contraseña</a><p>Este enlace expirará en 1 día.</p>`;
+
+      await sendMailService.send({
+        email: validatedData.newEmail,
+        subject: "Bienvenido!",
+        html: htmlMessage,
+      });
     } catch (error) {
       throw this.handleServiceError(error);
     }
@@ -132,7 +181,9 @@ class LoginService {
       const { token, password } = resetPasswordSchema.parse(data);
       const secret = new TextEncoder().encode(env.SESSION_SECRET);
 
-      const { payload } = await jwtVerify(token, secret);
+      const { payload } = await jwtVerify(token, secret, {
+        algorithms: [JWT_ALGORITHM],
+      });
 
       if (!payload.sub) {
         throw new AuthenticationError("Token inválido.");
@@ -166,11 +217,28 @@ class LoginService {
     expiresIn: string | number
   ): Promise<string> {
     const secret = new TextEncoder().encode(env.SESSION_SECRET);
+    const jwtId = randomBytes(16).toString("hex");
     return new SignJWT(payload)
       .setProtectedHeader({ alg: JWT_ALGORITHM })
       .setExpirationTime(expiresIn)
       .setIssuedAt()
+      .setJti(jwtId)
       .sign(secret);
+  }
+
+  /**
+   * Genera una contraseña aleatoria segura.
+   * @returns {string} Contraseña generada.
+   */
+  private generateRandomPassword(length: number = 12): string {
+    const charset =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%&*_+-=?";
+    let password = "";
+    for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(Math.random() * charset.length);
+      password += charset[randomIndex];
+    }
+    return password;
   }
 
   /**

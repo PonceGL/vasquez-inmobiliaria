@@ -3,6 +3,7 @@ import { JWTExpired } from "jose/errors";
 import { NextRequest } from "next/server";
 
 import { env } from "@/config/env";
+import { JWT_ALGORITHM } from "@/constants/auth";
 import { IS_DEV } from "@/constants/enviroment";
 import { AuthenticationError } from "@/lib/httpErrors";
 
@@ -17,7 +18,9 @@ export async function isAuthenticated(
       throw new AuthenticationError("Authorization token is missing");
     }
     const secret = new TextEncoder().encode(env.SESSION_SECRET);
-    const { payload } = await jwtVerify(token, secret);
+    const { payload } = await jwtVerify(token, secret, {
+      algorithms: [JWT_ALGORITHM],
+    });
 
     return { payload };
   } catch (error) {
