@@ -1,5 +1,0 @@
-.env* filter=git-crypt diff=git-crypt
-google-services*.json filter=git-crypt diff=git-crypt
-*.key filter=git-crypt diff=git-crypt
-backup/** filter=git-crypt diff=git-crypt
-docs/api-flows/** filter=git-crypt diff=git-crypt
